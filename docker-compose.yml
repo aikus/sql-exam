@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+    volumes:
+      - .:/symfony
+    container_name: sql_exam-php-fpm
+    depends_on:
+      - database
+    links:
+      - database
+
+  php-cli:
+    build:
+      context: ./docker/php-cli
+    volumes:
+      - .:/symfony
+    command: sleep 10000
+    container_name: sql_exam-php-cli
+    depends_on:
+      - database
+    links:
+      - database
+###> doctrine/doctrine-bundle ###
+  database:
+    image: mariadb:latest
+    # command: --default-authentication-plugin=mysql_native_password
+    container_name: database
+    environment:
+      MARIADB_ROOT_PASSWORD: root-password
+      # You should definitely change the password in production
+      MARIADB_DATABASE: sql_exam
+    volumes:
+      - ./db:/var/lib/mysql:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+    restart: always
+###< doctrine/doctrine-bundle ###
+  nginx:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - .:/symfony
+    container_name: sql_exam-nginx
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database:
+###< doctrine/doctrine-bundle ###
