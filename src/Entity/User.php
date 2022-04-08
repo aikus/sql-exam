@@ -102,4 +102,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     {
         return $this->getEmail();
     }
+
+    public function __toString(): string
+    {
+        return $this->getEmail();
+    }
 }
