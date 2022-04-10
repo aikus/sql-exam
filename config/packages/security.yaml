@@ -26,7 +26,7 @@ security:
             custom_authenticator: App\Security\AppCustomAuthenticator
             entry_point: App\Security\AppCustomAuthenticator
             logout:
-                path: app_logout
+                path: app_home
                 # where to redirect after logout
                 # target: app_any_route
 
@@ -39,6 +39,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/user-change-password, roles: ROLE_USER }
+        - { path: /edit$, roles: ROLE_TEACHER }
+        - { path: ^/, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
