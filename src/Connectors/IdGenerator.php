@@ -3,20 +3,22 @@
 namespace App\Connectors;
 
 use RusakovNikita\MysqlExam\EditExam\ExamIdGenerator;
+use RusakovNikita\MysqlExam\EditExam\QuestionIdGenerator;
 use Symfony\Component\Uid\Uuid;
 
-class IdGenerator implements ExamIdGenerator
+class IdGenerator implements ExamIdGenerator, QuestionIdGenerator
 {
-    public function __construct(private string $url)
-    {
-    }
-
     private function generate(): string
     {
-        return Uuid::v3(Uuid::fromString(Uuid::NAMESPACE_URL), $this->url)->toRfc4122();
+        return Uuid::v4()->toRfc4122();
     }
 
     public function generateExamId(): string
+    {
+        return $this->generate();
+    }
+
+    public function generateQuestionId(): string
     {
         return $this->generate();
     }

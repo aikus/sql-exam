@@ -34,7 +34,7 @@ class ExamController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $admin = $this->getAdmin($request, $examRepository);
+            $admin = $this->getAdmin($examRepository);
             $user = $security->getUser();
             $exam = $admin->createExam($user);
             $admin->setDescription($exam, $examOrm->getDescription());
@@ -82,9 +82,9 @@ class ExamController extends AbstractController
         return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
     }
 
-    protected function getAdmin(Request $request, ExamRepository $examRepository): ExamAdmin
+    protected function getAdmin(ExamRepository $examRepository): ExamAdmin
     {
-        return new ExamAdmin(new IdGenerator($request->getHost()),
+        return new ExamAdmin(new IdGenerator(),
             new \App\Connectors\ExamRepository($examRepository, new ExamConvertor(new TeacherFinder())));
     }
 }

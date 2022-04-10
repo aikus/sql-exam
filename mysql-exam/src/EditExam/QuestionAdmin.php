@@ -12,7 +12,7 @@ class QuestionAdmin
 
     public function createQuestion(string $content, int $timeLimit, int $order): Question
     {
-        return new Question($this->generator->generateQuestionId(), $content, $order);
+        return new Question($this->generator->generateQuestionId(), $content, $order, $timeLimit);
     }
 
     public function setQuestion(Question $question, string $content, int $timeLimit, int $order): void

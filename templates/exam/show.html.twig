@@ -23,4 +23,34 @@
     <a href="{{ path('app_exam_edit', {'id': exam.id}) }}">edit</a>
 
     {{ include('exam/_delete_form.html.twig') }}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Content</th>
+            <th>TimeLimit</th>
+            <th>Ord</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for question in exam.getQuestions() %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>{{ question.content }}</td>
+                <td>{{ question.timeLimit }}</td>
+                <td>{{ question.ord }}</td>
+                <td>
+                    <a href="{{ path('app_question_show', {'id': question.id}) }}">show</a>
+                    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

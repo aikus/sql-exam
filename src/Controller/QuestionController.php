@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Connectors\IdGenerator;
+use App\Entity\Exam;
 use App\Entity\Question;
 use App\Form\Question1Type;
+use App\Repository\ExamRepository;
 use App\Repository\QuestionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +25,16 @@ class QuestionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, QuestionRepository $questionRepository): Response
+    public function new(Request $request, QuestionRepository $questionRepository, ExamRepository $examRepository): Response
     {
+        $exam = $examRepository->find($request->get('exam'));
         $question = new Question();
         $form = $this->createForm(Question1Type::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $question->setExam($exam);
+            $question->setId((new IdGenerator())->generateQuestionId());
             $questionRepository->add($question);
             return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
