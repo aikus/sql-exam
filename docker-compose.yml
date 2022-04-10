@@ -37,7 +37,7 @@ services:
       - ./db:/var/lib/mysql:rw
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
-    restart: always
+#    restart: always
 ###< doctrine/doctrine-bundle ###
   nginx:
     build:
@@ -45,7 +45,7 @@ services:
     volumes:
       - .:/symfony
     container_name: sql_exam-nginx
-    restart: always
+#    restart: always
     ports:
       - "80:80"
 
