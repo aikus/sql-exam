@@ -18,13 +18,14 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_exam_index') }}">back to list</a>
+    <a href="{{ path('app_exam_index') }}" class="secondary button">back to list</a>
 
-    <a href="{{ path('app_exam_edit', {'id': exam.id}) }}">edit</a>
+    <a href="{{ path('app_exam_edit', {'id': exam.id}) }}" class="button">edit</a>
 
     {{ include('exam/_delete_form.html.twig') }}
 
     <table class="table">
+        <caption>Вопросы</caption>
         <thead>
         <tr>
             <th>Id</th>
@@ -53,4 +54,5 @@
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path('app_question_new', {'exam': exam.id}) }}" class="button">add</a>
 {% endblock %}
