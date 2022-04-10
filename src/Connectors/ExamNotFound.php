@@ -2,7 +2,7 @@
 
 namespace App\Connectors;
 
-class ExamNotFound
+class ExamNotFound extends \Exception
 {
 
 }

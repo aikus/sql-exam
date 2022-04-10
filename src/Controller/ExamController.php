@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
+use App\Connectors\ExamConvertor;
+use App\Connectors\IdGenerator;
+use App\Connectors\TeacherFinder;
 use App\Entity\Exam;
 use App\Form\ExamType;
 use App\Repository\ExamRepository;
+use RusakovNikita\MysqlExam\EditExam\ExamAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/exam')]
 class ExamController extends AbstractController
@@ -22,19 +27,22 @@ class ExamController extends AbstractController
     }
 
     #[Route('/new', name: 'app_exam_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ExamRepository $examRepository): Response
+    public function new(Request $request, ExamRepository $examRepository, Security $security): Response
     {
-        $exam = new Exam();
-        $form = $this->createForm(ExamType::class, $exam);
+        $examOrm = new Exam();
+        $form = $this->createForm(ExamType::class, $examOrm);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $examRepository->add($exam);
-            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
+            $admin = $this->getAdmin($request, $examRepository);
+            $user = $security->getUser();
+            $exam = $admin->createExam($user);
+            $admin->setDescription($exam, $examOrm->getDescription());
+            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
         }
 
         return $this->renderForm('exam/new.html.twig', [
-            'exam' => $exam,
+            'exam' => $examOrm,
             'form' => $form,
         ]);
     }
@@ -55,7 +63,7 @@ class ExamController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $examRepository->add($exam);
-            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
         }
 
         return $this->renderForm('exam/edit.html.twig', [
@@ -71,6 +79,12 @@ class ExamController extends AbstractController
             $examRepository->remove($exam);
         }
 
-        return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+    }
+
+    protected function getAdmin(Request $request, ExamRepository $examRepository): ExamAdmin
+    {
+        return new ExamAdmin(new IdGenerator($request->getHost()),
+            new \App\Connectors\ExamRepository($examRepository, new ExamConvertor(new TeacherFinder())));
     }
 }
