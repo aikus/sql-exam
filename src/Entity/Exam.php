@@ -105,22 +105,22 @@ class Exam
         return $this->yes;
     }
 
-    public function addYe(ExaminationSheet $ye): self
+    public function addYes(ExaminationSheet $yes): self
     {
-        if (!$this->yes->contains($ye)) {
-            $this->yes[] = $ye;
-            $ye->setExam($this);
+        if (!$this->yes->contains($yes)) {
+            $this->yes[] = $yes;
+            $yes->setExam($this);
         }
 
         return $this;
     }
 
-    public function removeYe(ExaminationSheet $ye): self
+    public function removeYes(ExaminationSheet $yes): self
     {
-        if ($this->yes->removeElement($ye)) {
+        if ($this->yes->removeElement($yes)) {
             // set the owning side to null (unless already changed)
-            if ($ye->getExam() === $this) {
-                $ye->setExam(null);
+            if ($yes->getExam() === $this) {
+                $yes->setExam(null);
             }
         }
 
