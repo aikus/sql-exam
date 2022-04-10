@@ -5,7 +5,10 @@
 {% block body %}
     <h1>Create new Exam</h1>
 
-    {{ include('exam/_form.html.twig') }}
+    {{ include('exam/_form.html.twig', {
+        'action': 'new',
+        'entityId': 0,
+        'button_label': 'Update'
+    }) }}
 
-    <a href="{{ path('app_exam_index') }}" class="secondary button">back to list</a>
 {% endblock %}

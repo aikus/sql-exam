@@ -19,8 +19,11 @@
                 <td>{{ exam.id }}</td>
                 <td>{{ exam.description }}</td>
                 <td>
-                    <a href="{{ path('app_exam_show', {'id': exam.id}) }}">show</a>
-                    <a href="{{ path('app_exam_edit', {'id': exam.id}) }}">edit</a>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entityId': exam.id,
+                        'entityName': 'exam'
+                    }) }}
                 </td>
             </tr>
         {% else %}
