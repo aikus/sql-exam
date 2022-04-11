@@ -43,8 +43,11 @@
                 <td>{{ question.timeLimit }}</td>
                 <td>{{ question.ord }}</td>
                 <td>
-                    <a href="{{ path('app_question_show', {'id': question.id}) }}">show</a>
-                    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entityId': question.id,
+                        'entityName': 'question'
+                    }) }}
                 </td>
             </tr>
         {% else %}
@@ -54,5 +57,10 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('app_question_new', {'exam': exam.id}) }}" class="button">add</a>
+
+    {{ include('components/_add_button.html.twig', {
+        'params': {'exam': exam.id},
+        'entityName': 'question'
+    }) }}
+
 {% endblock %}

@@ -1,0 +1,22 @@
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="dropdown menu">
+            <li class="menu-text">SQL</li>
+            <li>
+                <a href="{{ path('app_exam_index') }}">Exam list</a>
+            </li>
+            {% if is_granted('ROLE_TEACHER') %}
+            <li>
+                <a href="#">Students answers</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="top-bar-right">
+        <ul class="menu">
+            {% if is_granted('ROLE_USER') %}
+            <li>{{ app.user.email }}</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
