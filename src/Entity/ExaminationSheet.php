@@ -11,8 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class ExaminationSheet
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -30,7 +29,7 @@ class ExaminationSheet
         $this->answers = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -10,7 +10,7 @@ class Answer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Question::class)]
@@ -36,7 +36,7 @@ class Answer
     #[ORM\JoinColumn(nullable: false)]
     private $examinationSheet;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
