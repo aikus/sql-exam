@@ -44,6 +44,7 @@ services:
       context: ./docker/nginx
     volumes:
       - .:/symfony
+      - ./var/log:/var/log/nginx/
     container_name: sql_exam-nginx
 #    restart: always
     ports:

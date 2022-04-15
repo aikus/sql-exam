@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ExaminationSheet{% endblock %}
+
+{% block body %}
+    <h1>ExaminationSheet</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ examination_sheet.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_examination_sheet_index') }}">back to list</a>
+
+    <a href="{{ path('app_examination_sheet_edit', {'id': examination_sheet.id}) }}">edit</a>
+
+    {{ include('examination_sheet/_delete_form.html.twig') }}
+
+    <table class="table">
+        <caption>Ответы</caption>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Вопрос</th>
+            <th>Текст ответа</th>
+            <th>Начало</th>
+            <th>Конец</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for answer in examination_sheet.getAnswers() %}
+            <tr>
+                <td>{{ answer.id }}</td>
+                <td>{{ answer.getQuestion().getContent() }}</td>
+                <td>{{ answer.getSqlText() }}</td>
+                <td>{{ answer.getStart().format('d.m.Y H:i:s') }}</td>
+                <td>{% if answer.getEnd() %}{{ answer.getEnd().format('d.m.Y H:i:s') }}{% endif %}</td>
+                <td><div class="control">
+                        <a href="{{ path('app_answer_show', {'id': answer.id}) }}" class="button">Show</a>
+                    </div></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

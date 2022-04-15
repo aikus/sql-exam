@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Controller;
+
+use App\Connectors\IdGenerator;
+use App\Entity\Answer;
+use App\Entity\ExaminationSheet;
+use App\Entity\Question;
+use App\Form\AnswerType;
+use App\Repository\AnswerRepository;
+use App\Repository\ExaminationSheetRepository;
+use App\Repository\ExamRepository;
+use Doctrine\DBAL\Connection;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+
+#[Route('/answer')]
+class AnswerController extends AbstractController
+{
+    #[Route('/', name: 'app_answer_index', methods: ['GET'])]
+    public function index(AnswerRepository $answerRepository): Response
+    {
+        return $this->render('answer/index.html.twig', [
+            'answers' => $answerRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/new', name: 'app_answer_new', methods: ['GET'])]
+    public function new(Request $request, AnswerRepository $answerRepository, ExaminationSheetRepository $examinationSheetRepository, ExamRepository $examRepository, Security $security): Response
+    {
+
+        $exam = $examRepository->find($request->get('exam'));
+        $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
+        $user = $security->getUser();
+        $sheet = new ExaminationSheet();
+        $sheet->setExam($exam)
+            ->setStudent($user)
+            ->setId((new IdGenerator())->generateQuestionId());
+        $examinationSheetRepository->add($sheet);
+        $answer = new Answer();
+        $answer->setQuestion($questions[0])
+            ->setStart(new \DateTime())
+            ->setSqlText('')
+            ->setExaminationSheet($sheet)
+            ->setId((new IdGenerator())->generateQuestionId());
+        $answerRepository->add($answer);
+        return $this->redirectToRoute('app_answer_edit', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}', name: 'app_answer_show', methods: ['GET'])]
+    public function show(Answer $answer): Response
+    {
+        return $this->render('answer/show.html.twig', [
+            'answer' => $answer,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
+    {
+        $form = $this->createForm(AnswerType::class, $answer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $result = $connection->fetchAllAssociative($answer->getSqlText());
+                $answer->setResultTable($result);
+            } catch (\Exception $e) {
+                $answer->setResultError($e->getMessage());
+            }
+            $answerRepository->add($answer);
+            return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('answer/edit.html.twig', [
+            'answer' => $answer,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_answer_delete', methods: ['POST'])]
+    public function delete(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $answer->getId(), $request->request->get('_token'))) {
+            $answerRepository->remove($answer);
+        }
+
+        return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function getOrderedQuestion(array $questions): array
+    {
+        usort($questions, function (Question $a, Question $b) {
+            $result = $a->getOrd() <=> $b->getOrd();
+            if (!$result) {
+                return $a->getContent() <=> $b->getContent();
+            }
+
+            return $result;
+        });
+        return $questions;
+    }
+}

@@ -63,4 +63,30 @@
         'entityName': 'question'
     }) }}
 
+    <table class="table">
+        <caption>Сданные опросники</caption>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Students</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sheet in exam.getYes() %}
+            <tr>
+                <td>{{ sheet.id }}</td>
+                <td>{{ sheet.getStudent().getName() }}</td>
+                <td><div class="control">
+                        <a href="{{ path('app_examination_sheet_show', {'id': sheet.id}) }}" class="button">Show</a>
+                    </div></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}

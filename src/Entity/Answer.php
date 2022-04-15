@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Answer
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'string')]
     private $id;
 
@@ -35,6 +34,13 @@ class Answer
     #[ORM\ManyToOne(targetEntity: ExaminationSheet::class, inversedBy: 'answers')]
     #[ORM\JoinColumn(nullable: false)]
     private $examinationSheet;
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getId(): ?string
     {

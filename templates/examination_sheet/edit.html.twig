@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ExaminationSheet{% endblock %}
+
+{% block body %}
+    <h1>Edit ExaminationSheet</h1>
+
+    {{ include('examination_sheet/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_examination_sheet_index') }}">back to list</a>
+
+    {{ include('examination_sheet/_delete_form.html.twig') }}
+{% endblock %}
