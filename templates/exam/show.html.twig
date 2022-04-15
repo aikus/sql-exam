@@ -89,4 +89,9 @@
         </tbody>
     </table>
 
+    {{ include('components/_add_button.html.twig', {
+        'params': {'exam': exam.id},
+        'entityName': 'answer'
+    }) }}
+
 {% endblock %}

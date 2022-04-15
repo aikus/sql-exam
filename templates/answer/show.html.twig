@@ -12,13 +12,17 @@
                 <td>{{ answer.id }}</td>
             </tr>
             <tr>
+                <th>Вопрос</th>
+                <td>{{ answer.getQuestion().getContent() }}</td>
+            </tr>
+            <tr>
                 <th>Sql_text</th>
                 <td>{{ answer.sqlText }}</td>
             </tr>
             <tr>
                 <th>Result_table</th>
                 <td>
-{#                    {{ answer.resultTable }}#}
+                    {% if answer.resultTable %}
                     <table>
                         <caption>Результат</caption>
                         <thead>
@@ -38,6 +42,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% endif %}
                 </td>
             </tr>
             <tr>
@@ -55,9 +60,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_answer_index') }}">back to list</a>
-
-    <a href="{{ path('app_answer_edit', {'id': answer.id}) }}">edit</a>
-
-    {{ include('answer/_delete_form.html.twig') }}
+    <a href="{{ path('app_answer_new', {'answer': answer.getId()}) }}" class="button">Повторить попытку</a>
+    {% if nextQuestion %}
+        <a href="{{ path('app_answer_new', {'sheet': answer.getExaminationSheet().getId(), 'question': nextQuestion.getId()}) }}" class="button">Следующий вопрос</a>
+        {% else %}
+            <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" class="button">Финал</a>
+    {% endif %}
 {% endblock %}

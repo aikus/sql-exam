@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Edit Answer</h1>
 
+    Вопрос: {{ answer.getQuestion().getContent() }}
+
     {{ include('answer/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('app_answer_index') }}">back to list</a>

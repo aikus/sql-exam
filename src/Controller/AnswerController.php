@@ -10,6 +10,7 @@ use App\Form\AnswerType;
 use App\Repository\AnswerRepository;
 use App\Repository\ExaminationSheetRepository;
 use App\Repository\ExamRepository;
+use App\Repository\QuestionRepository;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,20 +30,31 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/new', name: 'app_answer_new', methods: ['GET'])]
-    public function new(Request $request, AnswerRepository $answerRepository, ExaminationSheetRepository $examinationSheetRepository, ExamRepository $examRepository, Security $security): Response
+    public function new(Request $request, AnswerRepository $answerRepository, ExaminationSheetRepository $examinationSheetRepository, ExamRepository $examRepository, QuestionRepository $questionRepository, Security $security): Response
     {
-
-        $exam = $examRepository->find($request->get('exam'));
-        $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
-        $user = $security->getUser();
-        $sheet = new ExaminationSheet();
-        $sheet->setExam($exam)
-            ->setStudent($user)
-            ->setId((new IdGenerator())->generateQuestionId());
-        $examinationSheetRepository->add($sheet);
+        $start = new \DateTime();
+        if($request->get('exam')) {
+            $exam = $examRepository->find($request->get('exam'));
+            $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
+            $question = $questions[0];
+            $user = $security->getUser();
+            $sheet = new ExaminationSheet();
+            $sheet->setExam($exam)
+                ->setStudent($user)
+                ->setId((new IdGenerator())->generateQuestionId());
+            $examinationSheetRepository->add($sheet);
+        } elseif ($request->get('answer')) {
+            $answer = $answerRepository->find($request->get('answer'));
+            $sheet = $answer->getExaminationSheet();
+            $start = $answer->getStart();
+            $question = $answer->getQuestion();
+        } elseif($request->get('sheet') && $request->get('question')) {
+            $question = $questionRepository->find($request->get('question'));
+            $sheet = $examinationSheetRepository->find($request->get('sheet'));
+        }
         $answer = new Answer();
-        $answer->setQuestion($questions[0])
-            ->setStart(new \DateTime())
+        $answer->setQuestion($question)
+            ->setStart($start)
             ->setSqlText('')
             ->setExaminationSheet($sheet)
             ->setId((new IdGenerator())->generateQuestionId());
@@ -55,29 +67,33 @@ class AnswerController extends AbstractController
     {
         return $this->render('answer/show.html.twig', [
             'answer' => $answer,
+            'nextQuestion' => $this->getNextQuestion($answer),
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
     {
+        $now = new \DateTime();
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (!$answer->getEnd() && $form->isSubmitted() && $form->isValid()) {
             try {
                 $result = $connection->fetchAllAssociative($answer->getSqlText());
-                $answer->setResultTable($result);
+                $answer->setResultTable($result)
+                    ->setEnd($now);
             } catch (\Exception $e) {
-                $answer->setResultError($e->getMessage());
+                $answer->setResultError($e->getMessage())
+                    ->setEnd($now);
             }
             $answerRepository->add($answer);
-            return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_answer_show', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('answer/edit.html.twig', [
             'answer' => $answer,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
@@ -102,5 +118,22 @@ class AnswerController extends AbstractController
             return $result;
         });
         return $questions;
+    }
+
+    private function getNextQuestion(Answer $answer): ?Question
+    {
+        $questions = $this->getOrderedQuestion($answer->getExaminationSheet()->getExam()->getQuestions()->toArray());
+        $question = $answer->getQuestion();
+        $questionFind = false;
+        foreach ($questions as $variant) {
+            if($questionFind) {
+                return $variant;
+            }
+            if($question->getId() == $variant->getId()) {
+                $questionFind = true;
+            }
+        }
+
+        return null;
     }
 }
