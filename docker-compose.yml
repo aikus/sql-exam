@@ -7,6 +7,8 @@ services:
       context: ./docker/php-fpm
     volumes:
       - .:/symfony
+      - ./var/cache:/symfony/var/cache
+      - ./vendor:/symfony/vendor
     container_name: sql_exam-php-fpm
     depends_on:
       - database
