@@ -1,10 +1,8 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-
-    {{ include('components/_actions.html.twig', {
+    {{ include('admin/components/_actions.html.twig', {
         'action': action,
         'entity': entity | default(''),
-        'entityName': 'examination_sheet'
+        'entityName': 'user'
     }) }}
-
 {{ form_end(form) }}

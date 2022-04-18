@@ -23,8 +23,11 @@
                 <td>{{ answer.start ? answer.start|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ answer.end ? answer.end|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_answer_show', {'id': answer.id}) }}">show</a>
-                    <a href="{{ path('app_answer_edit', {'id': answer.id}) }}">edit</a>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entity': answer,
+                        'entityName': 'answer'
+                    }) }}
                 </td>
             </tr>
         {% else %}

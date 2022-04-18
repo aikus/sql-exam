@@ -3,7 +3,7 @@
 
     {{ include('components/_actions.html.twig', {
         'action': action,
-        'entity': entity,
+        'entity': entity | default(''),
         'entityName': 'exam'
     }) }}
 

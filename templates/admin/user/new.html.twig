@@ -1,0 +1,13 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'New User'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Create new User'|trans }}</h1>
+
+    {{ include('admin/user/_form.html.twig', {
+        'action': 'new',
+        'entityName': 'user',
+    }) }}
+
+{% endblock %}
