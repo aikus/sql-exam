@@ -1,10 +1,14 @@
-# General
+# Core
+Id: Id
+
+# App
 ## NavBar
 Home: Главная
 Exam list: Список опросников
 Students answers: Ответы учеников
 Search...: Поиск...
 Menu: Меню
+SQL: SQL
 
 ## Buttons
 Create new: Добавить
@@ -28,6 +32,12 @@ User: Пользователь
 User index: Список пользователей
 Users: Пользователи
 New User: Новый пользователь
+Email: Электронная почта
+Roles: Роли
+USER: Роль USER
+STUDENT: Роль STUDENT
+TEACHER: Роль TEACHER
+ADMIN: Роль ADMIN
 
 # Pages
 ## /register
@@ -36,7 +46,10 @@ Register: Регистрация
 ## /login
 Login: Войти
 login: войти
+Log in!: Войти
+Sign in: Войти
 Please log in: Пожалуйста, войдите
+Please sign in: Пожалуйста, войдите
 Logout: Выйти
 logout: выйти
 Sign-up: Зарегистрироваться
@@ -49,6 +62,7 @@ ExaminationSheet: Опросник с ответами
 ExaminationSheet index: Список опросников с ответами
 ExaminationSheets: Опросники с ответами
 New Examination Sheet: Новый опросник с ответами
+New ExaminationSheet: Новый опросник с ответами
 
 ## /exam
 Exam: Опросник
