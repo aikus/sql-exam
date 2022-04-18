@@ -1,14 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Answer{% endblock %}
+{% block title %}{{ 'Edit Answer'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Ответить</h1>
+    <h1>{{ 'Edit Answer'|trans }}</h1>
+
     {% if limit %}
-    <div class="timer" data-limit="{{ limit }}"></div>
+        <div class="timer" data-limit="{{ limit }}"></div>
     {% endif %}
 
-    Вопрос: {{ answer.getQuestion().getContent() }}
+    {{ 'Question: '|trans }}{{ answer.getQuestion().getContent() }}
 
-    {{ include('answer/_form.html.twig', {'button_label': 'Ответить'}) }}
+    {{ include('answer/_form.html.twig', {
+        'action': edit,
+        'entity': answer,
+    }) }}
+
 {% endblock %}

@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Answer{% endblock %}
+{% block title %}{{ 'Answer'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Ответ</h1>
+    <h1>{{ 'Answer'|trans }}</h1>
 
     {% if limit %}
         <div class="timer" data-limit="{{ limit }}"></div>
@@ -12,23 +12,23 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>{{ 'Id'| trans }}</th>
                 <td>{{ answer.id }}</td>
             </tr>
             <tr>
-                <th>Вопрос</th>
+                <th>{{ 'Question'| trans }}</th>
                 <td>{{ answer.getQuestion().getContent() }}</td>
             </tr>
             <tr>
-                <th>Ответ sql-запрос</th>
+                <th>{{ 'Sql_text'| trans }}</th>
                 <td>{{ answer.sqlText }}</td>
             </tr>
             <tr>
-                <th>Таблица результат запроса</th>
+                <th>{{ 'Result table'| trans }}</th>
                 <td>
                     {% if answer.resultTable %}
                     <table>
-                        <caption>Результат</caption>
+                        <caption>{{ 'Result'| trans }}</caption>
                         <thead>
                             <tr>
                                 {% for key in answer.resultTable[0]|keys %}
@@ -50,21 +50,24 @@
                 </td>
             </tr>
             <tr>
+                <th>{{ 'Result error'| trans }}</th>
                 <th>Ошибка</th>
                 <td>{{ answer.resultError }}</td>
             </tr>
             <tr>
+                <th>{{ 'Start'| trans }}</th>
                 <th>Начало ответ</th>
                 <td>{{ answer.start ? answer.start|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
+                <th>{{ 'End'| trans }}</th>
                 <th>Ответ дан</th>
                 <td>{{ answer.end ? answer.end|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_answer_new', {'answer': answer.getId()}) }}" class="button">Повторить попытку</a>
+    <a href="{{ path('app_answer_new', {'answer': answer.getId()}) }}" class="button">{{ ''}}Повторить попытку</a>
     {% if nextQuestion %}
         <a href="{{ path('app_answer_new', {'sheet': answer.getExaminationSheet().getId(), 'question': nextQuestion.getId()}) }}" class="button">Следующий вопрос</a>
         {% else %}

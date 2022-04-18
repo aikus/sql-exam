@@ -1,4 +1,10 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+    {{ include('components/_actions.html.twig', {
+        'action': action,
+        'entity': entity,
+        'entityName': 'examination_sheet'
+    }) }}
+
 {{ form_end(form) }}

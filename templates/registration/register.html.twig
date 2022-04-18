@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}{{ 'Register'|trans }}{% endblock %}
 
 {% block body %}
 <section class="section">
     <div class="container">
-    <h1 class="title">Регистрация</h1>
+    <h1 class="title">{{ 'Register'|trans }}</h1>
 
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.email) }}
         {{ form_row(registrationForm.plainPassword, {
-            label: 'Пароль'
+            label: 'Password'|trns
         }) }}
         {{ form_row(registrationForm.agreeTerms, {
-            label: 'Согласен на обработку моих знаний)'
+            label: 'Agree terms)'|trans
         }) }}
 
-        <button type="submit" class="btn">Зарегестрироваться</button>
+        <button type="submit" class="btn">{{ 'Sign-up'|trans }}</button>
     {{ form_end(registrationForm) }}
     </div>
 </section>

@@ -1,14 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Exam{% endblock %}
+{% block title %}{{ 'New Exam'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Create new Exam</h1>
+    <h1>{{ 'Create new Exam'|trans }}</h1>
 
     {{ include('exam/_form.html.twig', {
         'action': 'new',
-        'entityId': 0,
-        'button_label': 'Update'
     }) }}
 
 {% endblock %}

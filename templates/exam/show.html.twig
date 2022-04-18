@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exam{% endblock %}
+{% block title %}{{ 'Exam'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Exam</h1>
+    <h1>{{ 'Exam'|trans }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>{{ 'Id'|trans }}</th>
                 <td>{{ exam.id }}</td>
             </tr>
             <tr>
-                <th>Description</th>
+                <th>{{ 'Description'|trans }}</th>
                 <td>{{ exam.description }}</td>
             </tr>
         </tbody>
@@ -20,19 +20,19 @@
 
     {{ include('components/_actions.html.twig', {
         'action': 'show',
-        'entityId': exam.id,
+        'entity': exam,
         'entityName': 'exam'
     }) }}
 
     <table class="table">
-        <caption>Вопросы</caption>
+        <caption>{{ 'Questions'|trans }}</caption>
         <thead>
         <tr>
-            <th>Id</th>
-            <th>Content</th>
-            <th>TimeLimit</th>
-            <th>Ord</th>
-            <th>actions</th>
+            <th>{{ 'Id'|trans }}</th>
+            <th>{{ 'Content'|trans }}</th>
+            <th>{{ 'TimeLimit'|trans }}</th>
+            <th>{{ 'Ord'|trans }}</th>
+            <th>{{ 'actions'|trans }}</th>
         </tr>
         </thead>
         <tbody>
@@ -45,14 +45,14 @@
                 <td>
                     {{ include('components/_actions.html.twig', {
                         'action': 'list',
-                        'entityId': question.id,
+                        'entity': question,
                         'entityName': 'question'
                     }) }}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -67,8 +67,8 @@
         <caption>Сданные опросники</caption>
         <thead>
         <tr>
-            <th>Id</th>
-            <th>Students</th>
+            <th>{{ 'Id'|trans }}</th>
+            <th>{{ 'Students'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -77,13 +77,17 @@
             <tr>
                 <td>{{ sheet.id }}</td>
                 <td>{{ sheet.getStudent().getName() }}</td>
-                <td><div class="control">
-                        <a href="{{ path('app_examination_sheet_show', {'id': sheet.id}) }}" class="button">Show</a>
-                    </div></td>
+                <td>
+                    <div class="control">
+                        <a href="{{ path('app_examination_sheet_show', {'id': sheet.id}) }}" class="button">
+                            {{ 'Show'|trans }}
+                        </a>
+                    </div>
+                </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>

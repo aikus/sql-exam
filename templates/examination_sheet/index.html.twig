@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ExaminationSheet index{% endblock %}
+{% block title %}{{ 'ExaminationSheet index'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>ExaminationSheet index</h1>
+    <h1>{{ 'ExaminationSheet index'|trans }}</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>actions</th>
+                <th>{{ 'Id'|trans }}</th>
+                <th>{{ 'actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -17,17 +17,20 @@
             <tr>
                 <td>{{ examination_sheet.id }}</td>
                 <td>
-                    <a href="{{ path('app_examination_sheet_show', {'id': examination_sheet.id}) }}">show</a>
-                    <a href="{{ path('app_examination_sheet_edit', {'id': examination_sheet.id}) }}">edit</a>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entity': examination_sheet,
+                        'entityName': 'examination_sheet'
+                    }) }}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="2">no records found</td>
+                <td colspan="2">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_examination_sheet_new') }}">Create new</a>
+    <a href="{{ path('app_examination_sheet_new') }}">{{ 'Create new'|trans }}</a>
 {% endblock %}

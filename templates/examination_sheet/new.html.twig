@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New ExaminationSheet{% endblock %}
+{% block title %}{{ 'New ExaminationSheet'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Create new ExaminationSheet</h1>
+    <h1>{{ 'Create new ExaminationSheet'|trans }}</h1>
 
-    {{ include('examination_sheet/_form.html.twig') }}
+    {{ include('examination_sheet/_form.html.twig', {
+        'action': 'new',
+    }) }}
 
-    <a href="{{ path('app_examination_sheet_index') }}">back to list</a>
 {% endblock %}
