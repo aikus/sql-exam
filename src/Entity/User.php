@@ -15,6 +15,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher, Student
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_STUDENT = 'ROLE_STUDENT';
+    public const ROLE_TEACHER = 'ROLE_TEACHER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

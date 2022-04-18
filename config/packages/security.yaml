@@ -46,7 +46,7 @@ security:
         - { path: ^/exam/edit$, roles: ROLE_TEACHER }
         - { path: ^/question/edit$, roles: ROLE_TEACHER }
         - { path: ^/, roles: ROLE_USER }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

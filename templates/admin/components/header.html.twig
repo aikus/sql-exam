@@ -1,0 +1,28 @@
+{% set items = [
+    {entity: 'user', name: 'User'},
+    {entity: 'exam', name: 'Exam'},
+    {entity: 'question', name: 'Question'},
+    {entity: 'answer', name: 'Answer'},
+    {entity: 'examination_sheet', name: 'ExaminationSheet'},
+]  %}
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text">{{ 'SQL'|trans }}</li>
+            {% for item in items %}
+            <li>
+                <a href="{{ path('app_' ~ item.entity ~ '_index') }}">{{ (item.name ~ 's')|trans }}</a>
+                <ul class="menu">
+                    <li><a href="{{ path('app_' ~ item.entity ~ '_new') }}">{{ ('New ' ~ item.name)|trans }}</a></li>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="top-bar-right">
+        <ul class="menu">
+            <li class="menu-text">{{ app.user.email }}</li>
+            <li><a href="{{ path('app_logout') }}">{{ 'logout'|trans }}</a></li>
+        </ul>
+    </div>
+</div>
