@@ -12,7 +12,7 @@
         <div class="mb-3">
             {% set logoutLink = '<a href="' ~ path('app_logout') ~ '">' ~ 'logout'|trans ~ '</a>' %}
             {{ 'You are logged in as %name%, %logout%'|trans({
-                '%name%': app.user.username,
+                '%name%': app.user.email,
                 '%logout%': logoutLink
             })|raw }}
         </div>
