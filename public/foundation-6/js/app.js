@@ -1,1 +1,2 @@
 $(document).foundation()
+$('.timer').timer();

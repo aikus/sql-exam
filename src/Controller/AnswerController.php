@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Connectors\IdGenerator;
+use App\Connectors\TimeLimitCalculator;
+use App\Connectors\TimeLimitExam;
+use App\Connectors\TimeLimitQuestion;
 use App\Entity\Answer;
 use App\Entity\ExaminationSheet;
 use App\Entity\Question;
@@ -33,7 +36,7 @@ class AnswerController extends AbstractController
     public function new(Request $request, AnswerRepository $answerRepository, ExaminationSheetRepository $examinationSheetRepository, ExamRepository $examRepository, QuestionRepository $questionRepository, Security $security): Response
     {
         $start = new \DateTime();
-        if($request->get('exam')) {
+        if ($request->get('exam')) {
             $exam = $examRepository->find($request->get('exam'));
             $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
             $question = $questions[0];
@@ -48,7 +51,7 @@ class AnswerController extends AbstractController
             $sheet = $answer->getExaminationSheet();
             $start = $answer->getStart();
             $question = $answer->getQuestion();
-        } elseif($request->get('sheet') && $request->get('question')) {
+        } elseif ($request->get('sheet') && $request->get('question')) {
             $question = $questionRepository->find($request->get('question'));
             $sheet = $examinationSheetRepository->find($request->get('sheet'));
         }
@@ -75,6 +78,13 @@ class AnswerController extends AbstractController
     public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
     {
         $now = new \DateTime();
+        $limit = $this->getLimit($answer, $now);
+        if($limit < 0) {
+            $nextQuestion = $this->getNextQuestion($answer);
+            return $nextQuestion ?
+                $this->redirectToRoute('app_answer_new', ['question' => $nextQuestion->getId(), 'sheet' => $answer->getExaminationSheet() -> getId()], Response::HTTP_SEE_OTHER) :
+                $this->redirectToRoute('app_examination_sheet_show', ['id' => $answer->getExaminationSheet()->getId(), Response::HTTP_SEE_OTHER]);
+        }
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
@@ -126,14 +136,22 @@ class AnswerController extends AbstractController
         $question = $answer->getQuestion();
         $questionFind = false;
         foreach ($questions as $variant) {
-            if($questionFind) {
+            if ($questionFind) {
                 return $variant;
             }
-            if($question->getId() == $variant->getId()) {
+            if ($question->getId() == $variant->getId()) {
                 $questionFind = true;
             }
         }
 
         return null;
+    }
+
+    private function getLimit(Answer $answer, \DateTimeInterface $now): int
+    {
+        $calculator = new TimeLimitCalculator($now);
+        $questionLimit = $calculator->getLimit(new TimeLimitQuestion($answer));
+        $examLimit = $calculator->getLimit(new TimeLimitExam($answer));
+        return $questionLimit && $questionLimit < $examLimit ? $questionLimit : $examLimit;
     }
 }

@@ -27,6 +27,9 @@ class Exam
     #[ORM\OneToMany(mappedBy: 'exam', targetEntity: ExaminationSheet::class, orphanRemoval: true)]
     private $yes;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $timeLimit;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -123,6 +126,18 @@ class Exam
                 $yes->setExam(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTimeLimit(): ?int
+    {
+        return $this->timeLimit;
+    }
+
+    public function setTimeLimit(?int $timeLimit): self
+    {
+        $this->timeLimit = $timeLimit;
 
         return $this;
     }
