@@ -5,7 +5,9 @@
 {% block body %}
     <h1>{{ 'Create new User'|trans }}</h1>
 
-    {{ include('admin/user/_form.html.twig') }}
+    {{ include('admin/user/_form.html.twig', {
+        'action': 'new',
+        'entityName': 'user',
+    }) }}
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
 {% endblock %}
