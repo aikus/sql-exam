@@ -12,7 +12,7 @@
     {{ 'Question: '|trans }}{{ answer.getQuestion().getContent() }}
 
     {{ include('answer/_form.html.twig', {
-        'action': edit,
+        'action': 'edit',
         'entity': answer,
     }) }}
 
