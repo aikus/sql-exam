@@ -3,7 +3,11 @@
 {% block title %}Answer{% endblock %}
 
 {% block body %}
-    <h1>Answer</h1>
+    <h1>Ответ</h1>
+
+    {% if limit %}
+        <div class="timer" data-limit="{{ limit }}"></div>
+    {% endif %}
 
     <table class="table">
         <tbody>
@@ -16,11 +20,11 @@
                 <td>{{ answer.getQuestion().getContent() }}</td>
             </tr>
             <tr>
-                <th>Sql_text</th>
+                <th>Ответ sql-запрос</th>
                 <td>{{ answer.sqlText }}</td>
             </tr>
             <tr>
-                <th>Result_table</th>
+                <th>Таблица результат запроса</th>
                 <td>
                     {% if answer.resultTable %}
                     <table>
@@ -46,15 +50,15 @@
                 </td>
             </tr>
             <tr>
-                <th>Result_error</th>
+                <th>Ошибка</th>
                 <td>{{ answer.resultError }}</td>
             </tr>
             <tr>
-                <th>Start</th>
+                <th>Начало ответ</th>
                 <td>{{ answer.start ? answer.start|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>End</th>
+                <th>Ответ дан</th>
                 <td>{{ answer.end ? answer.end|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
         </tbody>

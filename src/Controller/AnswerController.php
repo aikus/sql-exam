@@ -71,6 +71,7 @@ class AnswerController extends AbstractController
         return $this->render('answer/show.html.twig', [
             'answer' => $answer,
             'nextQuestion' => $this->getNextQuestion($answer),
+            'limit' => $this->getLimit($answer, new \DateTime())
         ]);
     }
 
@@ -100,10 +101,10 @@ class AnswerController extends AbstractController
             $answerRepository->add($answer);
             return $this->redirectToRoute('app_answer_show', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
         }
-
         return $this->renderForm('answer/edit.html.twig', [
             'answer' => $answer,
-            'form' => $form
+            'form' => $form,
+            'limit' => $limit,
         ]);
     }
 
@@ -152,6 +153,9 @@ class AnswerController extends AbstractController
         $calculator = new TimeLimitCalculator($now);
         $questionLimit = $calculator->getLimit(new TimeLimitQuestion($answer));
         $examLimit = $calculator->getLimit(new TimeLimitExam($answer));
-        return $questionLimit && $questionLimit < $examLimit ? $questionLimit : $examLimit;
+        if($questionLimit && $examLimit) {
+            return min($questionLimit, $examLimit);
+        }
+        return $questionLimit ?: $examLimit;
     }
 }

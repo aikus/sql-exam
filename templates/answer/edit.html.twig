@@ -3,7 +3,10 @@
 {% block title %}Edit Answer{% endblock %}
 
 {% block body %}
-    <h1>Edit Answer</h1>
+    <h1>Ответить</h1>
+    {% if limit %}
+    <div class="timer" data-limit="{{ limit }}"></div>
+    {% endif %}
 
     Вопрос: {{ answer.getQuestion().getContent() }}
 
