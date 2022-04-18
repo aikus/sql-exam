@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exam index{% endblock %}
+{% block title %}{{ 'Exam index'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Exam index</h1>
+    <h1>{{ 'Exam index'|trans }}</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Description</th>
-                <th>actions</th>
+                <th>{{ 'Id'|trnas }}</th>
+                <th>{{ 'Description'|trnas }}</th>
+                <th>{{ 'actions'|trnas }}</th>
             </tr>
         </thead>
         <tbody>
@@ -21,18 +21,18 @@
                 <td>
                     {{ include('components/_actions.html.twig', {
                         'action': 'list',
-                        'entityId': exam.id,
+                        'entity': exam,
                         'entityName': 'exam'
                     }) }}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_exam_new') }}">Create new</a>
+    <a href="{{ path('app_exam_new') }}">{{ 'Create new'|trans }}</a>
 {% endblock %}

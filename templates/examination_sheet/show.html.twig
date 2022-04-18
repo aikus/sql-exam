@@ -1,36 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ExaminationSheet{% endblock %}
+{% block title %}{{ 'ExaminationSheet'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>ExaminationSheet</h1>
+    <h1>{{ 'ExaminationSheet'|trans }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>{{ 'Id'|trans }}</th>
                 <td>{{ examination_sheet.id }}</td>
             </tr>
             <tr>
-                <th>Student</th>
+                <th>{{ 'Student'|trans }}</th>
                 <td>{{ examination_sheet.getStudent().getName() }}</td>
             </tr>
             <tr>
-                <th>Exam</th>
+                <th>{{ 'Exam'|trans }}</th>
                 <td>{{ examination_sheet.getExam().getDescription() }}</td>
             </tr>
         </tbody>
     </table>
 
     <table class="table">
-        <caption>Ответы</caption>
+        <caption>{{ 'Question'|trans }}</caption>
         <thead>
         <tr>
-            <th>Id</th>
-            <th>Вопрос</th>
-            <th>Текст ответа</th>
-            <th>Начало</th>
-            <th>Конец</th>
+            <th>{{ 'Id'|trans }}</th>
+            <th>{{ 'Question'|trans }}</th>
+            <th>{{ 'Answer'|trans }}</th>
+            <th>{{ 'Start'|trans }}</th>
+            <th>{{ 'End'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -42,13 +42,15 @@
                 <td>{{ answer.getSqlText() }}</td>
                 <td>{{ answer.getStart().format('d.m.Y H:i:s') }}</td>
                 <td>{% if answer.getEnd() %}{{ answer.getEnd().format('d.m.Y H:i:s') }}{% endif %}</td>
-                <td><div class="control">
+                <td>
+                    <div class="control">
                         <a href="{{ path('app_answer_show', {'id': answer.id}) }}" class="button">Show</a>
-                    </div></td>
+                    </div>
+                </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>

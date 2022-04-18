@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Question index{% endblock %}
+{% block title %}{{ 'Question index'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Question index</h1>
+    <h1>{{ 'Question index'|trans }}</h1>
 
     <table class="table">
         <thead>
@@ -29,11 +29,11 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_question_new') }}">Create new</a>
+    <a href="{{ path('app_question_new') }}">{{ 'Create new'|trans }}</a>
 {% endblock %}

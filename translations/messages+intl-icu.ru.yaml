@@ -1,0 +1,69 @@
+# General
+## NavBar
+Home: Главная
+Exam list: Список опросников
+Students answers: Ответы учеников
+Search...: Поиск...
+Menu: Меню
+
+## Buttons
+Create new: Добавить
+Show: Показать
+Update: Отредактировать
+Edit: Редактировать
+Save: Сохранить
+Delete: Удалить
+actions: действия
+Back to list: Обратно к списку
+back to list: обратно к списку
+
+## Alerts
+Are you sure you want to delete this item?: Подтвердить удаление?
+Agree terms: Согласен с условиями обработки и пользовательской информации
+Agree terms): Согласен на обработку моих знаний)
+
+# Admin
+## /admin/user
+User: Пользователь
+User index: Список пользователей
+Users: Пользователи
+New User: Новый пользователь
+
+# Pages
+## /register
+Register: Регистрация
+
+## /login
+Login: Войти
+login: войти
+Please log in: Пожалуйста, войдите
+Logout: Выйти
+logout: выйти
+Sign-up: Зарегистрироваться
+Password: Пароль
+You are logged in as %name%, %logout%: Вы вошли как {name}, {logout}?
+
+## /examination/sheet
+
+ExaminationSheet: Опросник с ответами
+ExaminationSheet index: Список опросников с ответами
+ExaminationSheets: Опросники с ответами
+New Examination Sheet: Новый опросник с ответами
+
+## /exam
+Exam: Опросник
+Exam index: Список опросников
+Exams: Опросники
+New Exam: Новый опросник
+
+## /question
+Question: Вопрос
+Question index: Список вопросов
+Questions: Вопросы
+New Question: Новый вопрос
+
+## /answer
+Answer: Ответ
+Answer index: Список ответов
+Answers: Ответы
+New Answer: Новый ответ

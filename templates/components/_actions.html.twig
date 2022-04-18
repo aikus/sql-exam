@@ -1,43 +1,53 @@
 {#
 Ожидаются переменные:
  - action
+ - entity
  - entityName
- - entityId
 #}
 <div class="actions">
     <div>
         {% if is_granted('ROLE_TEACHER') %}
         <div class="button-group" role="group">
-            {% if (action == 'edit' or action == 'new') %}
+            {% if (action == 'new') %}
                 <div class="control">
-                    <button class="button is-primary">Save or Add</button>
+                    <button class="button is-primary">{{ 'Save'|trans }}</button>
+                </div>
+            {% endif %}
+
+            {% if (action == 'edit') %}
+                <div class="control">
+                    <button class="button is-primary">{{ 'Update'|trans }}</button>
                 </div>
             {% endif %}
 
             {% if (action != 'list') %}
                 <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="button">
-                    Back to list
+                    {{ 'Back to list'|trans }}
                 </a>
             {% endif %}
 
             {% if (action != 'show' and action != 'new') %}
                 <div class="control">
-                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entityId}) }}" class="button">Show</a>
+                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entity.id}) }}" class="button">
+                        {{ 'Show'|trans }}
+                    </a>
                 </div>
             {% endif %}
 
             {% if (action != 'edit' and action != 'new') %}
                 <div class="control">
-                    <a href="{{ path('app_' ~ entityName ~ '_edit', {'id': entityId}) }}" class="button">Edit</a>
+                    <a href="{{ path('app_' ~ entityName ~ '_edit', {'id': entity.id}) }}" class="button">
+                        {{ 'Edit'|trans }}
+                    </a>
                 </div>
             {% endif %}
 
             {% if (action != 'new') %}
                 <div class="control">
-                <form method="post" action="{{ path('app_' ~ entityName ~ '_delete', {'id': entityId}) }}"
+                <form method="post" action="{{ path('app_' ~ entityName ~ '_delete', {'id': entity.id}) }}"
                       onsubmit="return confirm('Are you sure you want to delete this item?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entityId) }}">
-                    <button class="alert button is-danger">Delete</button>
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
+                    <button class="alert button is-danger">{{ 'Delete'|trans }}</button>
                 </form>
                 </div>
             {% endif %}
@@ -46,13 +56,15 @@
         <div class="field has-addons" role="group">
             {% if (action != 'list') %}
                 <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="button">
-                    Back to list
+                    {{ 'Back to list'|trans }}
                 </a>
             {% endif %}
 
             {% if (action != 'show' and action != 'new') %}
                 <div class="control">
-                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entityId}) }}" class="button">Show</a>
+                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entity.id}) }}" class="button">
+                        {{ 'Show'|trans }}
+                    </a>
                 </div>
             {% endif %}
         </div>

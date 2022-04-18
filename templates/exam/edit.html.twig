@@ -1,14 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Exam{% endblock %}
+{% block title %}{{ 'Edit Exam'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Exam</h1>
+    <h1>{{ 'Edit Exam'|trans }}</h1>
 
     {{ include('exam/_form.html.twig', {
         'action': 'edit',
-        'entityId': exam.id,
-        'button_label': 'Update'
+        'entity': exam,
     }) }}
 
 {% endblock %}
