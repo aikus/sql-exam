@@ -12,6 +12,7 @@ SQL: SQL
 
 ## Buttons
 Create new: Добавить
+Add: Добавить
 Show: Показать
 Update: Отредактировать
 Edit: Редактировать
@@ -33,6 +34,7 @@ User: Пользователь
 User index: Список пользователей
 Users: Пользователи
 New User: Новый пользователь
+Create new User: Регистрация нового пользователя
 Email: Электронная почта
 Roles: Роли
 USER: Роль USER
@@ -43,6 +45,7 @@ ADMIN: Роль ADMIN
 # Pages
 ## /register
 Register: Регистрация
+Plain password: Пароль
 
 ## /login
 Login: Войти
@@ -70,6 +73,11 @@ Exam: Опросник
 Exam index: Список опросников
 Exams: Опросники
 New Exam: Новый опросник
+Description: Описание
+Content: Содержание
+TimeLimit: Лимит времени
+Ord: Порядок
+Students: Сдающие
 
 ## /question
 Question: Вопрос
