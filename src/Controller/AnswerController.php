@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Connectors\IdGenerator;
+use App\Connectors\PdoConnection;
 use App\Connectors\TimeLimitCalculator;
 use App\Connectors\TimeLimitExam;
 use App\Connectors\TimeLimitQuestion;
@@ -24,6 +25,10 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/answer')]
 class AnswerController extends AbstractController
 {
+    public function __construct(private PdoConnection $studentConnection)
+    {
+    }
+
     #[Route('/', name: 'app_answer_index', methods: ['GET'])]
     public function index(AnswerRepository $answerRepository): Response
     {
@@ -76,7 +81,7 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
+    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
         $now = new \DateTime();
         $limit = $this->getLimit($answer, $now);
@@ -91,7 +96,7 @@ class AnswerController extends AbstractController
 
         if (!$answer->getEnd() && $form->isSubmitted() && $form->isValid()) {
             try {
-                $result = $connection->fetchAllAssociative($answer->getSqlText());
+                $result = $this->studentConnection->fetchAll($answer->getSqlText());
                 $answer->setResultTable($result)
                     ->setEnd($now);
             } catch (\Exception $e) {

@@ -22,3 +22,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Connectors\PdoConnectorFactory: ~
+    App\Connectors\PdoConnection:
+        factory: ['@App\Connectors\PdoConnectorFactory', createConnect]
+        arguments: ['%env(STUDENT_DB_DSN)%', '%env(STUDENT_DB_USER)%', '%env(STUDENT_DB_PASSWORD)%']
