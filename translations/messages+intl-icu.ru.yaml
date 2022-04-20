@@ -59,6 +59,7 @@ logout: выйти
 Sign-up: Зарегистрироваться
 Password: Пароль
 You are logged in as %name%, %logout%: Вы вошли как {name}, {logout}?
+Welcome!: Добро пожаловать!
 
 ## /examination/sheet
 

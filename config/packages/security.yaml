@@ -45,8 +45,8 @@ security:
         - { path: ^/user-change-password, roles: ROLE_USER }
         - { path: ^/exam/edit$, roles: ROLE_TEACHER }
         - { path: ^/question/edit$, roles: ROLE_TEACHER }
-        - { path: ^/, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

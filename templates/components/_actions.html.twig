@@ -21,14 +21,14 @@
             {% endif %}
 
             {% if (action != 'list') %}
-                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="button">
+                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
                     {{ 'Back to list'|trans }}
                 </a>
             {% endif %}
 
             {% if (action != 'show' and action != 'new') %}
                 <div class="control">
-                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entity.id}) }}" class="button">
+                    <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entity.id}) }}" class="hollow button">
                         {{ 'Show'|trans }}
                     </a>
                 </div>
@@ -55,7 +55,7 @@
         {% else %}
         <div class="field has-addons" role="group">
             {% if (action != 'list') %}
-                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="button">
+                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
                     {{ 'Back to list'|trans }}
                 </a>
             {% endif %}

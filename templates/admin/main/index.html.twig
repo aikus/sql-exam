@@ -3,5 +3,13 @@
 {% block title %}{{ 'Main'|trans }}{% endblock %}
 
 {% block body %}
-
+    {% if app.user %}
+        <div class="mb-3">
+            {% set logoutLink = '<a href="' ~ path('app_logout') ~ '">' ~ 'logout'|trans ~ '</a>' %}
+            {{ 'You are logged in as %name%, %logout%'|trans({
+                '%name%': app.user.email,
+                '%logout%': logoutLink
+            })|raw }}
+        </div>
+    {% endif %}
 {% endblock %}
