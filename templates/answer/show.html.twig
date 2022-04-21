@@ -13,19 +13,19 @@
         <tbody>
             <tr>
                 <th>{{ 'Id'| trans }}</th>
-                <td>{{ answer.id }}</td>
+                <td colspan="2">{{ answer.id }}</td>
             </tr>
             <tr>
                 <th>{{ 'Question'| trans }}</th>
-                <td>{{ answer.getQuestion().getContent() }}</td>
+                <td colspan="2">{{ answer.getQuestion().getContent() }}</td>
             </tr>
             <tr>
                 <th>{{ 'Sql_text'| trans }}</th>
-                <td>{{ answer.sqlText }}</td>
+                <td colspan="2">{{ answer.sqlText }}</td>
             </tr>
             <tr>
                 <th>{{ 'Result table'| trans }}</th>
-                <td>
+                <td colspan="2">
                     {% if answer.resultTable %}
                     <table>
                         <caption>{{ 'Result'| trans }}</caption>
@@ -51,7 +51,7 @@
             </tr>
             <tr>
                 <th>{{ 'Result error'| trans }}</th>
-                <th>Ошибка</th>
+                <th>{{ 'Error'|trans }}</th>
                 <td>{{ answer.resultError }}</td>
             </tr>
             <tr>

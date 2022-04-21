@@ -38,7 +38,14 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/new', name: 'app_answer_new', methods: ['GET'])]
-    public function new(Request $request, AnswerRepository $answerRepository, ExaminationSheetRepository $examinationSheetRepository, ExamRepository $examRepository, QuestionRepository $questionRepository, Security $security): Response
+    public function new(
+        Request                    $request,
+        AnswerRepository           $answerRepository,
+        ExaminationSheetRepository $examinationSheetRepository,
+        ExamRepository             $examRepository,
+        QuestionRepository         $questionRepository,
+        Security                   $security
+    ): Response
     {
         $start = new \DateTime();
         if ($request->get('exam')) {
@@ -76,7 +83,7 @@ class AnswerController extends AbstractController
         return $this->render('answer/show.html.twig', [
             'answer' => $answer,
             'nextQuestion' => $this->getNextQuestion($answer),
-            'limit' => $this->getLimit($answer, new \DateTime())
+            'limit' => $this->getLimit($answer, new \DateTime()),
         ]);
     }
 
@@ -84,17 +91,28 @@ class AnswerController extends AbstractController
     public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
         $now = new \DateTime();
+
         $limit = $this->getLimit($answer, $now);
-        if($limit < 0) {
+
+        if ($limit < 0) {
             $nextQuestion = $this->getNextQuestion($answer);
-            return $nextQuestion ?
-                $this->redirectToRoute('app_answer_new', ['question' => $nextQuestion->getId(), 'sheet' => $answer->getExaminationSheet() -> getId()], Response::HTTP_SEE_OTHER) :
-                $this->redirectToRoute('app_examination_sheet_show', ['id' => $answer->getExaminationSheet()->getId(), Response::HTTP_SEE_OTHER]);
+            return $nextQuestion
+
+                ? $this->redirectToRoute('app_answer_new', [
+                    'question' => $nextQuestion->getId(),
+                    'sheet' => $answer->getExaminationSheet()->getId(),
+                ], Response::HTTP_SEE_OTHER)
+
+                : $this->redirectToRoute('app_examination_sheet_show', [
+                    'id' => $answer->getExaminationSheet()->getId(),
+                ], Response::HTTP_SEE_OTHER);
         }
+
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
         if (!$answer->getEnd() && $form->isSubmitted() && $form->isValid()) {
+
             try {
                 $result = $this->studentConnection->fetchAll($answer->getSqlText());
                 $answer->setResultTable($result)
@@ -103,13 +121,19 @@ class AnswerController extends AbstractController
                 $answer->setResultError($e->getMessage())
                     ->setEnd($now);
             }
+
             $answerRepository->add($answer);
-            return $this->redirectToRoute('app_answer_show', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
+
+            return $this->redirectToRoute('app_answer_show', [
+                'id' => $answer->getId()
+            ], Response::HTTP_SEE_OTHER);
         }
+
         return $this->renderForm('answer/edit.html.twig', [
             'answer' => $answer,
             'form' => $form,
             'limit' => $limit,
+            'studentData' => $this->studentConnection->getDatabaseData(),
         ]);
     }
 
@@ -158,7 +182,7 @@ class AnswerController extends AbstractController
         $calculator = new TimeLimitCalculator($now);
         $questionLimit = $calculator->getLimit(new TimeLimitQuestion($answer));
         $examLimit = $calculator->getLimit(new TimeLimitExam($answer));
-        if($questionLimit && $examLimit) {
+        if ($questionLimit && $examLimit) {
             return min($questionLimit, $examLimit);
         }
         return $questionLimit ?: $examLimit;
