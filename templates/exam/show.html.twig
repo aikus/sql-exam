@@ -73,7 +73,9 @@
         </tr>
         </thead>
         <tbody>
-        {% for sheet in exam.getYes() %}
+
+        {{ app.user.id }}
+        {% for sheet in exam.getExaminationSheetByStudentId(app.user.id) %}
             <tr>
                 <td>{{ sheet.id }}</td>
                 <td>{{ sheet.getStudent().getName() }}</td>
