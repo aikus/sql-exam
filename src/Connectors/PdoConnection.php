@@ -4,6 +4,8 @@ namespace App\Connectors;
 
 class PdoConnection
 {
+    public const VIEW_LIMIT = 10;
+
     public function __construct(private \PDO $pdo)
     {
     }
@@ -13,7 +15,7 @@ class PdoConnection
         return $this->exec($sql);
     }
 
-    public function getDatabaseData(): array
+    public function getDatabaseData(int $limit = null): array
     {
         $result = [];
 
@@ -23,7 +25,7 @@ class PdoConnection
             'person',
             'product',
         ] as $item) {
-            $result[$item] = $this->exec("SELECT * FROM `$item` LIMIT 3;");
+            $result[$item] = $this->exec("SELECT * FROM `$item` LIMIT ".($limit ?? self::VIEW_LIMIT).";");
         }
 
         return $result;
