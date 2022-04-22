@@ -76,7 +76,6 @@
         </thead>
         <tbody>
 
-        {{ app.user.id }}
         {% for sheet in exam.getExaminationSheetByStudentId(app.user.id) %}
             <tr>
                 <td>{{ sheet.id }}</td>
