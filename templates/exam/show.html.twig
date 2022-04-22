@@ -58,10 +58,12 @@
         </tbody>
     </table>
 
-    {{ include('components/_add_button.html.twig', {
-        'params': {'exam': exam.id},
-        'entityName': 'question'
-    }) }}
+    {% if is_granted('ROLE_TEACHER') %}
+        {{ include('components/_add_button.html.twig', {
+            'params': {'exam': exam.id},
+            'entityName': 'question'
+        }) }}
+    {% endif %}
 
     <table class="table">
         <caption>Сданные опросники</caption>
@@ -74,7 +76,6 @@
         </thead>
         <tbody>
 
-        {{ app.user.id }}
         {% for sheet in exam.getExaminationSheetByStudentId(app.user.id) %}
             <tr>
                 <td>{{ sheet.id }}</td>
@@ -95,9 +96,8 @@
         </tbody>
     </table>
 
-    {{ include('components/_add_button.html.twig', {
-        'params': {'exam': exam.id},
-        'entityName': 'answer'
-    }) }}
+    <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success">
+        {{ 'Begin'|trans }}
+    </a>
 
 {% endblock %}
