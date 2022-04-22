@@ -97,9 +97,8 @@
         </tbody>
     </table>
 
-    {{ include('components/_add_button.html.twig', {
-        'params': {'exam': exam.id},
-        'entityName': 'answer'
-    }) }}
+    <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success">
+        {{ 'Begin'|trans }}
+    </a>
 
 {% endblock %}
