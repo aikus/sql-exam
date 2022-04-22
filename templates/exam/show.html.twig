@@ -1,28 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'Exam'|trans }}{% endblock %}
+{% block title %}{{ exam.description }} - {{ 'Exam'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'Exam'|trans }}</h1>
+    <h1>{{ exam.description }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>{{ 'Id'|trans }}</th>
-                <td>{{ exam.id }}</td>
-            </tr>
-            <tr>
-                <th>{{ 'Description'|trans }}</th>
-                <td>{{ exam.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="button-group" role="group">
+        <a href="{{ path('app_exam_index') }}" class="hollow button">
+            {{ 'Back to list'|trans }}
+        </a>
+        <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success"
+           onclick="return confirm('{{ 'на прохождение теста отведено %time% ч. Готовы начать?'|trans({'%time%': 1}) }}')"
+        >
+            {{ 'Begin'|trans }}
+        </a>
+    </div>
 
-    {{ include('components/_actions.html.twig', {
-        'action': 'show',
-        'entity': exam,
-        'entityName': 'exam'
-    }) }}
+    {% if is_granted('ROLE_TEACHER') %}
+        {{ include('components/_actions.html.twig', {
+            'action': 'show',
+            'entity': exam,
+            'entityName': 'exam'
+        }) }}
+    {% endif %}
 
     <table class="table">
         <caption>{{ 'Questions'|trans }}</caption>
@@ -95,9 +95,5 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success">
-        {{ 'Begin'|trans }}
-    </a>
 
 {% endblock %}
