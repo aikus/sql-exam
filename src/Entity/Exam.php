@@ -108,6 +108,17 @@ class Exam
         return $this->yes;
     }
 
+    /**
+     * @param int $userId
+     * @return Collection<int, ExaminationSheet>
+     */
+    public function getExaminationSheetByStudentId(int $userId): Collection
+    {
+        return $this->yes->filter(function (ExaminationSheet $examinationSheet, $key) use ($userId) {
+            return $examinationSheet->getStudent()->getId() === $userId;
+        });
+    }
+
     public function addYes(ExaminationSheet $yes): self
     {
         if (!$this->yes->contains($yes)) {
