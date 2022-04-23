@@ -1,3 +1,6 @@
-details > summary::marker {
-    content: "";
+.timer-container {
+    position: absolute;
+    right: 200%;
+    top: -7px;
+    width: 181px;
 }

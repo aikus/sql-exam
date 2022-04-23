@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="/foundation-6/css/app.css">
     </head>
     <body class="grid-container">
-        {{ include('components/header.html.twig') }}
+        {{ include('components/header.html.twig', {limit:limit}) }}
         {% block body %}{% endblock %}
         {{ include('components/footer.html.twig') }}
         <script src="/foundation-6/js/vendor/jquery.js"></script>
