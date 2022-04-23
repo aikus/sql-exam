@@ -2,7 +2,7 @@
     {{ form_widget(form) }}
     {{ include('admin/components/_actions.html.twig', {
         'action': action,
-        'entity': entity | default(''),
+        'entity': entity | default(null),
         'entityName': 'user'
     }) }}
 {{ form_end(form) }}
