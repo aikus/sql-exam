@@ -49,10 +49,27 @@ security:
 
         # User section
         - { path: ^/user-change-password, roles: ROLE_USER }
-        - { path: ^/exam/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
-        - { path: ^/exam/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
-        - { path: ^/question/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
-        - { path: ^/question/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+
+        # Student access
+        - { path: ^/question, roles: [ROLE_STUDENT], methods: GET}
+
+        # Teacher access
+        - { path: ^/answer, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
+        - { path: ^/answer/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/answer/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/exam, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
+        - { path: ^/exam/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/exam/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/examination_sheet, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
+        - { path: ^/examination_sheet/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/examination_sheet/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/question, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
+        - { path: ^/question/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/question/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/user, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
+        - { path: ^/user/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+        - { path: ^/user/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
+
         - { path: ^/, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 

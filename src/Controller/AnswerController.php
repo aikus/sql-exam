@@ -45,8 +45,7 @@ class AnswerController extends AbstractController
         ExamRepository             $examRepository,
         QuestionRepository         $questionRepository,
         Security                   $security
-    ): Response
-    {
+    ): Response {
         $start = new \DateTime();
         if ($request->get('exam')) {
             $exam = $examRepository->find($request->get('exam'));
@@ -74,7 +73,7 @@ class AnswerController extends AbstractController
             ->setExaminationSheet($sheet)
             ->setId((new IdGenerator())->generateQuestionId());
         $answerRepository->add($answer);
-        return $this->redirectToRoute('app_answer_edit', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_answer_start', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}', name: 'app_answer_show', methods: ['GET'])]
@@ -88,7 +87,30 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
+    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
+    {
+        $form = $this->createForm(AnswerType::class, $answer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $result = $connection->fetchAllAssociative($answer->getSqlText());
+                $answer->setResultTable($result);
+            } catch (\Exception $e) {
+                $answer->setResultError($e->getMessage());
+            }
+            $answerRepository->add($answer);
+            return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('answer/edit.html.twig', [
+            'answer' => $answer,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/start', name: 'app_answer_start', methods: ['GET', 'POST'])]
+    public function start(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
         $now = new \DateTime();
 
