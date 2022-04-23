@@ -21,11 +21,7 @@
         <ul class="menu">
             {% if limit %}
                 <li class="menu-text" style="position: relative">
-                    <div class="callout timer-container" data-closable>
-                        <div class="timer" data-limit="{{ limit }}"></div>
-                        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    <div class="callout timer" data-limit="{{ limit }}">
                     </div>
                 </li>
             {% endif %}
