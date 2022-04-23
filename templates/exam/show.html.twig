@@ -59,10 +59,7 @@
     </table>
 
     {% if is_granted('ROLE_TEACHER') %}
-        {{ include('components/_add_button.html.twig', {
-            'params': {'exam': exam.id},
-            'entityName': 'question'
-        }) }}
+    <a href="{{ path('app_question_add', {'exam': exam.id}) }}" class="button">{{ 'Add'|trans }}</a>
     {% endif %}
 
     <table class="table">

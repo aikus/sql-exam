@@ -8,27 +8,28 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>{{ 'Id'|trans }}</th>
                 <td>{{ question.id }}</td>
             </tr>
             <tr>
-                <th>Content</th>
+                <th>{{ 'Content'|trans }}</th>
                 <td>{{ question.content }}</td>
             </tr>
             <tr>
-                <th>TimeLimit</th>
+                <th>{{ 'TimeLimit'|trans }}</th>
                 <td>{{ question.timeLimit }}</td>
             </tr>
             <tr>
-                <th>Ord</th>
+                <th>{{ 'Ord'|trans }}</th>
                 <td>{{ question.ord }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_question_index') }}">back to list</a>
+    {{ include('components/_actions.html.twig', {
+        'action': 'show',
+        'entity': question,
+        'entityName': 'question'
+    }) }}
 
-    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
-
-    {{ include('question/_delete_form.html.twig') }}
 {% endblock %}
