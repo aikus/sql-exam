@@ -10,7 +10,7 @@
             {{ 'Back to list'|trans }}
         </a>
         <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success"
-           onclick="return confirm('{{ 'на прохождение теста отведено %time% ч. Готовы начать?'|trans({'%time%': 1}) }}')"
+           onclick="return confirm('{{ 'You have %time% hours to complete the test. Ready to start?'|trans({'%time%': 1}) }}')"
         >
             {{ 'Begin'|trans }}
         </a>
@@ -63,7 +63,7 @@
     {% endif %}
 
     <table class="table">
-        <caption>Сданные опросники</caption>
+        <caption>{{ 'ExaminationSheets'|trans }}</caption>
         <thead>
         <tr>
             <th>{{ 'Id'|trans }}</th>
