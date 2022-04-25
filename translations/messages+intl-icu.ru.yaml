@@ -97,5 +97,5 @@ New Answer: Новый ответ
 Your answer: Ваш ответ
 Table `%table%`: Таблица `{table}`
 Show DataBase: Просмотреть БД
-You have 5 hours to complete the test. Ready to start?: На прохождение теста отведено %time% ч. Готовы начать?
+You have %time% hours to complete the test. Ready to start?: На прохождение теста отведено {time} ч. Готовы начать?
 Sql text: Текст запроса
