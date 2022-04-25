@@ -26,7 +26,6 @@
         <caption>{{ 'Question'|trans }}</caption>
         <thead>
         <tr>
-            <th>{{ 'Id'|trans }}</th>
             <th>{{ 'Question'|trans }}</th>
             <th>{{ 'Answer'|trans }}</th>
             <th>{{ 'Start'|trans }}</th>
@@ -37,7 +36,6 @@
         <tbody>
         {% for answer in examination_sheet.getAnswers() %}
             <tr>
-                <td>{{ answer.id }}</td>
                 <td>{{ answer.getQuestion().getContent() }}</td>
                 <td>{{ answer.getSqlText() }}</td>
                 <td>{{ answer.getStart().format('d.m.Y H:i:s') }}</td>
