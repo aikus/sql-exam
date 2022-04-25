@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\ExaminationSheetRepository;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -93,5 +96,36 @@ class ExaminationSheet
         }
 
         return $this;
+    }
+
+    public function getStart(): ?DateTimeInterface
+    {
+        if(!$this->getAnswers()) {
+            return null;
+        }
+        $startValue = (new DateTimeImmutable())->add(new DateInterval('P2Y'));
+        $minStart = clone $startValue;
+        foreach ($this->getAnswers() as $answer) {
+            if($minStart > $answer->getStart()) {
+                $minStart = $answer->getStart();
+            }
+        }
+        return $minStart == $startValue ? null : $minStart;
+    }
+
+    public function getEnd(): ?DateTimeInterface
+    {
+        if(!$this->getAnswers()) {
+            return null;
+        }
+        $startValue = (new DateTimeImmutable())->sub(new DateInterval('P100Y'));
+        $maxDate = clone $startValue;
+        foreach ($this->getAnswers() as $answer) {
+            $endDate = $answer->getEnd();
+            if($endDate && $maxDate < $endDate) {
+                $maxDate = $endDate;
+            }
+        }
+        return $maxDate == $startValue ? null : $maxDate;
     }
 }

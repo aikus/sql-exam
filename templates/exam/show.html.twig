@@ -28,7 +28,6 @@
         <caption>{{ 'Questions'|trans }}</caption>
         <thead>
         <tr>
-            <th>{{ 'Id'|trans }}</th>
             <th>{{ 'Content'|trans }}</th>
             <th>{{ 'TimeLimit'|trans }}</th>
             <th>{{ 'Ord'|trans }}</th>
@@ -38,7 +37,6 @@
         <tbody>
         {% for question in exam.getQuestions() %}
             <tr>
-                <td>{{ question.id }}</td>
                 <td>{{ question.content }}</td>
                 <td>{{ question.timeLimit }}</td>
                 <td>{{ question.ord }}</td>
@@ -52,7 +50,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">{{ 'no records found'|trans }}</td>
+                <td colspan="4">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -66,8 +64,9 @@
         <caption>{{ 'ExaminationSheets'|trans }}</caption>
         <thead>
         <tr>
-            <th>{{ 'Id'|trans }}</th>
             <th>{{ 'Students'|trans }}</th>
+            <th>{{ 'Start'|trans }}</th>
+            <th>{{ 'End'|trans }}</th>
             <th></th>
         </tr>
         </thead>
@@ -75,8 +74,17 @@
 
         {% for sheet in exam.getExaminationSheetByStudentId(app.user.id) %}
             <tr>
-                <td>{{ sheet.id }}</td>
                 <td>{{ sheet.getStudent().getName() }}</td>
+                <td>
+                    {% if sheet.start %}
+                    {{ sheet.start | date('d.m.Y H:i:s') }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if sheet.end %}
+                    {{ sheet.end | date('d.m.Y H:i:s') }}
+                    {% endif %}
+                </td>
                 <td>
                     <div class="control">
                         <a href="{{ path('app_examination_sheet_show', {'id': sheet.id}) }}" class="button">
@@ -87,7 +95,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">{{ 'no records found'|trans }}</td>
+                <td colspan="2">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>
