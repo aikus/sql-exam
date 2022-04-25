@@ -51,11 +51,12 @@ security:
         - { path: ^/user-change-password, roles: ROLE_USER }
 
         # Student access
-        - { path: ^/question, roles: [ROLE_STUDENT], methods: GET}
+        - { path: ^/question, roles: [ROLE_USER] }
+        - { path: ^/answer, roles: [ROLE_USER] }
+        - { path: ^/answer/+/start, roles: [ROLE_USER] }
+        - { path: ^/answer/+/new, roles: [ROLE_USER] }
 
         # Teacher access
-        - { path: ^/answer, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
-        - { path: ^/answer/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
         - { path: ^/answer/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
         - { path: ^/exam, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
         - { path: ^/exam/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }
