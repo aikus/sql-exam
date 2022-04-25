@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Connectors\IdGenerator;
-use App\Entity\Exam;
 use App\Entity\Question;
 use App\Form\Question1Type;
+use App\Form\QuestionType;
 use App\Repository\ExamRepository;
 use App\Repository\QuestionRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,8 +26,12 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, QuestionRepository $questionRepository, ExamRepository $examRepository): Response
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
+    #[Route('/add', name: 'app_question_add', methods: ['GET', 'POST'])]
+    public function add(Request $request, QuestionRepository $questionRepository, ExamRepository $examRepository): Response
     {
         $exam = $examRepository->find($request->get('exam'));
         $question = new Question();
@@ -45,6 +51,29 @@ class QuestionController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
+    #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, QuestionRepository $questionRepository): Response
+    {
+        $question = new Question();
+        $form = $this->createForm(QuestionType::class, $question);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $question->setId((new IdGenerator())->generateQuestionId());
+            $questionRepository->add($question);
+            return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('question/new.html.twig', [
+            'question' => $question,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_question_show', methods: ['GET'])]
     public function show(Question $question): Response
     {
@@ -53,6 +82,10 @@ class QuestionController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     #[Route('/{id}/edit', name: 'app_question_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Question $question, QuestionRepository $questionRepository): Response
     {
@@ -70,6 +103,10 @@ class QuestionController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
     public function delete(Request $request, Question $question, QuestionRepository $questionRepository): Response
     {

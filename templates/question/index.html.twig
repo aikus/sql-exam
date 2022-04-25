@@ -23,8 +23,11 @@
                 <td>{{ question.timeLimit }}</td>
                 <td>{{ question.ord }}</td>
                 <td>
-                    <a href="{{ path('app_question_show', {'id': question.id}) }}">show</a>
-                    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entity': question,
+                        'entityName': 'question'
+                    }) }}
                 </td>
             </tr>
         {% else %}
@@ -35,5 +38,7 @@
         </tbody>
     </table>
 
+    {% if is_granted('ROLE_TEACHER') || is_granted('ROLE_ADMIN') %}
     <a href="{{ path('app_question_new') }}">{{ 'Create new'|trans }}</a>
+    {% endif %}
 {% endblock %}

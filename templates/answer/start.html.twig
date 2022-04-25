@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Your answer'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Question %number%'|trans({'%number%': answer.question.ord}) }}</h1>
+
+    {% if limit %}
+        <div class="timer" data-limit="{{ limit }}"></div>
+    {% endif %}
+
+    <div>
+        <p>{{ 'Question'|trans({'number': answer.question.ord}) }}:</p>
+        <p>{{ answer.getQuestion().getContent() }}</p>
+    </div>
+
+    {{ include('answer/_form.html.twig', {
+        'action': 'edit',
+        'entity': answer,
+    }) }}
+
+    <details>
+        <summary>
+            <span class="dropdown hollow button">{{ 'Show DataBase'|trans }} <i class="arrow-only"></i></span>
+        </summary>
+
+        <ul class="tabs"
+            data-deep-link="true"
+            data-update-history="true"
+            data-deep-link-smudge="true"
+            data-tabs id="deeplinked-tabs"
+        >
+            {% for tableName in studentData|keys %}
+                <li class="tabs-title">
+                    <a href="#{{ tableName ~ '_tab' }}">
+                        {{ 'Table `%table%`'|trans({'%table%': tableName}) }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tabs-content" data-tabs-content="deeplinked-tabs">
+            {% for tableName, table in studentData %}
+            <div id="{{ tableName ~ '_tab' }}" class="tabs-panel">
+                <table style="width: auto">
+                    <tr>
+                        {% for attr in table[0]|keys %}
+                            <th style="text-align: left">{{ attr }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in table %}
+                        <tr>
+                            {% for col in row %}
+                                <td>
+                                    {{ col }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </details>
+{% endblock %}
