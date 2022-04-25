@@ -87,6 +87,7 @@ Question: Вопрос
 Question index: Список вопросов
 Questions: Вопросы
 New Question: Новый вопрос
+Question %number%: Задание №{number}
 
 ## /answer
 Answer: Ответ
@@ -97,3 +98,4 @@ Your answer: Ваш ответ
 Table `%table%`: Таблица `{table}`
 Show DataBase: Просмотреть БД
 You have 5 hours to complete the test. Ready to start?: На прохождение теста отведено %time% ч. Готовы начать?
+Sql text: Текст запроса

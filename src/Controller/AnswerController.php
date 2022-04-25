@@ -151,7 +151,7 @@ class AnswerController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('answer/edit.html.twig', [
+        return $this->renderForm('answer/start.html.twig', [
             'answer' => $answer,
             'form' => $form,
             'limit' => $limit,
