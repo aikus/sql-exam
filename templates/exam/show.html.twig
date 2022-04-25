@@ -38,15 +38,18 @@
             <th>{{ 'Content'|trans }}</th>
             <th>{{ 'TimeLimit'|trans }}</th>
             <th>{{ 'Ord'|trans }}</th>
+            {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
             <th>{{ 'actions'|trans }}</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
-        {% for question in exam.getQuestions() %}
+        {% for question in exam.getQuestions()|sort((q, qNext) => q.ord <=> qNext.ord) %}
             <tr>
                 <td>{{ question.content }}</td>
                 <td>{{ question.timeLimit }}</td>
                 <td>{{ question.ord }}</td>
+                {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
                 <td>
                     {{ include('components/_actions.html.twig', {
                         'action': 'list',
@@ -54,6 +57,7 @@
                         'entityName': 'question'
                     }) }}
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
