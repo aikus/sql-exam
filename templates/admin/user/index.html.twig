@@ -8,7 +8,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>{{ 'Id'|trans }}</th>
                 <th>{{ 'Email'|trans }}</th>
                 <th>{{ 'Roles'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
@@ -17,7 +16,6 @@
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.id }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                 <td>
@@ -30,7 +28,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">{{ 'no records found'|trans }}</td>
+                <td colspan="3">{{ 'no records found'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>

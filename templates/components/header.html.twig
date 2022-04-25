@@ -19,6 +19,12 @@
     </div>
     <div class="top-bar-right">
         <ul class="menu">
+            {% if limit %}
+                <li class="menu-text" style="position: relative">
+                    <div class="callout timer" data-limit="{{ limit }}">
+                    </div>
+                </li>
+            {% endif %}
             {% if is_granted('ROLE_USER') %}
             <li class="menu-text">{{ app.user.email }}</li>
             <li><a href="{{ path('app_logout') }}">{{ 'logout'|trans }}</a></li>

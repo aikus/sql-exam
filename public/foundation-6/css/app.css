@@ -1,3 +1,11 @@
-details > summary::marker {
-    content: "";
+.timer {
+    position: absolute;
+    right: 200%;
+    top: -7px;
+    width: 181px;
+}
+
+.timer .timer-open {
+    font-weight: normal;
+    padding: 0;
 }
