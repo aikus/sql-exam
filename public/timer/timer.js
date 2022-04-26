@@ -11,6 +11,7 @@ $.fn.timer = function () {
         const finalDate = new Date().getTime() + limit * 1000 - 500;
         timer.countdown(finalDate)
             .on('update.countdown', (event) => {
+                console.log(timer, event.strftime("Осталось %H:%M:%S"));
                 timer.html(event.strftime("Осталось %H:%M:%S"));
             })
             .on('finish.countdown', (event) => {

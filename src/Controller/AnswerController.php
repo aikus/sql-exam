@@ -15,7 +15,10 @@ use App\Repository\AnswerRepository;
 use App\Repository\ExaminationSheetRepository;
 use App\Repository\ExamRepository;
 use App\Repository\QuestionRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Connection;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +49,7 @@ class AnswerController extends AbstractController
         QuestionRepository         $questionRepository,
         Security                   $security
     ): Response {
-        $start = new \DateTime();
+        $start = new DateTime();
         if ($request->get('exam')) {
             $exam = $examRepository->find($request->get('exam'));
             $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
@@ -82,7 +85,7 @@ class AnswerController extends AbstractController
         return $this->render('answer/show.html.twig', [
             'answer' => $answer,
             'nextQuestion' => $this->getNextQuestion($answer),
-            'limit' => $this->getLimit($answer, new \DateTime()),
+            'limit' => $this->getLimit($answer, new DateTime()),
         ]);
     }
 
@@ -96,7 +99,7 @@ class AnswerController extends AbstractController
             try {
                 $result = $connection->fetchAllAssociative($answer->getSqlText());
                 $answer->setResultTable($result);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $answer->setResultError($e->getMessage());
             }
             $answerRepository->add($answer);
@@ -106,13 +109,14 @@ class AnswerController extends AbstractController
         return $this->renderForm('answer/edit.html.twig', [
             'answer' => $answer,
             'form' => $form,
+            'limit' => $this->getLimit($answer, new DateTime()),
         ]);
     }
 
     #[Route('/{id}/start', name: 'app_answer_start', methods: ['GET', 'POST'])]
     public function start(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
-        $now = new \DateTime();
+        $now = new DateTime();
 
         $limit = $this->getLimit($answer, $now);
 
@@ -139,7 +143,7 @@ class AnswerController extends AbstractController
                 $result = $this->studentConnection->fetchAll($answer->getSqlText());
                 $answer->setResultTable($result)
                     ->setEnd($now);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $answer->setResultError($e->getMessage())
                     ->setEnd($now);
             }
@@ -199,7 +203,7 @@ class AnswerController extends AbstractController
         return null;
     }
 
-    private function getLimit(Answer $answer, \DateTimeInterface $now): int
+    private function getLimit(Answer $answer, DateTimeInterface $now): int
     {
         $calculator = new TimeLimitCalculator($now);
         $questionLimit = $calculator->getLimit(new TimeLimitQuestion($answer));

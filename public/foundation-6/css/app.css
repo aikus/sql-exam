@@ -2,10 +2,11 @@
     position: absolute;
     right: 200%;
     top: -7px;
-    width: 181px;
+    width: 199px;
 }
 
 .timer .timer-open {
     font-weight: normal;
     padding: 0;
+    text-align: center;
 }

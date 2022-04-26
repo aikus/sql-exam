@@ -5,10 +5,6 @@
 {% block body %}
     <h1>{{ 'Question %number%'|trans({'%number%': answer.question.ord}) }}</h1>
 
-    {% if limit %}
-        <div class="timer" data-limit="{{ limit }}"></div>
-    {% endif %}
-
     <div>
         <p>{{ 'Question'|trans({'number': answer.question.ord}) }}:</p>
         <p>{{ answer.getQuestion().getContent() }}</p>
