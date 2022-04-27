@@ -7,6 +7,7 @@ use App\Connectors\IdGenerator;
 use App\Connectors\TeacherFinder;
 use App\Entity\Answer;
 use App\Entity\Exam;
+use App\Entity\ExaminationSheet;
 use App\Entity\User;
 use App\Form\ExamType;
 use App\Repository\ExaminationSheetRepository;
@@ -56,7 +57,8 @@ class ExamController extends AbstractController
         return $this->render('exam/show.html.twig', [
             'exam' => $exam,
             'canStart' => $this->isCanStart($exam, $security->getUser(), $examinationSheetRepository),
-            'continue' => $this->getContinueQuestion($exam, $security->getUser(), $examinationSheetRepository)
+            'continue' => $this->getContinueQuestion($exam, $security->getUser(), $examinationSheetRepository),
+            'continueExam' => $this->getLastAnswer($exam, $security->getUser(), $examinationSheetRepository),
         ]);
     }
 
@@ -122,5 +124,29 @@ class ExamController extends AbstractController
 
         $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd())->toArray();
         return $answers ? $answers[0] : null;
+    }
+
+    private function getLastAnswer(Exam $exam, ?User $user, ExaminationSheetRepository $repository): ?ExaminationSheet
+    {
+        if(!$user) {
+            return null;
+        }
+
+        $examinationSheet = $repository->findOneBy([
+            'student' => $user,
+            'exam' => $exam,
+        ]);
+
+        if(!$examinationSheet) {
+            return null;
+        }
+
+        $answers = $examinationSheet->getAnswers();
+        $answerQuestions = [];
+        foreach ($answers as $answer) {
+            $answerQuestions[$answer->getQuestion()->getId()] = $answer->getQuestion();
+        }
+
+        return (count($exam->getQuestions()) != count($answerQuestions)) ? $examinationSheet : null;
     }
 }
