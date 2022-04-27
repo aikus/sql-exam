@@ -14,11 +14,14 @@
         >
             {{ 'Begin'|trans }}
         </a>
-        {% endif %}
-        {% if continue %}
+        {% elseif continue %}
             <a href="{{ path('app_answer_edit', {'id': continue.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
         {% elseif continueExam %}
             <a href="{{ path('app_examination_sheet_show', {'id': continueExam.getId()}) }}" class="button success">{{ 'Show'|trans }}</a>
+        {% else %}
+            <span class="button hollow secondary" disabled="disabled" >
+                {{ 'You already complete this exam'|trans }}
+            </span>
         {% endif %}
     </div>
 
