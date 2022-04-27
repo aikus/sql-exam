@@ -9,11 +9,16 @@
         <a href="{{ path('app_exam_index') }}" class="hollow button">
             {{ 'Back to list'|trans }}
         </a>
+        {% if canStart %}
         <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success"
            onclick="return confirm('{{ 'You have %time% hours to complete the test. Ready to start?'|trans({'%time%': 1}) }}')"
         >
             {{ 'Begin'|trans }}
         </a>
+        {% endif %}
+        {% if continue %}
+            <a href="{{ path('app_answer_edit', {'id': continue.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
+        {% endif %}
     </div>
 
     {% if is_granted('ROLE_TEACHER') %}
