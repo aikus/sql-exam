@@ -110,9 +110,10 @@ class Exam
 
     /**
      * @param int $userId
+     * @param bool $isTeacher
      * @return Collection<int, ExaminationSheet>
      */
-    public function getExaminationSheetByUserId(int $userId, bool $isTeacher): Collection
+    public function getExaminationSheetByUserId(int $userId, bool $isTeacher = false): Collection
     {
         if ($isTeacher) {
             return $this->yes;

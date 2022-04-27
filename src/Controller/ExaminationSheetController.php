@@ -9,15 +9,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/examination/sheet')]
 class ExaminationSheetController extends AbstractController
 {
     #[Route('/', name: 'app_examination_sheet_index', methods: ['GET'])]
-    public function index(ExaminationSheetRepository $examinationSheetRepository): Response
-    {
+    public function index(
+        ExaminationSheetRepository $examinationSheetRepository,
+        Security $security
+    ): Response {
+        if (
+            in_array('ROLE_TEACHER', $security->getUser()->getRoles())
+            || in_array('ROLE_ADMIN', $security->getUser()->getRoles())
+        ) {
+            return $this->render('examination_sheet/index.html.twig', [
+                'examination_sheets' => $examinationSheetRepository->findAll(),
+            ]);
+        }
+
+        // необхлдимо показывать отлько доступные данному пользователю записи
         return $this->render('examination_sheet/index.html.twig', [
-            'examination_sheets' => $examinationSheetRepository->findAll(),
+            'examination_sheets' => [],
         ]);
     }
 

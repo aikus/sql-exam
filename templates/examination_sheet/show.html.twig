@@ -22,6 +22,15 @@
         </tbody>
     </table>
 
+    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
+        {{ include('components/_actions.html.twig', {
+            'action': 'show',
+            'entity': examination_sheet,
+            'entityName': 'examination_sheet'
+        }) }}
+    {% endif %}
+
+
     <table class="table">
         <caption>{{ 'Question'|trans }}</caption>
         <thead>
