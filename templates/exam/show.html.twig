@@ -18,8 +18,8 @@
         {% endif %}
         {% if continue %}
             <a href="{{ path('app_answer_edit', {'id': continue.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
-            {% elseif continueExam %}
-                <a href="{{ path('app_examination_sheet_show', {'id': continueExam.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
+        {% elseif continueExam %}
+            <a href="{{ path('app_examination_sheet_show', {'id': continueExam.getId()}) }}" class="button success">{{ 'Show'|trans }}</a>
         {% endif %}
     </div>
 
