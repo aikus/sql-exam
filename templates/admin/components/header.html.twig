@@ -21,8 +21,13 @@
     </div>
     <div class="top-bar-right">
         <ul class="menu">
-            <li class="menu-text">{{ app.user.email }}</li>
+            <li class="menu-text">
+                {{ include('components/header_user_widget.html.twig', {
+                    'user': app.user,
+                }) }}
+            </li>
             <li><a href="{{ path('app_logout') }}">{{ 'logout'|trans }}</a></li>
+
         </ul>
     </div>
 </div>

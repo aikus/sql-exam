@@ -1,8 +1,3 @@
-{% set roleName = {
-    'ROLE_STUDENT': 'Student',
-    'ROLE_TEACHER': 'Teacher',
-    'ROLE_ADMIN': 'Admin',
-} %}
 <div class="top-bar" style="margin-bottom: 2rem;">
     <div class="top-bar-left">
         <ul class="dropdown menu">
@@ -32,14 +27,9 @@
             {% endif %}
             {% if is_granted('ROLE_USER') %}
             <li class="menu-text">
-                {{ app.user.email }}
-                <span style="color: #b9b9b9;">
-                {% for role in app.user.roles %}
-                    {% if roleName[role] != '' %}
-                    ({{ roleName[role]|trans }})
-                    {% endif %}
-                {% endfor%}
-                </span>
+                {{ include('components/header_user_widget.html.twig', {
+                    'user': app.user,
+                }) }}
             </li>
             <li><a href="{{ path('app_logout') }}">{{ 'logout'|trans }}</a></li>
             {% endif %}
