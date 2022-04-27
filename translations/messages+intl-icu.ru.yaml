@@ -1,6 +1,8 @@
 # Core
+№: №
 Id: Id
 Error: Ошибка
+no records found: Ничего не найдено
 
 # App
 ## NavBar
@@ -73,6 +75,7 @@ ExaminationSheet index: Список опросников с ответами
 ExaminationSheets: Опросники с ответами
 New Examination Sheet: Новый опросник с ответами
 New ExaminationSheet: Новый опросник с ответами
+Number of answers: Количество ответов
 
 ## /exam
 Exam: Опросник
@@ -103,3 +106,6 @@ Table `%table%`: Таблица `{table}`
 Show DataBase: Просмотреть БД
 You have %time% hours to complete the test. Ready to start?: На прохождение теста отведено {time} ч. Готовы начать?
 Sql text: Текст запроса
+Sql_text: Текст запроса
+Start: Начало
+End: Окончание
