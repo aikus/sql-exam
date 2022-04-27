@@ -10,3 +10,7 @@
     padding: 0;
     text-align: center;
 }
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
