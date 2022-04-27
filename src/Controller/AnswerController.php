@@ -75,15 +75,24 @@ class AnswerController extends AbstractController
     ): Response {
         $start = new DateTime();
         if ($request->get('exam')) {
-            $exam = $examRepository->find($request->get('exam'));
-            $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
-            $question = $questions[0];
+            /** @var User $user */
             $user = $security->getUser();
-            $sheet = new ExaminationSheet();
-            $sheet->setExam($exam)
-                ->setStudent($user)
-                ->setId((new IdGenerator())->generateQuestionId());
-            $examinationSheetRepository->add($sheet);
+            $exam = $examRepository->find($request->get('exam'));
+            $sheets = $exam->getExaminationSheetByUserId($user->getId());
+
+            if (!$sheets->isEmpty()) {
+                $sheet = $sheets->last();
+                $question = $sheet->getQuestions()->last();
+            }
+            else {
+                $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
+                $question = $questions[0];
+                $sheet = new ExaminationSheet();
+                $sheet->setExam($exam)
+                    ->setStudent($user)
+                    ->setId((new IdGenerator())->generateQuestionId());
+                $examinationSheetRepository->add($sheet);
+            }
         } elseif ($request->get('answer')) {
             $answer = $answerRepository->find($request->get('answer'));
             $sheet = $answer->getExaminationSheet();
@@ -181,7 +190,7 @@ class AnswerController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('answer/start.html.twig', [
+        return $this->renderForm('answer/run.html.twig', [
             'answer' => $answer,
             'form' => $form,
             'limit' => $limit,

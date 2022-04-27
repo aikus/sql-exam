@@ -36,6 +36,7 @@
         <thead>
         <tr>
             <th>{{ 'Question'|trans }}</th>
+            <th>{{ 'Ord'|trans }}</th>
             <th>{{ 'Answer'|trans }}</th>
             <th>{{ 'Start'|trans }}</th>
             <th>{{ 'End'|trans }}</th>
@@ -46,13 +47,16 @@
         {% for answer in examination_sheet.getAnswers() %}
             <tr>
                 <td>{{ answer.getQuestion().getContent() }}</td>
+                <td>{{ answer.getQuestion().ord }}</td>
                 <td>{{ answer.getSqlText() }}</td>
                 <td>{{ answer.getStart().format('d.m.Y H:i:s') }}</td>
                 <td>{% if answer.getEnd() %}{{ answer.getEnd().format('d.m.Y H:i:s') }}{% endif %}</td>
                 <td>
-                    <div class="control">
-                        <a href="{{ path('app_answer_show', {'id': answer.id}) }}" class="button">Show</a>
-                    </div>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entity': answer,
+                        'entityName': 'answer'
+                    }) }}
                 </td>
             </tr>
         {% else %}

@@ -122,8 +122,14 @@ class ExamController extends AbstractController
             return null;
         }
 
-        $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd())->toArray();
-        return $answers ? $answers[0] : null;
+        $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd());
+
+        if ($answers->isEmpty()) {
+            return null;
+        }
+        else {
+            return $answers->first();
+        }
     }
 
     private function getLastAnswer(Exam $exam, ?User $user, ExaminationSheetRepository $repository): ?ExaminationSheet

@@ -27,9 +27,13 @@ class ExaminationSheet
     #[ORM\OneToMany(mappedBy: 'examinationSheet', targetEntity: Answer::class, orphanRemoval: true)]
     private $answers;
 
+    #[ORM\OneToMany(mappedBy: 'examinationSheet', targetEntity: Question::class, orphanRemoval: true)]
+    private $questions;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     public function setId(string $id): self
@@ -96,6 +100,14 @@ class ExaminationSheet
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Question>
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
     }
 
     public function getStart(): ?DateTimeInterface
