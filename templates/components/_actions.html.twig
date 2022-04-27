@@ -6,7 +6,7 @@
 #}
 <div class="actions">
     <div>
-        {% if is_granted('ROLE_TEACHER') %}
+        {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
         <div class="button-group" role="group">
             {% if (action == 'new') %}
                 <div class="control">
