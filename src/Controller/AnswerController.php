@@ -10,6 +10,7 @@ use App\Connectors\TimeLimitQuestion;
 use App\Entity\Answer;
 use App\Entity\ExaminationSheet;
 use App\Entity\Question;
+use App\Entity\User;
 use App\Form\AnswerType;
 use App\Repository\AnswerRepository;
 use App\Repository\ExaminationSheetRepository;
@@ -33,11 +34,34 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/', name: 'app_answer_index', methods: ['GET'])]
-    public function index(AnswerRepository $answerRepository): Response
-    {
-        return $this->render('answer/index.html.twig', [
-            'answers' => $answerRepository->findAll(),
-        ]);
+    public function index(
+        AnswerRepository $answerRepository,
+        Security $security
+    ): Response {
+        /** @var User $user */
+        $user = $security->getUser();
+        $answers = $answerRepository->findAll();
+        if (
+            in_array('ROLE_TEACHER', $user->getRoles())
+            || in_array('ROLE_ADMIN', $user->getRoles())
+        ) {
+            return $this->render('answer/index.html.twig', [
+                'answers' => $answers,
+            ]);
+        }
+        else {
+            $answersFiltered = [];
+
+            foreach ($answers as $answer) {
+                if ($answer->getExaminationSheet()->getStudent()->getId() === $user->getId()) {
+                    $answersFiltered[] = $answer;
+                }
+            }
+
+            return $this->render('answer/index.html.twig', [
+                'answers' => $answersFiltered,
+            ]);
+        }
     }
 
     #[Route('/new', name: 'app_answer_new', methods: ['GET'])]
@@ -51,15 +75,24 @@ class AnswerController extends AbstractController
     ): Response {
         $start = new DateTime();
         if ($request->get('exam')) {
-            $exam = $examRepository->find($request->get('exam'));
-            $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
-            $question = $questions[0];
+            /** @var User $user */
             $user = $security->getUser();
-            $sheet = new ExaminationSheet();
-            $sheet->setExam($exam)
-                ->setStudent($user)
-                ->setId((new IdGenerator())->generateQuestionId());
-            $examinationSheetRepository->add($sheet);
+            $exam = $examRepository->find($request->get('exam'));
+            $sheets = $exam->getExaminationSheetByUserId($user->getId());
+
+            if (!$sheets->isEmpty()) {
+                $sheet = $sheets->last();
+                $question = $sheet->getQuestions()->last();
+            }
+            else {
+                $questions = $this->getOrderedQuestion($exam->getQuestions()->toArray());
+                $question = $questions[0];
+                $sheet = new ExaminationSheet();
+                $sheet->setExam($exam)
+                    ->setStudent($user)
+                    ->setId((new IdGenerator())->generateQuestionId());
+                $examinationSheetRepository->add($sheet);
+            }
         } elseif ($request->get('answer')) {
             $answer = $answerRepository->find($request->get('answer'));
             $sheet = $answer->getExaminationSheet();
@@ -76,7 +109,7 @@ class AnswerController extends AbstractController
             ->setExaminationSheet($sheet)
             ->setId((new IdGenerator())->generateQuestionId());
         $answerRepository->add($answer);
-        return $this->redirectToRoute('app_answer_start', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_answer_run', ['id' => $answer->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}', name: 'app_answer_show', methods: ['GET'])]
@@ -113,8 +146,8 @@ class AnswerController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/start', name: 'app_answer_start', methods: ['GET', 'POST'])]
-    public function start(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
+    #[Route('/{id}/run', name: 'app_answer_run', methods: ['GET', 'POST'])]
+    public function run(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
         $now = new DateTime();
 
@@ -157,7 +190,7 @@ class AnswerController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('answer/start.html.twig', [
+        return $this->renderForm('answer/run.html.twig', [
             'answer' => $answer,
             'form' => $form,
             'limit' => $limit,

@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>{{ 'Id'|trans }}</th>
+                <th>{{ '№'|trans }}</th>
                 <th>{{ 'Sql_text'|trans }}</th>
                 <th>{{ 'Start'|trans }}</th>
                 <th>{{ 'End'|trans }}</th>
@@ -16,10 +16,18 @@
             </tr>
         </thead>
         <tbody>
-        {% for answer in answers %}
+        {% for key, answer in answers %}
             <tr>
-                <td>{{ answer.id }}</td>
-                <td>{{ answer.sqlText }}</td>
+                <td>{{ (key + 1) }}</td>
+                <td>
+                    <p>{{ answer.sqlText }}</p>
+                    <hr/>
+                    <div style="color: #999">
+                        <div>{{ 'Answer ID'|trans }}: {{ answer.id }}</div>
+                        <div>{{ 'Exam'|trans }}: {{ answer.examinationSheet.exam.description }}</div>
+                        <div>{{ answer.examinationSheet.student.email }}</div>
+                    </div>
+                </td>
                 <td>{{ answer.start ? answer.start|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ answer.end ? answer.end|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
@@ -37,6 +45,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_answer_new') }}">{{ 'Create new'|trans }}</a>
 {% endblock %}

@@ -6,24 +6,26 @@
     <h1>{{ exam.description }}</h1>
 
     <div class="button-group" role="group">
-        <a href="{{ path('app_exam_index') }}" class="hollow button">
-            {{ 'Back to list'|trans }}
-        </a>
         {% if canStart %}
         <a href="{{ path('app_answer_new', {'exam': exam.getId()}) }}" class="button success"
-           onclick="return confirm('{{ 'You have %time% hours to complete the test. Ready to start?'|trans({'%time%': 1}) }}')"
+           onclick="return confirm('{{ 'You have %time% hours to complete the test. Ready to start?'|trans({
+               '%time%': (exam.timeLimit/3600)|round(2, 'floor')
+           }) }}')"
         >
             {{ 'Begin'|trans }}
         </a>
-        {% endif %}
-        {% if continue %}
-            <a href="{{ path('app_answer_edit', {'id': continue.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
-            {% elseif continueExam %}
-                <a href="{{ path('app_examination_sheet_show', {'id': continueExam.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
+        {% elseif continue %}
+            <a href="{{ path('app_answer_run', {'id': continue.getId()}) }}" class="button success">{{ 'Continue'|trans }}</a>
+        {% elseif continueExam %}
+            <a href="{{ path('app_examination_sheet_show', {'id': continueExam.getId()}) }}" class="button success">{{ 'Show'|trans }}</a>
+        {% else %}
+            <span class="button hollow secondary" disabled="disabled" >
+                {{ 'You already complete this exam'|trans }}
+            </span>
         {% endif %}
     </div>
 
-    {% if is_granted('ROLE_TEACHER') %}
+    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
         {{ include('components/_actions.html.twig', {
             'action': 'show',
             'entity': exam,
@@ -35,25 +37,29 @@
         <caption>{{ 'Questions'|trans }}</caption>
         <thead>
         <tr>
-            <th>{{ 'Content'|trans }}</th>
-            <th>{{ 'TimeLimit'|trans }}</th>
             <th>{{ 'Ord'|trans }}</th>
+            <th>{{ 'Content'|trans }}</th>
+            {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
+            <th>{{ 'TimeLimit'|trans }}</th>
             <th>{{ 'actions'|trans }}</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
-        {% for question in exam.getQuestions() %}
+        {% for question in exam.getQuestions()|sort((q, qNext) => q.ord <=> qNext.ord) %}
             <tr>
-                <td>{{ question.content }}</td>
-                <td>{{ question.timeLimit }}</td>
                 <td>{{ question.ord }}</td>
+                <td>{{ question.content }}</td>
+                {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
+                <td>{{ question.timeLimit }}</td>
                 <td>
-                    {{ include('components/_actions.html.twig', {
+                   {{ include('components/_actions.html.twig', {
                         'action': 'list',
                         'entity': question,
                         'entityName': 'question'
                     }) }}
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
@@ -63,7 +69,7 @@
         </tbody>
     </table>
 
-    {% if is_granted('ROLE_TEACHER') %}
+    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
     <a href="{{ path('app_question_add', {'exam': exam.id}) }}" class="button">{{ 'Add'|trans }}</a>
     {% endif %}
 
@@ -72,6 +78,7 @@
         <thead>
         <tr>
             <th>{{ 'Students'|trans }}</th>
+            <th>{{ 'Number of answers'|trans }}</th>
             <th>{{ 'Start'|trans }}</th>
             <th>{{ 'End'|trans }}</th>
             <th></th>
@@ -79,9 +86,10 @@
         </thead>
         <tbody>
 
-        {% for sheet in exam.getExaminationSheetByStudentId(app.user.id) %}
+        {% for sheet in exam.getExaminationSheetByUserId(app.user.id, is_granted('ROLE_TEACHER')) %}
             <tr>
                 <td>{{ sheet.getStudent().getName() }}</td>
+                <td>{{ sheet.answers|length }}</td>
                 <td>
                     {% if sheet.start %}
                     {{ sheet.start | date('d.m.Y H:i:s') }}

@@ -110,13 +110,19 @@ class Exam
 
     /**
      * @param int $userId
+     * @param bool $isTeacher
      * @return Collection<int, ExaminationSheet>
      */
-    public function getExaminationSheetByStudentId(int $userId): Collection
+    public function getExaminationSheetByUserId(int $userId, bool $isTeacher = false): Collection
     {
-        return $this->yes->filter(function (ExaminationSheet $examinationSheet, $key) use ($userId) {
-            return $examinationSheet->getStudent()->getId() === $userId;
-        });
+        if ($isTeacher) {
+            return $this->yes;
+        }
+        else {
+            return $this->yes->filter(function (ExaminationSheet $examinationSheet, $key) use ($userId) {
+                return $examinationSheet->getStudent()->getId() === $userId;
+            });
+        }
     }
 
     public function addYes(ExaminationSheet $yes): self

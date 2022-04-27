@@ -42,7 +42,7 @@ class ExamController extends AbstractController
             $user = $security->getUser();
             $exam = $admin->createExam($user);
             $admin->setDescription($exam, $examOrm->getDescription());
-            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('exam/new.html.twig', [
@@ -70,7 +70,7 @@ class ExamController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $examRepository->add($exam);
-            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+            return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('exam/edit.html.twig', [
@@ -86,7 +86,7 @@ class ExamController extends AbstractController
             $examRepository->remove($exam);
         }
 
-        return $this->redirectToRoute('app_exam_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+        return $this->redirectToRoute('app_exam_index', [], Response::HTTP_SEE_OTHER);
     }
 
     protected function getAdmin(ExamRepository $examRepository): ExamAdmin
@@ -122,8 +122,14 @@ class ExamController extends AbstractController
             return null;
         }
 
-        $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd())->toArray();
-        return $answers ? $answers[0] : null;
+        $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd());
+
+        if ($answers->isEmpty()) {
+            return null;
+        }
+        else {
+            return $answers->first();
+        }
     }
 
     private function getLastAnswer(Exam $exam, ?User $user, ExaminationSheetRepository $repository): ?ExaminationSheet

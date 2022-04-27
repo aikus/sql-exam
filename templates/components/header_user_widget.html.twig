@@ -1,0 +1,13 @@
+{% set roleName = {
+    'ROLE_STUDENT': 'Student',
+    'ROLE_TEACHER': 'Teacher',
+    'ROLE_ADMIN': 'Admin',
+} %}
+{{ user.email }}
+<span style="color: #b9b9b9;">
+{% for role in user.roles %}
+    {% if roleName[role] != '' %}
+        ({{ roleName[role]|trans }})
+    {% endif %}
+{% endfor%}
+</span>

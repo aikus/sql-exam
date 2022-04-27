@@ -22,5 +22,9 @@
         </tbody>
     </table>
 
-    {{ include('admin/components/_actions.html.twig') }}
+    {{ include('admin/components/_actions.html.twig', {
+        'action': 'show',
+        'entity': user,
+        'entityName': 'user'
+    }) }}
 {% endblock %}

@@ -1,6 +1,8 @@
 # Core
+№: №
 Id: Id
 Error: Ошибка
+no records found: Ничего не найдено
 
 # App
 ## NavBar
@@ -10,6 +12,8 @@ Students answers: Ответы учеников
 Search...: Поиск...
 Menu: Меню
 SQL: SQL
+Student: Респондент
+Teacher: Интервьюер
 
 ## Buttons
 Create new: Добавить
@@ -23,6 +27,8 @@ actions: действия
 Back to list: Обратно к списку
 back to list: обратно к списку
 Begin: Начать
+or: или
+Done: Готово
 
 ## Alerts
 Are you sure you want to delete this item?: Подтвердить удаление?
@@ -70,6 +76,7 @@ ExaminationSheet index: Список опросников с ответами
 ExaminationSheets: Опросники с ответами
 New Examination Sheet: Новый опросник с ответами
 New ExaminationSheet: Новый опросник с ответами
+Number of answers: Количество ответов
 
 ## /exam
 Exam: Опросник
@@ -82,6 +89,7 @@ TimeLimit: Лимит времени
 Ord: Порядок
 Students: Сдающие
 Continue: Продолжить
+You already complete this exam: Вы уже сдали этот опросник
 
 ## /question
 Question: Вопрос
@@ -98,5 +106,9 @@ New Answer: Новый ответ
 Your answer: Ваш ответ
 Table `%table%`: Таблица `{table}`
 Show DataBase: Просмотреть БД
-You have 5 hours to complete the test. Ready to start?: На прохождение теста отведено %time% ч. Готовы начать?
+You have %time% hours to complete the test. Ready to start?: На прохождение теста отведено {time} ч. Готовы начать?
 Sql text: Текст запроса
+Sql_text: Текст запроса
+Start: Начало
+End: Окончание
+Answer ID: Id ответа

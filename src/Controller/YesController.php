@@ -9,15 +9,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/yes')]
 class YesController extends AbstractController
 {
     #[Route('/', name: 'app_yes_index', methods: ['GET'])]
-    public function index(QuestionRepository $questionRepository): Response
-    {
+    public function index(
+        QuestionRepository $questionRepository,
+        Security $security
+    ): Response {
+        if (
+            in_array('ROLE_TEACHER', $security->getUser()->getRoles())
+            || in_array('ROLE_ADMIN', $security->getUser()->getRoles())
+        ) {
+            return $this->render('examination_sheet/index.html.twig', [
+                'examination_sheets' => $questionRepository->findAll(),
+            ]);
+        }
+
+        // необхлдимо показывать отлько доступные данному пользователю записи
         return $this->render('yes/index.html.twig', [
-            'questions' => $questionRepository->findAll(),
+            'questions' => [],
         ]);
     }
 

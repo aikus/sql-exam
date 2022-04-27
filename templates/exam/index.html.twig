@@ -8,15 +8,15 @@
     <table class="table">
         <thead>
             <tr>
-                <th>{{ 'Id'|trans }}</th>
+                <th>{{ '№'|trans }}</th>
                 <th>{{ 'Description'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
-        {% for exam in exams %}
+        {% for key, exam in exams %}
             <tr>
-                <td>{{ exam.id }}</td>
+                <td>{{ key + 1 }}</td>
                 <td>{{ exam.description }}</td>
                 <td>
                     {{ include('components/_actions.html.twig', {
@@ -34,5 +34,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_exam_new') }}">{{ 'Create new'|trans }}</a>
+    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_exam_new') }}">{{ 'Create new'|trans }}</a>
+    {% endif %}
 {% endblock %}
