@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Connectors\ExamConvertor;
 use App\Connectors\IdGenerator;
 use App\Connectors\TeacherFinder;
+use App\Entity\Answer;
 use App\Entity\Exam;
+use App\Entity\User;
 use App\Form\ExamType;
+use App\Repository\ExaminationSheetRepository;
 use App\Repository\ExamRepository;
 use RusakovNikita\MysqlExam\EditExam\ExamAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,10 +51,12 @@ class ExamController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_exam_show', methods: ['GET'])]
-    public function show(Exam $exam): Response
+    public function show(Exam $exam, Security $security, ExaminationSheetRepository $examinationSheetRepository): Response
     {
         return $this->render('exam/show.html.twig', [
             'exam' => $exam,
+            'canStart' => $this->isCanStart($exam, $security->getUser(), $examinationSheetRepository),
+            'continue' => $this->getContinueQuestion($exam, $security->getUser(), $examinationSheetRepository)
         ]);
     }
 
@@ -86,5 +91,36 @@ class ExamController extends AbstractController
     {
         return new ExamAdmin(new IdGenerator(),
             new \App\Connectors\ExamRepository($examRepository, new ExamConvertor(new TeacherFinder())));
+    }
+
+    private function isCanStart(Exam $exam, ?User $user, ExaminationSheetRepository $repository): bool
+    {
+        if(!$user) {
+            return false;
+        }
+
+        return !$repository->findOneBy([
+            'student' => $user,
+            'exam' => $exam,
+        ]);
+    }
+
+    private function getContinueQuestion(Exam $exam, ?User $user, ExaminationSheetRepository $repository): ?Answer
+    {
+        if(!$user) {
+            return null;
+        }
+
+        $examinationSheet = $repository->findOneBy([
+            'student' => $user,
+            'exam' => $exam,
+        ]);
+
+        if(!$examinationSheet) {
+            return null;
+        }
+
+        $answers = $examinationSheet->getAnswers()->filter(fn(Answer $answer) => !$answer->getEnd())->toArray();
+        return $answers ? $answers[0] : null;
     }
 }

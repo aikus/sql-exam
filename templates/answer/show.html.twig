@@ -47,26 +47,27 @@
             </tr>
             <tr>
                 <th>{{ 'Result error'| trans }}</th>
-                <th>{{ 'Error'|trans }}</th>
                 <td>{{ answer.resultError }}</td>
             </tr>
             <tr>
                 <th>{{ 'Start'| trans }}</th>
-                <th>Начало ответ</th>
                 <td>{{ answer.start ? answer.start|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>{{ 'End'| trans }}</th>
-                <th>Ответ дан</th>
                 <td>{{ answer.end ? answer.end|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
         </tbody>
     </table>
 
+    {% if limit >= 0 %}
     <a href="{{ path('app_answer_new', {'answer': answer.getId()}) }}" class="button">{{ ''}}Повторить попытку</a>
     {% if nextQuestion %}
         <a href="{{ path('app_answer_new', {'sheet': answer.getExaminationSheet().getId(), 'question': nextQuestion.getId()}) }}" class="button">Следующий вопрос</a>
         {% else %}
             <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" class="button">Финал</a>
+    {% endif %}
+        {% else %}
+        <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" class="button">Посмотреть экзаменационный лист</a>
     {% endif %}
 {% endblock %}
