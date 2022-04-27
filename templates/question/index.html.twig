@@ -38,7 +38,7 @@
         </tbody>
     </table>
 
-    {% if is_granted('ROLE_TEACHER') || is_granted('ROLE_ADMIN') %}
+    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
     <a href="{{ path('app_question_new') }}">{{ 'Create new'|trans }}</a>
     {% endif %}
 {% endblock %}

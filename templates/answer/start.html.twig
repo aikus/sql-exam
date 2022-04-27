@@ -10,10 +10,12 @@
         <p>{{ answer.getQuestion().getContent() }}</p>
     </div>
 
-    {{ include('answer/_form.html.twig', {
-        'action': 'edit',
-        'entity': answer,
-    }) }}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="control">
+            <button class="button is-primary">{{ 'Done'|trans }}</button>
+        </div>
+    {{ form_end(form) }}
 
     <details>
         <summary>
