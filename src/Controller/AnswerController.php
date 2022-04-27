@@ -121,6 +121,8 @@ class AnswerController extends AbstractController
         $limit = $this->getLimit($answer, $now);
 
         if ($limit < 0) {
+            $answer->setEnd($now);
+            $answerRepository->add($answer);
             $nextQuestion = $this->getNextQuestion($answer);
             return $nextQuestion
 
