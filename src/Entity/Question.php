@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
@@ -24,6 +26,14 @@ class Question
     #[ORM\ManyToOne(targetEntity: Exam::class, inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
     private $exam;
+
+    #[ORM\ManyToMany(targetEntity: ExaminationSheet::class, mappedBy: 'questions')]
+    private $examinationSheets;
+
+    public function __construct()
+    {
+        $this->examinationSheets = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -79,6 +89,33 @@ class Question
     public function setExam(?Exam $exam): self
     {
         $this->exam = $exam;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExaminationSheet>
+     */
+    public function getExaminationSheets(): Collection
+    {
+        return $this->examinationSheets;
+    }
+
+    public function addExaminationSheet(ExaminationSheet $examinationSheet): self
+    {
+        if (!$this->examinationSheets->contains($examinationSheet)) {
+            $this->examinationSheets[] = $examinationSheet;
+            $examinationSheet->addQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExaminationSheet(ExaminationSheet $examinationSheet): self
+    {
+        if ($this->examinationSheets->removeElement($examinationSheet)) {
+            $examinationSheet->removeQuestion($this);
+        }
 
         return $this;
     }

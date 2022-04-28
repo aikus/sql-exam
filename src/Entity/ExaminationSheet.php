@@ -27,7 +27,7 @@ class ExaminationSheet
     #[ORM\OneToMany(mappedBy: 'examinationSheet', targetEntity: Answer::class, orphanRemoval: true)]
     private $answers;
 
-    #[ORM\OneToMany(mappedBy: 'examinationSheet', targetEntity: Question::class, orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Question::class, inversedBy: 'examinationSheets')]
     private $questions;
 
     public function __construct()
@@ -102,14 +102,6 @@ class ExaminationSheet
         return $this;
     }
 
-    /**
-     * @return Collection<int, Question>
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
     public function getStart(): ?DateTimeInterface
     {
         if(!$this->getAnswers()) {
@@ -139,5 +131,29 @@ class ExaminationSheet
             }
         }
         return $maxDate == $startValue ? null : $maxDate;
+    }
+
+    /**
+     * @return Collection<int, Question>
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        $this->questions->removeElement($question);
+
+        return $this;
     }
 }
