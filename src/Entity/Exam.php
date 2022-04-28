@@ -25,15 +25,18 @@ class Exam
     private $questions;
 
     #[ORM\OneToMany(mappedBy: 'exam', targetEntity: ExaminationSheet::class, orphanRemoval: true)]
-    private $yes;
+    private $examinationSheets;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private $timeLimit;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $status;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
-        $this->yes = new ArrayCollection();
+        $this->examinationSheets = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -103,9 +106,9 @@ class Exam
     /**
      * @return Collection<int, ExaminationSheet>
      */
-    public function getYes(): Collection
+    public function getExaminationSheets(): Collection
     {
-        return $this->yes;
+        return $this->examinationSheets;
     }
 
     /**
@@ -116,31 +119,31 @@ class Exam
     public function getExaminationSheetByUserId(int $userId, bool $isTeacher = false): Collection
     {
         if ($isTeacher) {
-            return $this->yes;
+            return $this->examinationSheets;
         }
         else {
-            return $this->yes->filter(function (ExaminationSheet $examinationSheet, $key) use ($userId) {
+            return $this->examinationSheets->filter(function (ExaminationSheet $examinationSheet, $key) use ($userId) {
                 return $examinationSheet->getStudent()->getId() === $userId;
             });
         }
     }
 
-    public function addYes(ExaminationSheet $yes): self
+    public function addExaminationSheets(ExaminationSheet $examinationSheets): self
     {
-        if (!$this->yes->contains($yes)) {
-            $this->yes[] = $yes;
-            $yes->setExam($this);
+        if (!$this->examinationSheets->contains($examinationSheets)) {
+            $this->examinationSheets[] = $examinationSheets;
+            $examinationSheets->setExam($this);
         }
 
         return $this;
     }
 
-    public function removeYes(ExaminationSheet $yes): self
+    public function removeExaminationSheets(ExaminationSheet $examinationSheets): self
     {
-        if ($this->yes->removeElement($yes)) {
+        if ($this->examinationSheets->removeElement($examinationSheets)) {
             // set the owning side to null (unless already changed)
-            if ($yes->getExam() === $this) {
-                $yes->setExam(null);
+            if ($examinationSheets->getExam() === $this) {
+                $examinationSheets->setExam(null);
             }
         }
 
@@ -155,6 +158,18 @@ class Exam
     public function setTimeLimit(?int $timeLimit): self
     {
         $this->timeLimit = $timeLimit;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

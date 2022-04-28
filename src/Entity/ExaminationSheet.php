@@ -20,7 +20,7 @@ class ExaminationSheet
     #[ORM\ManyToOne(targetEntity: User::class)]
     private $student;
 
-    #[ORM\ManyToOne(targetEntity: Exam::class, inversedBy: 'yes')]
+    #[ORM\ManyToOne(targetEntity: Exam::class, inversedBy: 'examinationSheets')]
     #[ORM\JoinColumn(nullable: false)]
     private $exam;
 
