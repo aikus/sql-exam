@@ -10,6 +10,7 @@
             <tr>
                 <th>{{ 'Id'|trans }}</th>
                 <th>{{ 'Student'|trans }}</th>
+                <th>{{ 'Number of answers'|trans }}</th>
                 <th>{{ 'Exam'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
             </tr>
@@ -19,6 +20,7 @@
             <tr>
                 <td>{{ examination_sheet.id }}</td>
                 <td>{{ examination_sheet.student.email }}</td>
+                <td>{{ examination_sheet.answers|length }}</td>
                 <td>{{ examination_sheet.exam.description }}</td>
                 <td>
                     {{ include('components/_actions.html.twig', {

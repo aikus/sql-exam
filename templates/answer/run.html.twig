@@ -41,6 +41,7 @@
             {% for tableName, table in studentData %}
             <div id="{{ tableName ~ '_tab' }}" class="tabs-panel">
                 <table style="width: auto">
+                    <caption>`{{ tableName }}`</caption>
                     <tr>
                         {% for attr in table[0]|keys %}
                             <th style="text-align: left">{{ attr }}</th>

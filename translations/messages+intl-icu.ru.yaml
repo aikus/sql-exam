@@ -112,3 +112,5 @@ Sql_text: Текст запроса
 Start: Начало
 End: Окончание
 Answer ID: Id ответа
+Result error: Ошибки запроса
+Result table: Результат запроса
