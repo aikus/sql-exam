@@ -49,6 +49,7 @@ USER: Роль USER
 STUDENT: Роль STUDENT
 TEACHER: Роль TEACHER
 ADMIN: Роль ADMIN
+User count %count%: Количество пользователей {count}
 
 # Pages
 ## /register
@@ -112,3 +113,5 @@ Sql_text: Текст запроса
 Start: Начало
 End: Окончание
 Answer ID: Id ответа
+Result error: Ошибки запроса
+Result table: Результат запроса

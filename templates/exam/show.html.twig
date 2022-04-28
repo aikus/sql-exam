@@ -86,7 +86,7 @@
         </thead>
         <tbody>
 
-        {% for sheet in exam.getExaminationSheetByUserId(app.user.id, is_granted('ROLE_TEACHER')) %}
+        {% for sheet in exam.getExaminationSheetByUserId(app.user.id, is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN')) %}
             <tr>
                 <td>{{ sheet.getStudent().getName() }}</td>
                 <td>{{ sheet.answers|length }}</td>
