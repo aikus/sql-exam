@@ -25,6 +25,9 @@ class Answer
     #[ORM\Column(type: 'text', nullable: true)]
     private $result_error;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $check_right;
+
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $start;
 
@@ -91,6 +94,18 @@ class Answer
     public function setResultError(?string $result_error): self
     {
         $this->result_error = $result_error;
+
+        return $this;
+    }
+
+    public function getCheckRight(): ?string
+    {
+        return $this->check_right;
+    }
+
+    public function setCheckRight(?string $check_right): self
+    {
+        $this->check_right = $check_right;
 
         return $this;
     }
