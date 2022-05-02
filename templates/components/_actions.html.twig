@@ -4,6 +4,10 @@
  - entity
  - entityName
 #}
+{% set enable = true %}
+{% if entity.status|default('enable') == 'disable' %}
+    {% set enable = false %}
+{% endif %}
 <div class="actions">
     <div>
         {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
@@ -21,9 +25,11 @@
             {% endif %}
 
             {% if (action != 'list') %}
-                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
-                    {{ 'Back to list'|trans }}
-                </a>
+                <div class="control">
+                    <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
+                        {{ 'Back to list'|trans }}
+                    </a>
+                </div>
             {% endif %}
 
             {% if (action != 'show' and action != 'new') %}
@@ -44,25 +50,33 @@
 
             {% if (action != 'new') %}
                 <div class="control">
-                <form method="post" action="{{ path('app_' ~ entityName ~ '_delete', {'id': entity.id}) }}"
-                      onsubmit="return confirm('Are you sure you want to delete this item?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
-                    <button class="alert button is-danger">{{ 'Delete'|trans }}</button>
-                </form>
+                    <form method="post" action="{{ path('app_' ~ entityName ~ '_delete', {'id': entity.id}) }}"
+                          onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
+                        <button class="alert button is-danger">{{ 'Delete'|trans }}</button>
+                    </form>
                 </div>
             {% endif %}
         </div>
         {% else %}
         <div class="field has-addons" role="group">
             {% if (action != 'list') %}
-                <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
-                    {{ 'Back to list'|trans }}
-                </a>
+                <div class="control">
+                    <a href="{{ path('app_' ~ entityName ~ '_index') }}" class="hollow button">
+                        {{ 'Back to list'|trans }}
+                    </a>
+                </div>
             {% endif %}
 
-            {% if (action != 'show' and action != 'new') %}
+            {% if (action != 'show' and action != 'new' and enable) %}
                 <div class="control">
                     <a href="{{ path('app_' ~ entityName ~ '_show', {'id': entity.id}) }}" class="button">
+                        {{ 'Show'|trans }}
+                    </a>
+                </div>
+            {% elseif (not enable) %}
+                <div class="control">
+                    <a href="#" class="button hollow" disabled="disabled">
                         {{ 'Show'|trans }}
                     </a>
                 </div>

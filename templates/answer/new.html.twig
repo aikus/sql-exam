@@ -5,8 +5,9 @@
 {% block body %}
     <h1>{{ 'Create new Answer'|trans }}</h1>
 
-    {{ include('answer/_form.html.twig', {
+    {{ include('components/_form.html.twig', {
         'action': 'new',
+        'entityName': 'answer'
     }) }}
 
 {% endblock %}
