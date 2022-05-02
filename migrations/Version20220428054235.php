@@ -21,7 +21,7 @@ final class Version20220428054235 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE answer ADD check_right LONGTEXT DEFAULT NULL');
-        $this->addSql('ALTER TABLE exam ADD status VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE exam ADD status VARCHAR(255) DEFAULT "enable"');
 
     }
 
