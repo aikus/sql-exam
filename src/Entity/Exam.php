@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ExamRepository::class)]
 class Exam
 {
+    public const STATUS_ENABLE = 'enable';
+    public const STATUS_DISABLE = 'disable';
+
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private $id;

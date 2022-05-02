@@ -91,6 +91,11 @@ Ord: Порядок
 Students: Сдающие
 Continue: Продолжить
 You already complete this exam: Вы уже сдали этот опросник
+Status: Статус
+Enable: Включено
+Disable: Отключено
+enable: включено
+disable: отключено
 
 ## /question
 Question: Вопрос
