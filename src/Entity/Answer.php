@@ -19,7 +19,7 @@ class Answer
     #[ORM\Column(type: 'text')]
     private $sql_text;
 
-    #[ORM\Column(type: 'object', nullable: true)]
+    #[ORM\Column(type: 'array', nullable: true)]
     private $result_table;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -74,12 +74,12 @@ class Answer
         return $this;
     }
 
-    public function getResultTable()
+    public function getResultTable(): ?array
     {
         return $this->result_table;
     }
 
-    public function setResultTable($result_table): self
+    public function setResultTable(?array $result_table): self
     {
         $this->result_table = $result_table;
 
