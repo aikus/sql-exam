@@ -9,6 +9,9 @@
             <li>
                 <a href="{{ path('app_answer_index') }}">{{ 'Students answers'|trans }}</a>
             </li>
+            <li>
+                <a href="{{ path('app_right_answer_index') }}">{{ 'Right answers'|trans }}</a>
+            </li>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
             <li>

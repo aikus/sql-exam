@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'New RightAnswer'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Create new RightAnswer'|trans }}</h1>
+
+    {{ include('components/_form.html.twig', {
+        'action': 'edit',
+        'entityName': 'right_answer',
+    }) }}
+
+{% endblock %}

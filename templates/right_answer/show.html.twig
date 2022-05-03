@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'RightAnswer'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'RightAnswer'|trans }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>{{ 'Id'|trans }}</th>
+                <td>{{ right_answer.id }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'Driver'|trans }}</th>
+                <td>{{ right_answer.driver }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'Sql_text'|trans }}</th>
+                <td>{{ right_answer.sqlText }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'Result'|trans }}</th>
+                <td>{{ right_answer.result }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{ include('components/_actions.html.twig', {
+        'action': 'show',
+        'entity': right_answer,
+        'entityName': 'right_answer'
+    }) }}
+
+{% endblock %}
