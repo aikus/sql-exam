@@ -15,7 +15,6 @@ class ExaminationSheetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id')
             ->add('student', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => function (?User $user) {
