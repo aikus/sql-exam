@@ -103,6 +103,7 @@ Question index: Список вопросов
 Questions: Вопросы
 New Question: Новый вопрос
 Question %number%: Задание №{number}
+The question has no correct answers yet: На вопрос пока нет эталонных ответов
 
 ## /answer
 Answer: Ответ
@@ -120,3 +121,7 @@ End: Окончание
 Answer ID: Id ответа
 Result error: Ошибки запроса
 Result table: Результат запроса
+Right answers: Эталонные ответы
+Results: Результаты
+FIO: ФИО
+Sum: Сумма

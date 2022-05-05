@@ -26,3 +26,6 @@ services:
     App\Connectors\PdoConnection:
         factory: ['@App\Connectors\PdoConnectorFactory', createConnect]
         arguments: ['%env(STUDENT_DB_DSN)%', '%env(STUDENT_DB_USER)%', '%env(STUDENT_DB_PASSWORD)%']
+
+    App\Service\StudentResultTable: ~
+    App\Service\CheckRight: ~

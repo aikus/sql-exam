@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Results'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Results'|trans }}</h1>
+
+        <table class="table">
+            <tbody>
+            <tr>
+                {% for column in head %}
+                    <th style="text-align: left">{{ column|trans }}</th>
+                {% else %}
+                    <th>{{ 'no data'|trans }}</th>
+                {% endfor %}
+            </tr>
+            {% for keyRow, row in results %}
+            <tr>
+                {% for key, col in row %}
+                    {% if key == 0 %}
+                    <th style="text-align: left">
+                        <a href="{{ path('app_examination_sheet_show', {'id': col.id}) }}">{{ col.getStudent().getName() }}</a>
+                    </th>
+                    {% else  %}
+
+                        {% if col == '0' %}
+                            <td>0</td>
+                        {% else  %}
+
+                            {% if(key+1 == row|length)  %}
+                                <td>{{ col }}</td>
+                            {% else %}
+                                <td><a href="{{ path('app_answer_show', {'id': col}) }}">1</a></td>
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% else %}
+                    <td>{{ 'no records found'|trans }}</td>
+                {% endfor %}
+            </tr>
+            {% else %}
+                <td>{{ 'no records found'|trans }}</td>
+            {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}
