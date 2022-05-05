@@ -4,7 +4,7 @@ namespace App\Controller\Teacher;
 
 use App\Entity\Exam;
 use App\Repository\AnswerRepository;
-use App\Repository\UserRepository;
+use App\Repository\ExamRepository;
 use App\Service\CheckRight\CheckRight;
 use App\Service\StudentResultTable\StudentResultTable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class CheckAnswerController extends AbstractController
 {
     #[Route('/', name: 'app_check_answer_index')]
-    public function index(UserRepository $repository): Response
+    public function index(ExamRepository $repository): Response
     {
         return $this->render('teacher/check_answer/index.html.twig', [
-            'users' => $repository->findAll(),
+            'exams' => $repository->findAll(),
+        ]);
+    }
+
+    #[Route('/{exam}', name: 'app_check_answer_show')]
+    public function show(Exam $exam): Response
+    {
+        return $this->render('teacher/check_answer/show.html.twig', [
+            'sheets' => $exam->getExaminationSheets(),
         ]);
     }
 

@@ -5,65 +5,37 @@
 {% block body %}
     <h1>{{ 'Answer index'|trans }}</h1>
 
-    {% for user in users %}
-        <p>{{ user.email }}</p>
-        {% for sheet in user.examinationSheets %}
-        <table class="table">
-            <caption>{{ 'Examination Sheets'|trans }} {{ sheet.id }}</caption>
-            <thead>
-                <tr>
-                    <th>{{ 'Ord'|trans }}</th>
-                    <th>{{ 'Content'|trans }}</th>
-                    <th>{{ 'Right SqlText'|trans }}</th>
-                    <th>{{ 'Student SqlText'|trans }}</th>
-                    <th>{{ 'actions'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for question in sheet.exam.questions|sort((q, qNext) => q.ord <=> qNext.ord) %}
-                <tr>
-                    <td>{{ question.ord }}</td>
-                    <td>
-                        <p>{{ question.content }}</p>
-                        <hr/>
-                        <div style="color: #999">
-                            <div>{{ 'Question ID'|trans }}: {{ question.id }}</div>
-                            <div>{{ 'Exam'|trans }}: {{ sheet.exam.description }}</div>
-                        </div>
-                    </td>
-                    <td>
-                        {% for rightAnswer in question.rightAnswers %}
-                            {{ rightAnswer.sqlText }}
-                        {% else %}
-                            {{ 'no records found'|trans }}
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {{ sheet.getAnswerByUserId(user.id).sqlText }}
-                    </td>
-                    <td>
-                        {% for rightAnswer in question.rightAnswers %}
-                            {{ include('components/_actions.html.twig', {
-                                'action': 'list',
-                                'entity': rightAnswer,
-                                'entityName': 'right_answer'
-                            }) }}
-                        {% else %}
-                            {{ 'no records found'|trans }}
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7">{{ 'no records found'|trans }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <p>{{ 'No examination sheets'|trans }}</p>
-        {% endfor %}
+    <table>
+        <tr>
+            <th>{{ '№'|trans }}</th>
+            <th>{{ 'Name'|trans }}</th>
+            <th>{{ 'action'|trans }}</th>
+        </tr>
+    {% for key, exam in exams %}
+        <tr>
+            <td>
+                {{ key+1 }}
+            </td>
+            <td>
+                <a href="{{ path('app_check_answer_show', {'exam': exam.id}) }}">{{ exam.description }}</a>
+            </td>
+            <td>
+                <div class="actions">
+                    <div class="button-group" role="group">
+                        <a href="{{ path('app_check_answer_results', {'exam': exam.id}) }}" class="button">
+                            {{ 'Show result'|trans }}
+                        </a>
+                        <a href="{{ path('app_check_answer_run', {'exam': exam.id}) }}" class="button success">
+                            {{ 'Run'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
     {% else %}
-        <p>{{ 'No users o.0'|trans }}</p>
+        <tr>
+            <td colspan="3">{{ 'no records found'|trans }}</td>
+        </tr>
     {% endfor %}
+    </table>
 {% endblock %}
