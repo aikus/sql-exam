@@ -11,47 +11,21 @@
         <thead>
             <tr>
                 <th>{{ 'Question'|trans }}</th>
+                <th>{{ 'Ord'|trans }}</th>
                 <th>{{ 'Sql_text'|trans }}</th>
-                <th>{{ 'Result'|trans }}</th>
-                <th>{{ 'Result_table'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
-        {% for question in exam.questions %}
+        {% for question in exam.questions|sort((q, qNext) => q.ord <=> qNext.ord) %}
             <tr>
                 <td>{{ question.content }}</td>
+                <td>{{ question.ord }}</td>
                 <td>
                     {% for rightAnswer in question.rightAnswers %}
                         {{ rightAnswer.sqlText }}
                     {% else %}
                         {{ 'The question has no correct answers yet'|trans }}
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for rightAnswer in question.rightAnswers %}
-                        {% if rightAnswer.result %}
-                            <table>
-                                <thead>
-                                <tr>
-                                    {% for key in rightAnswer.result[0]|keys %}
-                                        <th>{{ key }}</th>
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for row in rightAnswer.result %}
-                                    <tr>
-                                        {% for value in row %}
-                                            <td>{{ value }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% endif %}
-                    {% else %}
-                        {{ ' - '|trans }}
                     {% endfor %}
                 </td>
                 <td>

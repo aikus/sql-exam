@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use RusakovNikita\MysqlExam\Exam\Student;
 use RusakovNikita\MysqlExam\Exam\Teacher;
@@ -108,10 +109,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     }
 
     /**
-     * @param ArrayCollection $examinationSheets
+     * @param Collection $examinationSheets
      * @return $this
      */
-    public function setExaminationSheets(ArrayCollection $examinationSheets): self
+    public function setExaminationSheets(Collection $examinationSheets): self
     {
         $this->examinationSheets = $examinationSheets;
 
@@ -119,9 +120,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection<int, ExaminationSheet>
      */
-    public function getExaminationSheets(): ArrayCollection
+    public function getExaminationSheets(): Collection
     {
         return $this->examinationSheets;
     }
@@ -156,6 +157,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
 
     public function getName(): string
     {
-        return $this->getEmail();
+        return $this->getFio() ?? $this->getEmail();
     }
 }

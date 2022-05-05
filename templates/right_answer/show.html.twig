@@ -21,7 +21,28 @@
             </tr>
             <tr>
                 <th>{{ 'Result'|trans }}</th>
-                <td>{{ right_answer.result }}</td>
+                <td>
+                    {% if right_answer.result %}
+                        <table>
+                            <thead>
+                            <tr>
+                                {% for key in right_answer.result[0]|keys %}
+                                    <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in right_answer.result %}
+                                <tr>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
