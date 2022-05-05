@@ -35,20 +35,23 @@
         <caption>{{ 'Question'|trans }}</caption>
         <thead>
         <tr>
-            <th>{{ 'Question'|trans }}</th>
             <th>{{ 'Ord'|trans }}</th>
+            <th>{{ 'Question'|trans }}</th>
             <th>{{ 'Answer'|trans }}</th>
+            <th>{{ 'Check right'|trans }}</th>
             <th>{{ 'Start'|trans }}</th>
             <th>{{ 'End'|trans }}</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        {% for answer in examination_sheet.getAnswers()|sort((answer, answerNext) => answer.getQuestion().ord <=> answerNext.getQuestion().ord) %}
+        {% set sortedAnswers = examination_sheet.getAnswers()|sort((answer, answerNext) => answer.end <=> answerNext.end) %}
+        {% for answer in sortedAnswers|sort((answer, answerNext) => answer.getQuestion().ord <=> answerNext.getQuestion().ord) %}
             <tr>
-                <td>{{ answer.getQuestion().getContent() }}</td>
                 <td>{{ answer.getQuestion().ord }}</td>
+                <td>{{ answer.getQuestion().getContent() }}</td>
                 <td>{{ answer.getSqlText() }}</td>
+                <td>{{ answer.checkRight }}</td>
                 <td>{{ answer.getStart().format('d.m.Y H:i:s') }}</td>
                 <td>{% if answer.getEnd() %}{{ answer.getEnd().format('d.m.Y H:i:s') }}{% endif %}</td>
                 <td>
