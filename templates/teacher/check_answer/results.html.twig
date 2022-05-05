@@ -8,8 +8,16 @@
         <table class="table">
             <tbody>
             <tr>
-                {% for column in head %}
-                    <th style="text-align: left">{{ column|trans }}</th>
+                {% for keyHead, column in head %}
+                    {% if keyHead == 0 %}
+                        <th style="text-align: left">{{ column|trans }}</th>
+                    {% else %}
+                        {% if keyHead+1 == head|length %}
+                            <th style="text-align: left">{{ column|trans }}</th>
+                        {% else %}
+                            <th style="text-align: left">{{ 'Question %number%'|trans({'%number%': column}) }}</th>
+                        {% endif %}
+                    {% endif %}
                 {% else %}
                     <th>{{ 'no data'|trans }}</th>
                 {% endfor %}
@@ -27,7 +35,7 @@
                             <td>0</td>
                         {% else  %}
 
-                            {% if(key+1 == row|length)  %}
+                            {% if(key+1 == row|length) %}
                                 <td>{{ col }}</td>
                             {% else %}
                                 <td><a href="{{ path('app_answer_show', {'id': col}) }}">1</a></td>

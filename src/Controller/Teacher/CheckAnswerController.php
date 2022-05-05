@@ -70,7 +70,7 @@ class CheckAnswerController extends AbstractController
     {
         $responder = $resultTable->responder($exam);
 
-        return $this->render('teacher/check_answer/table_results.html.twig', [
+        return $this->render('teacher/check_answer/results.html.twig', [
             'head' => $responder->getTableHead(),
             'results' => $responder->getResults(),
         ]);
