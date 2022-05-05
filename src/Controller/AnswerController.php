@@ -123,18 +123,20 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository, Connection $connection): Response
+    public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             try {
-                $result = $connection->fetchAllAssociative($answer->getSqlText());
+                $result = $this->studentConnection->fetchAll($answer->getSqlText());
                 $answer->setResultTable($result);
             } catch (Exception $e) {
                 $answer->setResultError($e->getMessage());
             }
+
             $answerRepository->add($answer);
             return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
         }
