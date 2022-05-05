@@ -42,6 +42,7 @@ class RightAnswerController extends AbstractController
             try {
                 $rightAnswer->setResult($this->studentConnection->fetchAll($rightAnswer->getSqlText()));
             } catch (Exception $e) {
+                $rightAnswer->setResult([$e->getMessage()]);
                 $form->addError(new FormError($e->getMessage()));
             }
 
@@ -74,6 +75,7 @@ class RightAnswerController extends AbstractController
             try {
                 $rightAnswer->setResult($this->studentConnection->fetchAll($rightAnswer->getSqlText()));
             } catch (Exception $e) {
+                $rightAnswer->setResult([$e->getMessage()]);
                 $form->addError(new FormError($e->getMessage()));
             }
 
