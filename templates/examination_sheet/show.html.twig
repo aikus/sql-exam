@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for answer in examination_sheet.getAnswers() %}
+        {% for answer in examination_sheet.getAnswers()|sort((answer, answerNext) => answer.getQuestion().ord <=> answerNext.getQuestion().ord) %}
             <tr>
                 <td>{{ answer.getQuestion().getContent() }}</td>
                 <td>{{ answer.getQuestion().ord }}</td>
