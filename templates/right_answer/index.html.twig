@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'RightAnswer index'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'RightAnswer index'|trans }}</h1>
+
+    {% for exam in exams %}
+    <table class="table">
+        <caption>{{ exam.description }}</caption>
+        <thead>
+            <tr>
+                <th>{{ 'Question'|trans }}</th>
+                <th>{{ 'Ord'|trans }}</th>
+                <th>{{ 'Sql_text'|trans }}</th>
+                <th>{{ 'actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in exam.questions|sort((q, qNext) => q.ord <=> qNext.ord) %}
+            <tr>
+                <td>{{ question.content }}</td>
+                <td>{{ question.ord }}</td>
+                <td>
+                    {% for rightAnswer in question.rightAnswers %}
+                        {{ rightAnswer.sqlText }}
+                    {% else %}
+                        {{ 'The question has no correct answers yet'|trans }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for rightAnswer in question.rightAnswers %}
+                        {{ include('components/_actions.html.twig', {
+                            'action': 'list',
+                            'entity': rightAnswer,
+                            'entityName': 'right_answer'
+                        }) }}
+                    {% else %}
+                        <a href="{{ path('app_right_answer_new', {'question': question.id}) }}" class="button">{{ 'Create new'|trans }}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">{{ 'no records found'|trans }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>{{ 'No exams'|trans }}</p>
+    {% endfor %}
+
+{% endblock %}

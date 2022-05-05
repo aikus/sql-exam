@@ -5,8 +5,9 @@
 {% block body %}
     <h1>{{ 'Create new Exam'|trans }}</h1>
 
-    {{ include('exam/_form.html.twig', {
+    {{ include('components/_form.html.twig', {
         'action': 'new',
+        'entityName': 'exam',
     }) }}
 
 {% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Answer index'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Answer index'|trans }}</h1>
+
+    <table>
+        <tr>
+            <th>{{ '№'|trans }}</th>
+            <th>{{ 'Name'|trans }}</th>
+            <th>{{ 'action'|trans }}</th>
+        </tr>
+    {% for key, exam in exams %}
+        <tr>
+            <td>
+                {{ key+1 }}
+            </td>
+            <td>
+                <a href="{{ path('app_check_answer_show', {'exam': exam.id}) }}">{{ exam.description }}</a>
+            </td>
+            <td>
+                <div class="actions">
+                    <div class="button-group" role="group">
+                        <a href="{{ path('app_check_answer_results', {'exam': exam.id}) }}" class="button">
+                            {{ 'Show result'|trans }}
+                        </a>
+                        <a href="{{ path('app_check_answer_run', {'exam': exam.id}) }}" class="button success">
+                            {{ 'Run'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">{{ 'no records found'|trans }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

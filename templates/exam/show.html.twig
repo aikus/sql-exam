@@ -101,11 +101,11 @@
                     {% endif %}
                 </td>
                 <td>
-                    <div class="control">
-                        <a href="{{ path('app_examination_sheet_show', {'id': sheet.id}) }}" class="button">
-                            {{ 'Show'|trans }}
-                        </a>
-                    </div>
+                    {{ include('components/_actions.html.twig', {
+                        'action': 'list',
+                        'entity': sheet,
+                        'entityName': 'examination_sheet'
+                    }) }}
                 </td>
             </tr>
         {% else %}

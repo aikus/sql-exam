@@ -7,9 +7,10 @@
 
     {{ 'Question: '|trans }}{{ answer.getQuestion().getContent() }}
 
-    {{ include('answer/_form.html.twig', {
+    {{ include('components/_form.html.twig', {
         'action': 'edit',
         'entity': answer,
+        'entityName': 'answer'
     }) }}
 
     <details>

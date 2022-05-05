@@ -10,6 +10,7 @@
             <tr>
                 <th>{{ '№'|trans }}</th>
                 <th>{{ 'Description'|trans }}</th>
+                <th>{{ 'Status'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
             <tr>
                 <td>{{ key + 1 }}</td>
                 <td>{{ exam.description }}</td>
+                <td>{{ exam.status|trans }}</td>
                 <td>
                     {{ include('components/_actions.html.twig', {
                         'action': 'list',

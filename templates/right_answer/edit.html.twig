@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Edit RightAnswer'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Edit RightAnswer'|trans }}</h1>
+
+    {{ include('components/_form.html.twig', {
+        'action': 'edit',
+        'entity': right_answer,
+        'entityName': 'right_answer',
+    }) }}
+
+{% endblock %}

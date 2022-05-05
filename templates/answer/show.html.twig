@@ -16,6 +16,10 @@
                 <td colspan="2">{{ answer.sqlText }}</td>
             </tr>
             <tr>
+                <th>{{ 'Check_right'| trans }}</th>
+                <td colspan="2">{{ answer.checkRight }}</td>
+            </tr>
+            <tr>
                 <th>{{ 'Result table'| trans }}</th>
                 <td colspan="2">
                     {% if answer.resultTable %}

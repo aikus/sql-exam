@@ -5,9 +5,10 @@
 {% block body %}
     <h1>{{ 'Edit ExaminationSheet'|trans }}</h1>
 
-    {{ include('examination_sheet/_form.html.twig', {
+    {{ include('components/_form.html.twig', {
         'action': 'edit',
-        'entity': examination_sheet
+        'entity': examination_sheet,
+        'entityName': 'examination_sheet',
     }) }}
 
 {% endblock %}

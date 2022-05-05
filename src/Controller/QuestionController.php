@@ -28,8 +28,8 @@ class QuestionController extends AbstractController
             in_array('ROLE_TEACHER', $security->getUser()->getRoles())
             || in_array('ROLE_ADMIN', $security->getUser()->getRoles())
         ) {
-            return $this->render('examination_sheet/index.html.twig', [
-                'examination_sheets' => $questionRepository->findAll(),
+            return $this->render('question/index.html.twig', [
+                'questions' => $questionRepository->findAll(),
             ]);
         }
 

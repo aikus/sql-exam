@@ -17,6 +17,7 @@ class UserRegisterType extends AbstractType
     {
         $builder
             ->add('email')
+            ->add('fio')
             ->add(
                 'roles', ChoiceType::class, [
                     'choices' => [

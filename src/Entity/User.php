@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use RusakovNikita\MysqlExam\Exam\Student;
 use RusakovNikita\MysqlExam\Exam\Teacher;
@@ -28,11 +30,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
 
+    #[ORM\Column(type: 'string', length: 180, nullable: true)]
+    private ?string $fio;
+
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: ExaminationSheet::class, orphanRemoval: true)]
+    private $examinationSheets;
+
+    public function __construct()
+    {
+        $this->examinationSheets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -96,6 +109,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     }
 
     /**
+     * @param Collection $examinationSheets
+     * @return $this
+     */
+    public function setExaminationSheets(Collection $examinationSheets): self
+    {
+        $this->examinationSheets = $examinationSheets;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExaminationSheet>
+     */
+    public function getExaminationSheets(): Collection
+    {
+        return $this->examinationSheets;
+    }
+
+    /**
+     * @param string|null $fio
+     * @return $this
+     */
+    public function setFio(?string $fio): self
+    {
+        $this->fio = $fio;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFio(): ?string
+    {
+        return $this->fio;
+    }
+
+    /**
      * @see UserInterface
      */
     public function eraseCredentials()
@@ -106,6 +157,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
 
     public function getName(): string
     {
-        return $this->getEmail();
+        return $this->getFio() ?? $this->getEmail();
     }
 }

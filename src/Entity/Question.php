@@ -30,9 +30,13 @@ class Question
     #[ORM\ManyToMany(targetEntity: ExaminationSheet::class, mappedBy: 'questions')]
     private $examinationSheets;
 
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: RightAnswer::class)]
+    private $rightAnswers;
+
     public function __construct()
     {
         $this->examinationSheets = new ArrayCollection();
+        $this->rightAnswers = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -115,6 +119,36 @@ class Question
     {
         if ($this->examinationSheets->removeElement($examinationSheet)) {
             $examinationSheet->removeQuestion($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RightAnswer>
+     */
+    public function getRightAnswers(): Collection
+    {
+        return $this->rightAnswers;
+    }
+
+    public function addRightAnswer(RightAnswer $rightAnswer): self
+    {
+        if (!$this->rightAnswers->contains($rightAnswer)) {
+            $this->rightAnswers[] = $rightAnswer;
+            $rightAnswer->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRightAnswer(RightAnswer $rightAnswer): self
+    {
+        if ($this->rightAnswers->removeElement($rightAnswer)) {
+            // set the owning side to null (unless already changed)
+            if ($rightAnswer->getQuestion() === $this) {
+                $rightAnswer->setQuestion(null);
+            }
         }
 
         return $this;
