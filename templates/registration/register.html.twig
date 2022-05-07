@@ -9,6 +9,7 @@
 
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.fio) }}
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'|trans
         }) }}

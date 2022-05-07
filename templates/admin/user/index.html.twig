@@ -11,6 +11,7 @@
             <tr>
                 <th>{{ '№'|trans }}</th>
                 <th>{{ 'Email'|trans }}</th>
+                <th>{{ 'Fio'|trans }}</th>
                 <th>{{ 'Roles'|trans }}</th>
                 <th>{{ 'actions'|trans }}</th>
             </tr>
@@ -20,6 +21,7 @@
             <tr>
                 <td>{{ key+1 }}</td>
                 <td>{{ user.email }}</td>
+                <td>{{ user.fio }}</td>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                 <td>
                     {{ include('admin/components/_actions.html.twig', {

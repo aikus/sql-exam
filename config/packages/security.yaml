@@ -57,6 +57,7 @@ security:
         - { path: ^/answer/+/new, roles: [ROLE_USER] }
 
         # Teacher access
+        - { path: ^/check/answer/, roles: [ROLE_TEACHER, ROLE_ADMIN] }
         - { path: ^/answer/+/edit, roles: [ROLE_TEACHER, ROLE_ADMIN] }
         - { path: ^/exam, roles: [ROLE_TEACHER, ROLE_ADMIN], methods: POST}
         - { path: ^/exam/+/new, roles: [ROLE_TEACHER, ROLE_ADMIN] }

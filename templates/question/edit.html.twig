@@ -5,9 +5,10 @@
 {% block body %}
     <h1>{{ 'Edit Question'|trans }}</h1>
 
-    {{ include('question/_form.html.twig', {
+    {{ include('components/_form.html.twig', {
         'action': 'edit',
-        'entity': entity,
+        'entity': question,
+        'entityName': 'question',
     }) }}
 
 {% endblock %}

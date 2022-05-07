@@ -20,7 +20,7 @@ class ExaminationSheet
     #[ORM\ManyToOne(targetEntity: User::class)]
     private $student;
 
-    #[ORM\ManyToOne(targetEntity: Exam::class, inversedBy: 'yes')]
+    #[ORM\ManyToOne(targetEntity: Exam::class, inversedBy: 'examinationSheets')]
     #[ORM\JoinColumn(nullable: false)]
     private $exam;
 
@@ -78,6 +78,26 @@ class ExaminationSheet
     public function getAnswers(): Collection
     {
         return $this->answers;
+    }
+
+    /**
+     * @param int $userId
+     * @return Answer|null
+     */
+    public function getAnswerByUserId(int $userId): ?Answer
+    {
+        $result = $this->answers->filter(function (Answer $answer, $key) use ($userId) {
+            return $answer->getExaminationSheet()->getStudent()->getId() === $userId;
+        });
+
+        return $result->first() ?? null;
+    }
+
+    public function getAnswersByQuestion(Question $question): Collection
+    {
+        return $this->getAnswers()->filter(function (Answer $answer) use ($question) {
+            return $answer->getQuestion()->getId() === $question->getId();
+        });
     }
 
     public function addAnswer(Answer $answer): self

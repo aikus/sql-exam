@@ -19,11 +19,14 @@ class Answer
     #[ORM\Column(type: 'text')]
     private $sql_text;
 
-    #[ORM\Column(type: 'object', nullable: true)]
+    #[ORM\Column(type: 'array', nullable: true)]
     private $result_table;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private $result_error;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $check_right;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $start;
@@ -71,12 +74,12 @@ class Answer
         return $this;
     }
 
-    public function getResultTable()
+    public function getResultTable(): ?array
     {
         return $this->result_table;
     }
 
-    public function setResultTable($result_table): self
+    public function setResultTable(?array $result_table): self
     {
         $this->result_table = $result_table;
 
@@ -91,6 +94,18 @@ class Answer
     public function setResultError(?string $result_error): self
     {
         $this->result_error = $result_error;
+
+        return $this;
+    }
+
+    public function getCheckRight(): ?string
+    {
+        return $this->check_right;
+    }
+
+    public function setCheckRight(?string $check_right): self
+    {
+        $this->check_right = $check_right;
 
         return $this;
     }
