@@ -35,6 +35,6 @@ class PdoConnection
     {
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_NUM);
     }
 }
