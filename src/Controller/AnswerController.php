@@ -16,13 +16,14 @@ use App\Repository\AnswerRepository;
 use App\Repository\ExaminationSheetRepository;
 use App\Repository\ExamRepository;
 use App\Repository\QuestionRepository;
+use App\Service\CheckRight\CheckRight;
 use DateTime;
 use DateTimeInterface;
-use Doctrine\DBAL\Connection;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -93,15 +94,21 @@ class AnswerController extends AbstractController
                     ->setId((new IdGenerator())->generateQuestionId());
                 $examinationSheetRepository->add($sheet);
             }
-        } elseif ($request->get('answer')) {
+        }
+        elseif ($request->get('answer')) {
             $answer = $answerRepository->find($request->get('answer'));
             $sheet = $answer->getExaminationSheet();
             $start = $answer->getStart();
             $question = $answer->getQuestion();
-        } elseif ($request->get('sheet') && $request->get('question')) {
+        }
+        elseif ($request->get('sheet') && $request->get('question')) {
             $question = $questionRepository->find($request->get('question'));
             $sheet = $examinationSheetRepository->find($request->get('sheet'));
         }
+        else {
+            throw new NotFoundHttpException('No exam id');
+        }
+
         $answer = new Answer();
         $answer->setQuestion($question)
             ->setStart($start)
@@ -125,6 +132,8 @@ class AnswerController extends AbstractController
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
+        $checkRight = new CheckRight();
+
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
@@ -133,11 +142,13 @@ class AnswerController extends AbstractController
             try {
                 $result = $this->studentConnection->fetchAll($answer->getSqlText());
                 $answer->setResultTable($result);
+                $answer->setResultError('');
             } catch (Exception $e) {
+                $answer->setResultTable([]);
                 $answer->setResultError($e->getMessage());
             }
 
-            $answerRepository->add($answer);
+            $answerRepository->add($checkRight->getCheckedAnswer($answer));
             return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -149,9 +160,13 @@ class AnswerController extends AbstractController
     }
 
     #[Route('/{id}/run', name: 'app_answer_run', methods: ['GET', 'POST'])]
-    public function run(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
-    {
+    public function run(
+        Request $request,
+        Answer $answer,
+        AnswerRepository $answerRepository
+    ): Response {
         $now = new DateTime();
+        $checkRight = new CheckRight();
 
         $limit = $this->getLimit($answer, $now);
 
@@ -185,7 +200,7 @@ class AnswerController extends AbstractController
                     ->setEnd($now);
             }
 
-            $answerRepository->add($answer);
+            $answerRepository->add($checkRight->getCheckedAnswer($answer, $now));
 
             return $this->redirectToRoute('app_answer_show', [
                 'id' => $answer->getId()

@@ -4,6 +4,7 @@ namespace App\Service\CheckRight;
 
 use App\Entity\Answer;
 use App\Entity\RightAnswer;
+use DateTimeInterface;
 
 class CheckRight
 {
@@ -29,15 +30,28 @@ class CheckRight
 
             if ($resultRow < count($answerRow)) return 0;
             else $result++;
-
-//            $resultRow = array_intersect(
-//                array_filter($rightRow ?? []),
-//                array_filter($answerRow ?? [])
-//            );
-//
-//            if ($rightRow == $resultRow) $result++;
         }
 
-        return $result > 0 ? 1 : 0;
+        return $result > 0 ? '1' : '0';
+    }
+
+    public function getCheckedAnswer(
+        Answer $answer,
+        DateTimeInterface $now = null
+    ): Answer {
+
+        $answer->setCheckRight(
+            $this->run(
+                // TODO: написать поиск в соответствии с драйвером БД
+                $answer->getQuestion()->getRightAnswers()->last(),
+                $answer
+            )
+        );
+
+        if (null !== $now) {
+            $answer->setEnd($now);
+        }
+
+        return $answer;
     }
 }
