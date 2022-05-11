@@ -17,11 +17,12 @@
         </div>
     {{ form_end(form) }}
 
-    <details>
+    <details open="open">
         <summary>
             <span class="dropdown hollow button">{{ 'Show DataBase'|trans }} <i class="arrow-only"></i></span>
         </summary>
 
+        <p>{{ 'You only see 10 rows of each table'|trans }}</p>
         <ul class="tabs"
             data-deep-link="true"
             data-update-history="true"
