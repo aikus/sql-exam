@@ -66,7 +66,7 @@
     {% if nextQuestion %}
         <a href="{{ path('app_answer_new', {'sheet': answer.getExaminationSheet().getId(), 'question': nextQuestion.getId()}) }}" class="button">Следующий вопрос</a>
         {% else %}
-            <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" class="button">Финал</a>
+            <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" onclick="alert(&quot;Вы ответили на последний вопрос. Можете перейти на список ваших ответов.&quot;)" class="button">Финал</a>
     {% endif %}
         {% else %}
         <a href="{{ path('app_examination_sheet_show', {'id': answer.getExaminationSheet().getId()}) }}" class="button">Посмотреть экзаменационный лист</a>

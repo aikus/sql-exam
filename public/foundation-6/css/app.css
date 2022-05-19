@@ -14,3 +14,8 @@
 details > summary::marker {
     content: "";
 }
+
+.actions, .actions .button-group  {
+    text-wrap: none;
+    flex-wrap: nowrap;
+}
