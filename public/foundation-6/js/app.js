@@ -1,5 +1,5 @@
 $(document).foundation()
 $('.timer').timer();
-$('.tabs-content').each((i, elem) => {
+$('.tabs-content, .accordion').each((i, elem) => {
     $(elem).foundation();
 })

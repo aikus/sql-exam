@@ -22,7 +22,13 @@
             <span class="dropdown hollow button">{{ 'Show DataBase'|trans }} <i class="arrow-only"></i></span>
         </summary>
 
-        <p>{{ 'You only see 10 rows of each table'|trans }}</p>
+        <p>{{ plural([
+            'Table content is hidden'|trans,
+            'Вы видите лишь %d строку каждой таблицы'|trans,
+            'Вы видите лишь %d строки каждой таблицы'|trans,
+            'Вы видите лишь %d строк каждой таблицы'|trans,
+        ], 10) }}</p>
+
         <ul class="tabs"
             data-deep-link="true"
             data-update-history="true"

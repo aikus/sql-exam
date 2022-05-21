@@ -26,7 +26,7 @@ Delete: Удалить
 actions: действия
 Back to list: Обратно к списку
 back to list: обратно к списку
-Begin: Начать
+Begin: Начать новый
 or: или
 Done: Готово
 
@@ -128,3 +128,4 @@ Sum: Сумма
 Check right: Зачёт
 Check answer: Проверка ответов
 Number of answers: Количество ответов
+Table content is hidden: Контент таблиц скрыт

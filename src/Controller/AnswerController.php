@@ -207,11 +207,14 @@ class AnswerController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
+        $tableRowLimit = PdoConnection::VIEW_LIMIT;
+
         return $this->renderForm('answer/run.html.twig', [
             'answer' => $answer,
             'form' => $form,
             'limit' => $limit,
-            'studentData' => $this->studentConnection->getDatabaseData(),
+            'tableRowLimit' => $tableRowLimit,
+            'studentData' => $this->studentConnection->getDatabaseData($tableRowLimit),
         ]);
     }
 
