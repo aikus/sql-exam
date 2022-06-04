@@ -113,6 +113,7 @@ Your answer: Ваш ответ
 Table `%table%`: Таблица `{table}`
 Show DataBase: Просмотреть БД
 You have %time% hours to complete the test. Ready to start?: На прохождение теста отведено {time} ч. Готовы начать?
+You sql text: Текст вашего запроса
 Sql text: Текст запроса
 Sql_text: Текст запроса
 Start: Начало
@@ -120,6 +121,7 @@ End: Окончание
 Answer ID: Id ответа
 Result error: Ошибки запроса
 Result table: Результат запроса
+Result of your request: Результат вашего запроса
 Right answers: Эталонные ответы
 RightAnswer: Эталонный ответ
 Results: Результаты
@@ -129,3 +131,5 @@ Check right: Зачёт
 Check answer: Проверка ответов
 Number of answers: Количество ответов
 Table content is hidden: Контент таблиц скрыт
+Next question: Следующий вопрос
+Execute query: Выполнить запрос
