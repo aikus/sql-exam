@@ -17,10 +17,17 @@
         </div>
     {{ form_end(form) }}
 
-    <details>
+    <details open="open">
         <summary>
             <span class="dropdown hollow button">{{ 'Show DataBase'|trans }} <i class="arrow-only"></i></span>
         </summary>
+
+        <p>{{ plural([
+            'Table content is hidden'|trans,
+            'Вы видите лишь %d строку каждой таблицы'|trans,
+            'Вы видите лишь %d строки каждой таблицы'|trans,
+            'Вы видите лишь %d строк каждой таблицы'|trans,
+        ], 10) }}</p>
 
         <ul class="tabs"
             data-deep-link="true"

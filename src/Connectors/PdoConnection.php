@@ -25,16 +25,16 @@ class PdoConnection
             'person',
             'product',
         ] as $item) {
-            $result[$item] = $this->exec("SELECT * FROM `$item` LIMIT ".($limit ?? self::VIEW_LIMIT).";");
+            $result[$item] = $this->exec("SELECT * FROM `$item` LIMIT ".($limit ?? self::VIEW_LIMIT).";", true);
         }
 
         return $result;
     }
 
-    private function exec(string $sql): array
+    private function exec(string $sql, bool $isAssoc = false): array
     {
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll($isAssoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
     }
 }

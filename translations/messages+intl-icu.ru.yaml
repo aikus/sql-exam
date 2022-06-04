@@ -26,7 +26,7 @@ Delete: Удалить
 actions: действия
 Back to list: Обратно к списку
 back to list: обратно к списку
-Begin: Начать
+Begin: Начать новый
 or: или
 Done: Готово
 
@@ -72,12 +72,11 @@ Welcome!: Добро пожаловать!
 
 ## /examination/sheet
 
-ExaminationSheet: Опросник с ответами
-ExaminationSheet index: Список опросников с ответами
-ExaminationSheets: Опросники с ответами
-New Examination Sheet: Новый опросник с ответами
-New ExaminationSheet: Новый опросник с ответами
-Number of answers: Количество ответов
+ExaminationSheet: Лист с ответами
+ExaminationSheet index: Список листов с ответами
+ExaminationSheets: Листы с ответами
+New Examination Sheet: Новый лист с ответами
+New ExaminationSheet: Новый лист с ответами
 
 ## /exam
 Exam: Опросник
@@ -122,7 +121,11 @@ Answer ID: Id ответа
 Result error: Ошибки запроса
 Result table: Результат запроса
 Right answers: Эталонные ответы
+RightAnswer: Эталонный ответ
 Results: Результаты
 FIO: ФИО
 Sum: Сумма
 Check right: Зачёт
+Check answer: Проверка ответов
+Number of answers: Количество ответов
+Table content is hidden: Контент таблиц скрыт

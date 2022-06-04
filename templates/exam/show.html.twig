@@ -33,41 +33,40 @@
         }) }}
     {% endif %}
 
-    <table class="table">
-        <caption>{{ 'Questions'|trans }}</caption>
-        <thead>
-        <tr>
-            <th>{{ 'Ord'|trans }}</th>
-            <th>{{ 'Content'|trans }}</th>
-            {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
-            <th>{{ 'TimeLimit'|trans }}</th>
-            <th>{{ 'actions'|trans }}</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
+    <h2>{{ 'Questions'|trans }}</h2>
+    <ul class="accordion" data-accordion
+        data-allow-all-closed="true"
+        data-deep-link="true"
+        data-deep-link-smudge="true"
+        data-deep-link-smudge-delay="300"
+        data-update-history="true"
+        id="{{ exam.id }}"
+    >
         {% for question in exam.getQuestions()|sort((q, qNext) => q.ord <=> qNext.ord) %}
-            <tr>
-                <td>{{ question.ord }}</td>
-                <td>{{ question.content }}</td>
-                {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
-                <td>{{ question.timeLimit }}</td>
-                <td>
-                   {{ include('components/_actions.html.twig', {
-                        'action': 'list',
-                        'entity': question,
-                        'entityName': 'question'
-                    }) }}
-                </td>
-                {% endif %}
-            </tr>
+            <li id="{{ exam.id }}" class="accordion-item" data-accordion-item>
+                <a href="#question{{ question.id }}" class="accordion-title">
+                    {{ 'Question %number%'|trans({'%number%': question.ord}) }}
+                </a>
+                <div id="question{{ question.id }}" class="accordion-content" data-tab-content>
+                    <div>{{ question.content }}</div>
+                    {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
+                    <div>{{ 'TimeLimit'|trans }}: {{ question.timeLimit }}</div>
+                    <div>
+                        {{ include('components/_actions.html.twig', {
+                            'action': 'list',
+                            'entity': question,
+                            'entityName': 'question'
+                        }) }}
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
         {% else %}
-            <tr>
-                <td colspan="4">{{ 'no records found'|trans }}</td>
-            </tr>
+        <li class="accordion-item is-active" data-accordion-item>
+            {{ 'no records found'|trans }}
+        </li>
         {% endfor %}
-        </tbody>
-    </table>
+    </ul>
 
     {% if is_granted('ROLE_TEACHER') or is_granted('ROLE_ADMIN') %}
     <a href="{{ path('app_question_add', {'exam': exam.id}) }}" class="button">{{ 'Add'|trans }}</a>
