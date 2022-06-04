@@ -201,10 +201,6 @@ class AnswerController extends AbstractController
             }
 
             $answerRepository->add($checkRight->getCheckedAnswer($answer, $now));
-
-            return $this->redirectToRoute('app_answer_show', [
-                'id' => $answer->getId()
-            ], Response::HTTP_SEE_OTHER);
         }
 
         $tableRowLimit = PdoConnection::VIEW_LIMIT;
@@ -215,6 +211,8 @@ class AnswerController extends AbstractController
             'limit' => $limit,
             'tableRowLimit' => $tableRowLimit,
             'studentData' => $this->studentConnection->getDatabaseData($tableRowLimit),
+            'nextQuestion' => $this->getNextQuestion($answer),
+            'resultTable' => $this->studentConnection->fetchAll($answer->getSqlText(), true),
         ]);
     }
 

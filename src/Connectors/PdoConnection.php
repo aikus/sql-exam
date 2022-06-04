@@ -10,9 +10,9 @@ class PdoConnection
     {
     }
 
-    public function fetchAll(string $sql): array
+    public function fetchAll(string $sql, bool $isAssoc = false): array
     {
-        return $this->exec($sql);
+        return $this->exec($sql, $isAssoc);
     }
 
     public function getDatabaseData(int $limit = null): array
@@ -31,7 +31,7 @@ class PdoConnection
         return $result;
     }
 
-    private function exec(string $sql, bool $isAssoc = false): array
+    private function exec(string $sql, bool $isAssoc): array
     {
         $statement = $this->pdo->prepare($sql);
         $statement->execute();

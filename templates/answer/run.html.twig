@@ -11,23 +11,42 @@
     </div>
 
     {{ form_start(form) }}
+        {{ form_row(form.sql_text, {
+            'label': 'You sql text'|trans
+        }) }}
         {{ form_widget(form) }}
-        <div class="control">
-            <button class="button is-primary">{{ 'Done'|trans }}</button>
-        </div>
-    {{ form_end(form) }}
-
-    <details open="open">
+    {% if resultTable %}
+        <p>{{ 'Result of your request'|trans }}</p>
+        <table>
+            <thead>
+            <tr>
+                {% for key in resultTable[0]|keys %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in resultTable %}
+                <tr>
+                    {% for value in row %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+        <details open="open">
         <summary>
             <span class="dropdown hollow button">{{ 'Show DataBase'|trans }} <i class="arrow-only"></i></span>
         </summary>
 
         <p>{{ plural([
-            'Table content is hidden'|trans,
-            'Вы видите лишь %d строку каждой таблицы'|trans,
-            'Вы видите лишь %d строки каждой таблицы'|trans,
-            'Вы видите лишь %d строк каждой таблицы'|trans,
-        ], 10) }}</p>
+                'Table content is hidden'|trans,
+                'Вы видите лишь %d строку каждой таблицы'|trans,
+                'Вы видите лишь %d строки каждой таблицы'|trans,
+                'Вы видите лишь %d строк каждой таблицы'|trans,
+            ], 10) }}</p>
 
         <ul class="tabs"
             data-deep-link="true"
@@ -46,26 +65,41 @@
 
         <div class="tabs-content" data-tabs-content="deeplinked-tabs">
             {% for tableName, table in studentData %}
-            <div id="{{ tableName ~ '_tab' }}" class="tabs-panel">
-                <table style="width: auto">
-                    <caption>`{{ tableName }}`</caption>
-                    <tr>
-                        {% for attr in table[0]|keys %}
-                            <th style="text-align: left">{{ attr }}</th>
-                        {% endfor %}
-                    </tr>
-                    {% for row in table %}
+                <div id="{{ tableName ~ '_tab' }}" class="tabs-panel">
+                    <table style="width: auto">
+                        <caption>`{{ tableName }}`</caption>
                         <tr>
-                            {% for col in row %}
-                                <td>
-                                    {{ col }}
-                                </td>
+                            {% for attr in table[0]|keys %}
+                                <th style="text-align: left">{{ attr }}</th>
                             {% endfor %}
                         </tr>
-                    {% endfor %}
-                </table>
-            </div>
+                        {% for row in table %}
+                            <tr>
+                                {% for col in row %}
+                                    <td>
+                                        {{ col }}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             {% endfor %}
         </div>
     </details>
+
+        <div class="control">
+            <button class="button is-primary">{{ 'Execute query'|trans }}</button>
+            <button class="button success">{{ 'Done'|trans }}</button>
+            {% if nextQuestion %}
+                <a href="{{ path('app_answer_new', {
+                    'sheet': answer.getExaminationSheet().getId(),
+                    'question': nextQuestion.getId()})
+                }}" class="button hollow">
+                    {{ 'Next question'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    {{ form_end(form) }}
+
 {% endblock %}
