@@ -10,8 +10,10 @@ class PdoConnection
     {
     }
 
-    public function fetchAll(string $sql, bool $isAssoc = false): array
+    public function fetchAll(string $sql, bool $isAssoc = false): ?array
     {
+        if (empty($sql)) return null;
+
         return $this->exec($sql, $isAssoc);
     }
 
