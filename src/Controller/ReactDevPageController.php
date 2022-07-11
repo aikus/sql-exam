@@ -11,6 +11,6 @@ class ReactDevPageController extends AbstractController
     #[Route('/react', name: 'app_react_dev_page')]
     public function index(): Response
     {
-        return $this->render('react_api/index.html.twig', []);
+        return $this->render('react/index.html.twig', []);
     }
 }
