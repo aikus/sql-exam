@@ -46,6 +46,7 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/react, roles: PUBLIC_ACCESS }
 
         # User section
         - { path: ^/user-change-password, roles: ROLE_USER }

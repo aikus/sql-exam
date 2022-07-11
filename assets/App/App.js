@@ -1,15 +1,11 @@
 import React from 'react';
-import {Table, TableCell, TableRow} from "@mui/material";
+import { Box } from "@mui/material";
+import { Authorization } from "../Authorization/Authorization"
 
-const App = () => {
+export const App = () => {
     return (
-        <Table>
-            <TableRow>
-                <TableCell>Task</TableCell>
-                <TableCell>Action</TableCell>
-            </TableRow>
-        </Table>
+        <>
+            <Authorization/>
+        </>
     )
 }
-
-export default App;
