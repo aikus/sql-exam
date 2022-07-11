@@ -1,0 +1,31 @@
+import React from 'react';
+import * as C from './styles'
+import { TextField } from "@mui/material";
+import logo from './img/logo.png'
+
+export const Authorization = () => {
+    return (
+        <C.Wrapper>
+            <img src={logo} alt="логотип"/>
+            <C.Header>Авторизация</C.Header>
+            <TextField
+                autoFocus
+                margin="normal"
+                id="email"
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+            />
+            <TextField
+                margin="normal"
+                id="outlined-basic-password"
+                label="Пароль"
+                type="password"
+                variant="outlined"
+                fullWidth
+            />
+        </C.Wrapper>
+    )
+}
+
