@@ -6,7 +6,12 @@ class Exam
 {
     private array $questions = [];
 
-    public function __construct(private string $id, private Teacher $teacher, private string $description = '', array $questions = [])
+    public function __construct(private string $id,
+                                private Teacher $teacher,
+                                private string $description = '',
+                                array $questions = [],
+                                private ?string $status = null
+    )
     {
         $this->setQuestions($questions);
     }
@@ -34,7 +39,7 @@ class Exam
 
     public function setQuestions(array $questions): Exam
     {
-        /* @var \RusakovNikita\MysqlExam\Exam\Question $question */
+        /* @var Question $question */
         foreach ($questions as $question) {
             $this->questions[$question->getId()] = $question;
         }
@@ -76,5 +81,16 @@ class Exam
             }
         }
         return null;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): Exam
+    {
+        $this->status = $status;
+        return $this;
     }
 }
