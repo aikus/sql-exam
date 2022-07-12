@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Connectors\ExamConvertor;
 use App\Connectors\IdGenerator;
+use App\Connectors\Student\ExaminationRepository;
 use App\Connectors\TeacherFinder;
 use App\Entity\Answer;
 use App\Entity\Exam;
@@ -22,11 +23,15 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/exam')]
 class ExamController extends AbstractController
 {
+    public function __construct(private ExaminationRepository $studentExaminationRepository)
+    {
+    }
+
     #[Route('/', name: 'app_exam_index', methods: ['GET'])]
-    public function index(ExamRepository $examRepository): Response
+    public function index(ExamRepository $examRepository, Security $security): Response
     {
         return $this->render('exam/index.html.twig', [
-            'exams' => $examRepository->findAll(),
+            'exams' => $this->studentExaminationRepository->getExaminationForStudent($security->getUser()),
         ]);
     }
 
