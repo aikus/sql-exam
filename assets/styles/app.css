@@ -1,6 +1,9 @@
 :root {
     --primary-background-color: #EBEBEB;
     --authorization-background-color: #F8F9F9;
+    --font-primary: 'Roboto', sans-serif;
+    --link-color-primary: #0044BB;
+    --link-color-hover-primary: #CC0000;
 }
 body {
     margin: 0;
