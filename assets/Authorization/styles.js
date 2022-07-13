@@ -32,7 +32,7 @@ export const TopBlock = styled.div`
 export const Header = styled.h2`
 `
 
-export const ForgotPassword = styled.a`
+export const ForgotPassword = styled.div`
     display: inline-flex;
     color: var(--link-color-primary);
     text-decoration: none;
@@ -41,6 +41,7 @@ export const ForgotPassword = styled.a`
     
     &:hover {
         color: var(--link-color-hover-primary);
+        cursor: pointer;
     }
 `
 
