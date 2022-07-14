@@ -3,6 +3,7 @@ import '../styles/app.css';
 
 export const Wrapper = styled.div`
     background-color: var(--authorization-background-color);
+    box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
     height: 100vh;
     padding: 40px 24px;
     font-family: var(--font-primary);
@@ -35,8 +36,6 @@ export const Header = styled.h2`
 export const ForgotPassword = styled.div`
     display: inline-flex;
     color: var(--link-color-primary);
-    text-decoration: none;
-    margin-top: 24px;
     margin-top: 4px;
     
     &:hover {
@@ -49,7 +48,7 @@ export const Button = styled.button`
     font-family: var(--font-primary);
     background-color: #FFCC00;
     width: 100%;
-    height: 44px;
+    height: 56px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -63,6 +62,10 @@ export const Button = styled.button`
     }
 `
 
+export const ButtonReg = styled(Button)`
+    margin-top: 40px;
+`
+
 export const RegistrationText = styled.div`
     margin-top: 24px;
     text-align: center;
@@ -74,4 +77,21 @@ export const RegistrationText = styled.div`
             color: var(--link-color-hover-primary);
         }
     }
+`
+
+export const RegistrationLink = styled.div`
+    display: inline-flex;
+    color: var(--link-color-primary);
+    text-decoration: underline;
+    
+    &:hover {
+        color: var(--link-color-hover-primary);
+        cursor: pointer;
+    }
+`
+
+export const Backspace = styled(ForgotPassword)`
+    display: block;
+    text-align: center;
+    margin-top: 24px;
 `
