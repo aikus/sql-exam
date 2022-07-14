@@ -89,11 +89,32 @@
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
+    "lcobucci/clock": {
+        "version": "2.2.0"
+    },
+    "lcobucci/jwt": {
+        "version": "4.1.5"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.16",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "config/packages/lexik_jwt_authentication.yaml"
+        ]
+    },
     "mockery/mockery": {
         "version": "1.5.0"
     },
     "myclabs/deep-copy": {
         "version": "1.11.0"
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
@@ -222,6 +243,9 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "stella-maris/clock": {
+        "version": "0.1.4"
     },
     "symfony/asset": {
         "version": "v6.0.7"
@@ -367,6 +391,9 @@
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.25.0"
+    },
+    "symfony/polyfill-php56": {
+        "version": "v1.20.0"
     },
     "symfony/polyfill-php81": {
         "version": "v1.25.0"
