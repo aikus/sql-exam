@@ -26,11 +26,24 @@ export const Authorization = () => {
         passwordRegistration2Value: '',
         passwordRegistration2Error: false,
         passwordRegistration2ErrorText: 'Пароль не совпадает с введенным ранее',
+        emailRestoreValue: '',
+        emailRestoreError: false,
+        emailRestoreErrorText: 'Неверный формат email',
     })
 
-    const handleSubmit = (e) => {
+    const handleAuthorizationSubmit = (e) => {
         e.preventDefault()
         // отправка значений на бэк
+    }
+
+    const handleRegistrationSubmit = (e) => {
+        e.preventDefault()
+        // отправка значений на бэк
+    }
+
+    const handleRestorePasswordSubmit = (e) => {
+        e.preventDefault()
+
     }
 
     const handleFieldChange = (e, fieldName) => {
@@ -46,7 +59,8 @@ export const Authorization = () => {
         setState((prevState) => {
             return {
                 ...prevState,
-                restorePassword: !prevState.restorePassword
+                restorePassword: !prevState.restorePassword,
+                headerText: 'Введите ваш Email что бы сбросить пароль'
             }
         })
     }
@@ -79,10 +93,6 @@ export const Authorization = () => {
         }
     }
 
-    const handleRestorePassword = () => {
-
-    }
-
     const handleBack = () => {
         setState((prevState) => {
             return {
@@ -97,7 +107,7 @@ export const Authorization = () => {
     const renderAuthorizationForm = () => {
         return (
             <>
-                <form noValidate onSubmit={handleSubmit}>
+                <form noValidate onSubmit={handleAuthorizationSubmit}>
                     <TextField
                         autoFocus
                         margin="normal"
@@ -136,82 +146,86 @@ export const Authorization = () => {
 
     const renderRegistrationForm = () => {
         return (
-            <form noValidate onSubmit={handleSubmit}>
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    id="fio-reg"
-                    label="ФИО"
-                    type="text"
-                    variant="outlined"
-                    fullWidth
-                    error={state.fioError}
-                    helperText={state.fioError ? state.fioErrorText : ''}
-                    value={state.fio}
-                    onChange={(e) => handleFieldChange(e, 'fio')}
-                />
-                <TextField
-                    margin="normal"
-                    id="email-reg"
-                    label="Email"
-                    type="email"
-                    variant="outlined"
-                    fullWidth
-                    error={state.emailRegistrationError}
-                    helperText={state.emailRegistrationError ? state.emailRegistrationErrorText : ''}
-                    value={state.emailRegistrationValue}
-                    onChange={(e) => handleFieldChange(e, 'emailRegistrationValue')}
-                />
-                <TextField
-                    margin="normal"
-                    id="password-reg-1"
-                    label="Пароль"
-                    type="password"
-                    variant="outlined"
-                    fullWidth
-                    error={state.passwordRegistration1Error}
-                    helperText={state.passwordRegistration1Error ? state.passwordRegistration1ErrorText : ''}
-                    value={state.passwordRegistration1Value}
-                    onChange={(e) => handleFieldChange(e, 'passwordRegistration1Value')}
-                />
-                <TextField
-                    margin="normal"
-                    id="password-reg-2"
-                    label="Повторите пароль"
-                    type="password"
-                    variant="outlined"
-                    fullWidth
-                    error={state.passwordRegistration2Error}
-                    helperText={state.passwordRegistration2Error ? state.passwordRegistration2ErrorText : ''}
-                    value={state.passwordRegistration2Value}
-                    onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
-                    onBlur={checkPasswordMatch}
-                />
-                <C.ButtonReg type="submit">Зарегистрироваться</C.ButtonReg>
+            <>
+                <form noValidate onSubmit={handleRegistrationSubmit}>
+                    <TextField
+                        autoFocus
+                        margin="normal"
+                        id="fio-reg"
+                        label="ФИО"
+                        type="text"
+                        variant="outlined"
+                        fullWidth
+                        error={state.fioError}
+                        helperText={state.fioError ? state.fioErrorText : ''}
+                        value={state.fio}
+                        onChange={(e) => handleFieldChange(e, 'fio')}
+                    />
+                    <TextField
+                        margin="normal"
+                        id="email-reg"
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        fullWidth
+                        error={state.emailRegistrationError}
+                        helperText={state.emailRegistrationError ? state.emailRegistrationErrorText : ''}
+                        value={state.emailRegistrationValue}
+                        onChange={(e) => handleFieldChange(e, 'emailRegistrationValue')}
+                    />
+                    <TextField
+                        margin="normal"
+                        id="password-reg-1"
+                        label="Пароль"
+                        type="password"
+                        variant="outlined"
+                        fullWidth
+                        error={state.passwordRegistration1Error}
+                        helperText={state.passwordRegistration1Error ? state.passwordRegistration1ErrorText : ''}
+                        value={state.passwordRegistration1Value}
+                        onChange={(e) => handleFieldChange(e, 'passwordRegistration1Value')}
+                    />
+                    <TextField
+                        margin="normal"
+                        id="password-reg-2"
+                        label="Повторите пароль"
+                        type="password"
+                        variant="outlined"
+                        fullWidth
+                        error={state.passwordRegistration2Error}
+                        helperText={state.passwordRegistration2Error ? state.passwordRegistration2ErrorText : ''}
+                        value={state.passwordRegistration2Value}
+                        onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
+                        onBlur={checkPasswordMatch}
+                    />
+                    <C.ButtonReg type="submit">Зарегистрироваться</C.ButtonReg>
+                </form>
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
-            </form>
+            </>
+
         )
     }
 
     const renderRestorePasswordForm = () => {
         return (
                 <>
-                    <form noValidate onSubmit={handleRestorePassword}>
+                    <form noValidate onSubmit={handleRestorePasswordSubmit}>
                         <TextField
+                            autoFocus
                             margin="normal"
                             id="restorePassword"
                             label="Email"
                             type="email"
                             variant="outlined"
                             fullWidth
-                            error={state.emailError}
-                            helperText={state.emailError ? state.emailErrorText : ''}
-                            value={state.emailValue}
-                            onChange={(e) => handleFieldChange(e, 'emailValue')}
+                            error={state.emailRestoreError}
+                            helperText={state.emailRestoreError ? state.emailRestoreErrorText : ''}
+                            value={state.emailRestoreValue}
+                            onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
                         />
-                        <C.Button type="submit">Войти</C.Button>
+                        <C.Button type="submit">Сбросить пароль</C.Button>
                     </form>
-                    <C.Button>Назад</C.Button>
+                    <C.Backspace onClick={handleBack}>Назад</C.Backspace>
                 </>
             )
     }
