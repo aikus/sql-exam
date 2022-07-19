@@ -3,7 +3,7 @@
 namespace App\Connectors;
 
 use RusakovNikita\MysqlExam\Exam\Exam;
-use \App\Entity\Exam as OrmExam;
+use App\Entity\Exam as OrmExam;
 
 class ExamConvertor
 {
@@ -23,6 +23,6 @@ class ExamConvertor
 
     public function toBusinessModel(OrmExam $exam): Exam
     {
-        return new Exam($exam->getId(), $exam->getCreator(), $exam->getDescription());
+        return new Exam($exam->getId(), $exam->getCreator(), $exam->getDescription() ?: '', [], $exam->getStatus());
     }
 }
