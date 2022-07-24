@@ -53,7 +53,7 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/react, roles: PUBLIC_ACCESS }
+        - { path: ^/confirm/password, roles: PUBLIC_ACCESS }
 
         - { path: ^api/login/$, roles: PUBLIC_ACCESS }
         - { path: ^api/login_check/$, roles: PUBLIC_ACCESS }
