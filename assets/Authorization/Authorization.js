@@ -44,6 +44,14 @@ export const Authorization = () => {
     const handleRestorePasswordSubmit = (e) => {
         e.preventDefault()
 
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", 'http://localhost/confirm/password', false);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        let emailObject = {
+            "email": state.emailRestoreValue
+        }
+        xhr.send(JSON.stringify(emailObject));
+        console.log('SEND')
     }
 
     const handleFieldChange = (e, fieldName) => {
