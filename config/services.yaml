@@ -30,3 +30,7 @@ services:
     App\Service\StudentResultTable: ~
     App\Service\CheckRight: ~
     App\Connectors\Student\ExaminationRepository: ~
+    RandomLib\Factory: ~
+    App\Service\RandomGeneratorFactory: ~
+    RandomLib\Generator:
+        factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
