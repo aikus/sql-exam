@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import '../styles/app.css';
+import '../../styles/app.css';
 
 export const Wrapper = styled.div`
     background-color: var(--authorization-background-color);

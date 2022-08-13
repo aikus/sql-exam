@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
-import logo from './img/logo.png'
+import { Logo } from "../../components/Logo";
 
 export const Authorization = () => {
     const [state, setState] = useState({
@@ -241,7 +241,7 @@ export const Authorization = () => {
     return (
         <C.Wrapper>
             <C.TopBlock>
-                <img src={logo} alt="логотип"/>
+                <Logo/>
                 <C.Header>{state.headerText}</C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
