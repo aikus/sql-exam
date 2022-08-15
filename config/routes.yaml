@@ -1,3 +1,7 @@
+app_api_login:
+    path: /api/login
+    methods: ['POST']
+
 controllers:
     resource: ../src/Controller/
     type: annotation
