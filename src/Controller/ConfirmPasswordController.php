@@ -55,7 +55,7 @@ class ConfirmPasswordController extends AbstractController
         $mail->subject("Новый пароль");
         $mail->to($email);
         $mail->from('no-reply@nikita-rusakov.ru');
-        $mail->setBody(new TextPart("Ваш новый пароль: '$password'"));
+        $mail->text("Ваш новый пароль: '$password'");
         $this->mailer->send($mail);
 
         return new JsonResponse(['status' => 'ok', 'message' => 'Сообщение с новым паролем отправлено на указанный email']);

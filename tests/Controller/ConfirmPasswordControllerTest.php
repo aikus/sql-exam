@@ -134,7 +134,7 @@ class ConfirmPasswordControllerTest extends TestCase
         $email->subject("Новый пароль");
         $email->to(self::EMAIL);
         $email->from('no-reply@nikita-rusakov.ru');
-        $email->setBody(new TextPart("Ваш новый пароль: '$newPassword'"));
+        $email->text("Ваш новый пароль: '$newPassword'");
         $mailer->expects($this->once())
             ->method('send')
             ->with($email);
