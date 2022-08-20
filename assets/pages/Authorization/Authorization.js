@@ -33,7 +33,21 @@ export const Authorization = () => {
 
     const handleAuthorizationSubmit = (e) => {
         e.preventDefault()
-        // отправка значений на бэк
+        fetch('http://localhost/api/login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({
+                email: 'admin@stratogram.ru',
+                password: 'NE2XAurVuHAb8WT'
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
     }
 
     const handleRegistrationSubmit = (e) => {
