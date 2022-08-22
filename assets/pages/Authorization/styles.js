@@ -60,6 +60,13 @@ export const Button = styled.button`
         background-color: #FAC000;
         cursor: pointer;
     }
+    
+    &:disabled {
+        cursor: wait;
+        &:hover {
+            background-color: #FFCC00;
+        }
+    }
 `
 
 export const ButtonReg = styled(Button)`
