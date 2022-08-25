@@ -44,32 +44,12 @@ export const ForgotPassword = styled.div`
     }
 `
 
-export const Button = styled.button`
-    font-family: var(--font-primary);
-    background-color: #FFCC00;
+export const ButtonBox = styled.div`
     width: 100%;
-    height: 56px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 44px;
     margin-top: 24px;
-
-    &:hover {
-        background-color: #FAC000;
-        cursor: pointer;
-    }
-    
-    &:disabled {
-        cursor: wait;
-        &:hover {
-            background-color: #FFCC00;
-        }
-    }
 `
 
-export const ButtonReg = styled(Button)`
+export const ButtonReg = styled(ButtonBox)`
     margin-top: 40px;
 `
 

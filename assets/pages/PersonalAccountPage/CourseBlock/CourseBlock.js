@@ -3,6 +3,7 @@ import * as C from './styles'
 import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
+import {Button} from "../../../components/Button";
 
 export const CourseBlock = ({id, header, link, items}) => {
 
@@ -33,7 +34,7 @@ export const CourseBlock = ({id, header, link, items}) => {
                                     <div>{item.description}</div>
                                     {item.linkToStart &&
                                         <C.ButtonWrapper>
-                                            <C.Button>Начать прохождение</C.Button>
+                                            <Button>Начать прохождение</Button>
                                         </C.ButtonWrapper>
                                     }
                                 </C.Description>

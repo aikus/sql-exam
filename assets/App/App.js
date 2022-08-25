@@ -6,8 +6,8 @@ import { PersonalAccountPage } from "../pages/PersonalAccountPage/PersonalAccoun
 export const App = () => {
     return (
         <>
-            <Authorization/>
-            {/*<PersonalAccountPage/>*/}
+            {/*<Authorization/>*/}
+            <PersonalAccountPage/>
         </>
     )
 }

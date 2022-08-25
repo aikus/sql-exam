@@ -2,6 +2,11 @@ import styled from "styled-components";
 import '../../../styles/app.css';
 
 export const MyProfileBox = styled.div`
+    margin-top: 24px;
+    
+    @media (min-width: 1024px) {
+        margin-top: 32px;
+    }
 `
 
 export const MyProfile = styled.div`
@@ -29,6 +34,10 @@ export const ButtonBox = styled.div`
     margin-top: 48px;
     display: flex;
     gap: 16px;
+    
+    & > button {
+        width: unset;
+    }
 `
 
 export const Button = styled.button`

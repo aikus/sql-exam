@@ -22,6 +22,10 @@ export const Wrapper = styled.div`
     @media (min-width: 1280px) {
         max-width: 1200px;
         margin: auto;
+        
+        & > section {
+            margin: 100px 0;
+        }
     }
 `
 

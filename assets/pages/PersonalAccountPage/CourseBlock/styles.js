@@ -32,10 +32,10 @@ export const SeeAll = styled.div`
 `
 
 export const AccordionBlock = styled.div`
-    margin-top: 16px;
+    margin-top: 24px;
     
     @media (min-width: 1024px) {
-        margin-top: 24px;
+        margin-top: 32px;
     }
 `
 
@@ -55,21 +55,6 @@ export const Description = styled.div`
 export const ButtonWrapper = styled.div`
     flex-shrink: 0;
     margin-left: 48px;
-`
-
-export const Button = styled.button`
-    font-family: var(--font-primary);
-    background-color: #FFCC00;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 16px 48px;
-
-    &:hover {
-        background-color: #FAC000;
-        cursor: pointer;
-    }
 `
 
 export const Title = styled.div`

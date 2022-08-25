@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
+import {Button} from "../../components/Button";
 
 export const Authorization = () => {
     const [disableLogin, setDisableLogin] = useState(false)
@@ -167,7 +168,9 @@ export const Authorization = () => {
                         onChange={(e) => handleFieldChange(e, 'passwordValue')}
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
-                    <C.Button type="submit" disabled={disableLogin}>Войти</C.Button>
+                    <C.ButtonBox>
+                        <Button type="submit" disabled={disableLogin}>Войти</Button>
+                    </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
                     <span>Нет учетной записи? </span>
@@ -231,7 +234,9 @@ export const Authorization = () => {
                         onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
                         onBlur={checkPasswordMatch}
                     />
-                    <C.ButtonReg type="submit">Зарегистрироваться</C.ButtonReg>
+                    <C.ButtonReg>
+                        <Button type="submit">Зарегистрироваться</Button>
+                    </C.ButtonReg>
                 </form>
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
             </>
@@ -256,7 +261,9 @@ export const Authorization = () => {
                             value={state.emailRestoreValue}
                             onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
                         />
-                        <C.Button type="submit">Сбросить пароль</C.Button>
+                        <C.ButtonBox>
+                            <Button type="submit">Сбросить пароль</Button>
+                        </C.ButtonBox>
                     </form>
                     <C.Backspace onClick={handleBack}>Назад</C.Backspace>
                 </>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import * as C from './styles'
-import { Menu, MenuItem } from "@mui/material";
+import {Button} from "../../../components/Button";
 
 export const MyProfile = () => {
 
@@ -16,8 +16,8 @@ export const MyProfile = () => {
                         <p>Здесь ты можешь посмотреть свой рейтинг и курсы</p>
                     </C.Text>
                     <C.ButtonBox>
-                        <C.Button>Посмотреть другие курсы</C.Button>
-                        <C.Button>Посмотреть свою подробную статистику</C.Button>
+                        <Button>Посмотреть другие курсы</Button>
+                        <Button>Посмотреть свою подробную статистику</Button>
                     </C.ButtonBox>
                 </C.MyProfile>
             </C.MyProfileBox>
