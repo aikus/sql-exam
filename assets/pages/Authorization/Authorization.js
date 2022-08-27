@@ -3,8 +3,11 @@ import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export const Authorization = () => {
+    const navigate = useNavigate();
+
     const [disableLogin, setDisableLogin] = useState(false)
     const [state, setState] = useState({
         emailValue: '',
@@ -67,6 +70,7 @@ export const Authorization = () => {
                         setState((prevState) => {
                             return { ...prevState, token: data.token, passwordError: false }
                         })
+                        navigate("/react/my-profile");
                     }
                 })
         }

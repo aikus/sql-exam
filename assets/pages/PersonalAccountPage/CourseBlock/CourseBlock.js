@@ -21,7 +21,7 @@ export const CourseBlock = ({id, header, link, items}) => {
             <C.AccordionBlock>
                 {items.map((item, i) => {
                     return (
-                        <Accordion>
+                        <Accordion key={i}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls={id + '-' + i + '-content'}
