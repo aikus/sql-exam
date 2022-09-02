@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New AnswerVariant{% endblock %}
+
+{% block body %}
+    <h1>Create new AnswerVariant</h1>
+
+    {{ include('answer_variant/_form.html.twig') }}
+
+    <a href="{{ path('app_answer_variant_index') }}">back to list</a>
+{% endblock %}

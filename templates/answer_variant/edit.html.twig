@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit AnswerVariant{% endblock %}
+
+{% block body %}
+    <h1>Edit AnswerVariant</h1>
+
+    {{ include('answer_variant/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_answer_variant_index') }}">back to list</a>
+
+    {{ include('answer_variant/_delete_form.html.twig') }}
+{% endblock %}

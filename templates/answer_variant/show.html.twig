@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AnswerVariant{% endblock %}
+
+{% block body %}
+    <h1>AnswerVariant</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ answer_variant.id }}</td>
+            </tr>
+            <tr>
+                <th>Contnent</th>
+                <td>{{ answer_variant.contnent }}</td>
+            </tr>
+            <tr>
+                <th>IsRight</th>
+                <td>{{ answer_variant.isRight ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_answer_variant_index') }}">back to list</a>
+
+    <a href="{{ path('app_answer_variant_edit', {'id': answer_variant.id}) }}">edit</a>
+
+    {{ include('answer_variant/_delete_form.html.twig') }}
+{% endblock %}
