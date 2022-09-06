@@ -65,6 +65,7 @@ security:
 
         - { path: ^api/login/$, roles: PUBLIC_ACCESS }
         - { path: ^api/login_check/$, roles: PUBLIC_ACCESS }
+        - { path: ^/react$, roles: PUBLIC_ACCESS }
 
         # User section
         - { path: ^/user-change-password, roles: ROLE_USER }

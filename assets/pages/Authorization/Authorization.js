@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
-import logo from './img/logo.png'
+import { Logo } from "../../components/Logo";
+import {Button} from "../../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export const Authorization = () => {
+    const navigate = useNavigate();
+
+    const [disableLogin, setDisableLogin] = useState(false)
     const [state, setState] = useState({
         emailValue: '',
         emailError: false,
@@ -29,11 +34,46 @@ export const Authorization = () => {
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
+        token: null,
     })
 
     const handleAuthorizationSubmit = (e) => {
         e.preventDefault()
-        // отправка значений на бэк
+
+        if (state.emailValue && state.passwordValue) {
+            document.body.style.cursor = 'wait';
+            setDisableLogin(true)
+            fetch('http://localhost/api/login', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    email: state.emailValue,
+                    password: state.passwordValue
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.body.style.cursor = 'default';
+                    setDisableLogin(false)
+                    if (data.code === 401) {
+                        setState((prevState) => {
+                            return {
+                                ...prevState,
+                                passwordError: true,
+                                passwordErrorText: data.message,
+                            }
+                        })
+                    } else {
+                        setState((prevState) => {
+                            return { ...prevState, token: data.token, passwordError: false }
+                        })
+                        navigate("/react/my-profile");
+                    }
+                })
+        }
     }
 
     const handleRegistrationSubmit = (e) => {
@@ -51,15 +91,11 @@ export const Authorization = () => {
             "email": state.emailRestoreValue
         }
         xhr.send(JSON.stringify(emailObject));
-        console.log('SEND')
     }
 
     const handleFieldChange = (e, fieldName) => {
         setState((prevState) => {
-            return {
-                ...prevState,
-                [fieldName]: e.target.value
-            }
+            return { ...prevState, [fieldName]: e.target.value }
         })
     }
 
@@ -86,17 +122,11 @@ export const Authorization = () => {
     const checkPasswordMatch = () => {
         if (state.passwordRegistration1Value !== state.passwordRegistration2Value) {
             setState((prevState) => {
-                return {
-                    ...prevState,
-                    passwordRegistration2Error: true
-                }
+                return { ...prevState, passwordRegistration2Error: true }
             })
         } else {
             setState((prevState) => {
-                return {
-                    ...prevState,
-                    passwordRegistration2Error: false
-                }
+                return { ...prevState, passwordRegistration2Error: false }
             })
         }
     }
@@ -142,7 +172,9 @@ export const Authorization = () => {
                         onChange={(e) => handleFieldChange(e, 'passwordValue')}
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
-                    <C.Button type="submit">Войти</C.Button>
+                    <C.ButtonBox>
+                        <Button type="submit" disabled={disableLogin}>Войти</Button>
+                    </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
                     <span>Нет учетной записи? </span>
@@ -206,7 +238,9 @@ export const Authorization = () => {
                         onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
                         onBlur={checkPasswordMatch}
                     />
-                    <C.ButtonReg type="submit">Зарегистрироваться</C.ButtonReg>
+                    <C.ButtonReg>
+                        <Button type="submit">Зарегистрироваться</Button>
+                    </C.ButtonReg>
                 </form>
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
             </>
@@ -231,7 +265,9 @@ export const Authorization = () => {
                             value={state.emailRestoreValue}
                             onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
                         />
-                        <C.Button type="submit">Сбросить пароль</C.Button>
+                        <C.ButtonBox>
+                            <Button type="submit">Сбросить пароль</Button>
+                        </C.ButtonBox>
                     </form>
                     <C.Backspace onClick={handleBack}>Назад</C.Backspace>
                 </>
@@ -241,7 +277,7 @@ export const Authorization = () => {
     return (
         <C.Wrapper>
             <C.TopBlock>
-                <img src={logo} alt="логотип"/>
+                <Logo/>
                 <C.Header>{state.headerText}</C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
