@@ -4533,9 +4533,9 @@
     "terser" "^5.7.2"
 
 "terser@^5.7.2":
-  "integrity" "sha512-+ahUAE+iheqBTDxXhTisdA8hgvbEG1hHOQ9xmNjeUJSoi6DU/gMrKNcfZjHkyY6Alnuyc+ikYJaxxfHkT3+WuQ=="
-  "resolved" "https://registry.npmjs.org/terser/-/terser-5.14.1.tgz"
-  "version" "5.14.1"
+  "integrity" "sha512-L1BJiXVmheAQQy+as0oF3Pwtlo4s3Wi1X2zNZ2NxOB4wx9bdS9Vk67XQENLFdLYGCK/Z2di53mTj/hBafR+dTA=="
+  "resolved" "https://registry.npmjs.org/terser/-/terser-5.15.0.tgz"
+  "version" "5.15.0"
   dependencies:
     "@jridgewell/source-map" "^0.3.2"
     "acorn" "^8.5.0"
