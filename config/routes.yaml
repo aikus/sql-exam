@@ -2,6 +2,10 @@ app_api_login:
     path: /api/login
     methods: ['POST']
 
+app_logout:
+    path: /api/logout
+    methods: ['GET']
+
 controllers:
     resource: ../src/Controller/
     type: annotation
