@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ExaminationSheetRepository;
 use DateInterval;
 use DateTimeImmutable;
@@ -11,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExaminationSheetRepository::class)]
+#[ApiResource]
 class ExaminationSheet
 {
     #[ORM\Id]
