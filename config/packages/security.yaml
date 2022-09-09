@@ -30,8 +30,8 @@ security:
         api:
             pattern: ^/api
             stateless: true
-            custom_authenticator: App\Security\AppCustomAuthenticator
-            entry_point: App\Security\AppCustomAuthenticator
+            jwt: ~
+
         main:
             lazy: true
             provider: app_user_provider
@@ -66,6 +66,8 @@ security:
         - { path: ^api/login/$, roles: PUBLIC_ACCESS }
         - { path: ^api/login_check/$, roles: PUBLIC_ACCESS }
         - { path: ^/react$, roles: PUBLIC_ACCESS }
+        - { path: ^/api-platform/docs, roles: PUBLIC_ACCESS }
+        - { path: ^/api-platform, roles: IS_AUTHENTICATED_FULLY }
 
         # User section
         - { path: ^/user-change-password, roles: ROLE_USER }
