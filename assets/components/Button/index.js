@@ -11,6 +11,7 @@ export const Button = ({children, disabled}) => {
 const ButtonComponent = styled.button`
     font-family: var(--font-primary);
     background-color: #FFCC00;
+    color: var(--text-color-primary);
     border: none;
     border-radius: 8px;
     font-size: 16px;

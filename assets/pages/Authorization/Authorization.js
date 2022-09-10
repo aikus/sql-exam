@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { H3 } from '../../components/Typography'
 
 export const Authorization = () => {
     const navigate = useNavigate();
@@ -308,7 +309,7 @@ export const Authorization = () => {
         <C.Wrapper>
             <C.TopBlock>
                 <Logo/>
-                <C.Header>{state.headerText}</C.Header>
+                <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
             {!state.restorePassword && !state.registrationBlock && renderAuthorizationForm()}

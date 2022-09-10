@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
     margin: 0 16px;
     
     & > section {
-        margin: 40px 0;
+        margin: 56px 0;
     }
     
     @media (min-width: 768px) {

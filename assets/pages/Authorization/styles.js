@@ -30,7 +30,8 @@ export const TopBlock = styled.div`
     }
 `
 
-export const Header = styled.h2`
+export const Header = styled.div`
+    margin: 20px 0;
 `
 
 export const ForgotPassword = styled.div`

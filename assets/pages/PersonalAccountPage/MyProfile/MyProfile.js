@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import * as C from './styles'
 import {Button} from "../../../components/Button";
+import { H2, TextL } from '../../../components/Typography'
 
 export const MyProfile = () => {
 
-
     return (
         <>
-            <h1>Мой профиль</h1>
+            <H2>Мой профиль</H2>
             <C.MyProfileBox>
                 <C.MyProfile>
                     <C.Text>
-                        <p>Привет, username</p>
-                        <p>Добро пожаловать в твой личный кабинет в специальном образовательном ресурсе Scirpus.</p>
-                        <p>Здесь ты можешь посмотреть свой рейтинг и курсы</p>
+                        <TextL>Привет, username</TextL>
+                        <TextL>Добро пожаловать в твой личный кабинет в специальном образовательном ресурсе Scirpus.</TextL>
+                        <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                     </C.Text>
                     <C.ButtonBox>
                         <Button>Посмотреть другие курсы</Button>

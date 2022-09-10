@@ -4,13 +4,14 @@ import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails } from "@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import {Button} from "../../../components/Button";
+import { H2, TextL } from '../../../components/Typography'
 
 export const CourseBlock = ({id, header, link, items}) => {
 
     return (
         <>
             <C.HeaderBlock>
-                <h2>{header}</h2>
+                <H2>{header}</H2>
                 <C.SeeAll>
                     <a href={link}>
                         <div>Посмотреть всё</div>
@@ -27,11 +28,11 @@ export const CourseBlock = ({id, header, link, items}) => {
                                 aria-controls={id + '-' + i + '-content'}
                                 id={id + '-' + i + '-header'}
                             >
-                                <C.Title>{item.title}</C.Title>
+                                <C.Title><TextL>{item.title}</TextL></C.Title>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <C.Description>
-                                    <div>{item.description}</div>
+                                    <TextL>{item.description}</TextL>
                                     {item.linkToStart &&
                                         <C.ButtonWrapper>
                                             <Button>Начать прохождение</Button>
