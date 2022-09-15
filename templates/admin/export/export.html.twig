@@ -1,0 +1,16 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Upload csv file{% endblock %}
+
+{% block body %}
+
+<h1>Upload csv file</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.data) }}
+    <div class="control">
+        <button class="button is-primary">{{ 'Send'|trans }}</button>
+    </div>
+{{ form_end(form) }}
+
+{% endblock %}
