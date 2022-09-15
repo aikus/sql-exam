@@ -34,3 +34,5 @@ services:
     App\Service\RandomGeneratorFactory: ~
     RandomLib\Generator:
         factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
+
+    App\Service\FileParser: ~
