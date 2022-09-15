@@ -7,9 +7,13 @@ use App\Repository\ExamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ExamRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Exam
 {
     public const STATUS_ENABLE = 'enable';
@@ -17,6 +21,7 @@ class Exam
 
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
+    #[Groups(['write', 'read'])]
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -24,18 +29,23 @@ class Exam
     private $creator;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['write', 'read'])]
     private $description;
 
     #[ORM\OneToMany(mappedBy: 'exam', targetEntity: Question::class, orphanRemoval: true)]
+    #[Groups(['write', 'read'])]
     private $questions;
 
     #[ORM\OneToMany(mappedBy: 'exam', targetEntity: ExaminationSheet::class, orphanRemoval: true)]
+    #[Groups(['write', 'read'])]
     private $examinationSheets;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['write', 'read'])]
     private $timeLimit;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['write', 'read'])]
     private $status;
 
     public function __construct()
