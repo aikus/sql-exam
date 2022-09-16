@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AnswerVariant index{% endblock %}
+
+{% block body %}
+    <h1>AnswerVariant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Contnent</th>
+                <th>IsRight</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for answer_variant in answer_variants %}
+            <tr>
+                <td>{{ answer_variant.id }}</td>
+                <td>{{ answer_variant.contnent }}</td>
+                <td>{{ answer_variant.isRight ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_answer_variant_show', {'id': answer_variant.id}) }}">show</a>
+                    <a href="{{ path('app_answer_variant_edit', {'id': answer_variant.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_answer_variant_new') }}">Create new</a>
+{% endblock %}
