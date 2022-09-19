@@ -52,9 +52,9 @@ export const Practice = () => {
                             </TextM>
                         </C.Description>
                         <C.ButtonBox>
-                            <Button view={'outlined'} size={'S'}>Назад</Button>
-                            <Button view={'outlined'} size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
-                            <Button view={'outlined'} size={'S'}>Далее</Button>
+                            <Button size={'S'}>Назад</Button>
+                            <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
+                            <Button size={'S'}>Далее</Button>
                         </C.ButtonBox>
                     </C.LeftBlock>
                     <C.RightBlock>
