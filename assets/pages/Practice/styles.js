@@ -49,14 +49,23 @@ export const Header = styled.div`
 `
 
 export const Main = styled.div`
-  display: flex;
   background-color: var(--authorization-background-color);
   box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
   padding: 24px;
   border-radius: 16px;
 `
 
+export const Task = styled.div`
+  display: flex;
+  gap: 16px;
+  
+  @media (min-width: 1024px)  {
+    gap: 24px;
+  }
+`
+
 export const LeftBlock = styled.div`
+    width: 70%;
 `
 
 export const Question = styled.div`
@@ -68,7 +77,9 @@ export const Description = styled.div`
 
 export const ButtonBox = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 16px;
   
   & > button {
     width: unset;
@@ -76,10 +87,16 @@ export const ButtonBox = styled.div`
 `
 
 export const RightBlock = styled.div`
-    width: 700px;
-  height: 700px;
+    width: 30%;
 `
 
+export const TableWrapper = styled.div`
+  margin-top: 32px;
+  
+  & > div:last-child {
+    margin-top: 4px;
+  }
+`
 
 
 

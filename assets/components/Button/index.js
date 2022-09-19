@@ -2,14 +2,19 @@ import React from 'react';
 import styled from 'styled-components'
 import '../../styles/app.css';
 
-export const Button = ({children, disabled, type, size}) => {
+export const Button = (props) => {
+    const view = props.view
+    const disabled = props.disabled
+    const size = props.size
+    const children = props.children
+
     return (
         <>
-            {!type &&
-                <StandardButton disabled={disabled} size={size}>{children}</StandardButton>
+            {!view &&
+                <StandardButton {...props} disabled={disabled} size={size}>{children}</StandardButton>
             }
-            {type === 'outlined' &&
-                <OutlinedButton disabled={disabled} size={size}>{children}</OutlinedButton>
+            {view === 'outlined' &&
+                <OutlinedButton {...props} disabled={disabled} size={size}>{children}</OutlinedButton>
             }
         </>
     )
