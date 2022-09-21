@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
@@ -35,7 +35,6 @@ export const Authorization = () => {
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
-        token: null,
     })
 
     const handleAuthorizationSubmit = (e) => {
@@ -69,8 +68,9 @@ export const Authorization = () => {
                         })
                     } else {
                         setState((prevState) => {
-                            return { ...prevState, token: data.token, passwordError: false }
+                            return { ...prevState, passwordError: false }
                         })
+                        localStorage.setItem('jwtToken', data.token)
                         navigate("/react/my-profile");
                     }
                 })
@@ -172,6 +172,13 @@ export const Authorization = () => {
             }
         })
     }
+
+    useEffect(() => {
+        console.log('jwtToken', localStorage.getItem('jwtToken'))
+        if (localStorage.getItem('jwtToken')) {
+            navigate("/react/my-profile");
+        }
+    }, [])
 
     const renderAuthorizationForm = () => {
         return (

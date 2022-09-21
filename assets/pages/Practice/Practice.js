@@ -5,8 +5,10 @@ import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
 import {ExampleTable} from "./ExampleTable";
+import {useNavigate} from "react-router-dom";
 
 export const Practice = () => {
+    const navigate = useNavigate();
     const [request, setRequest] = useState('')
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
@@ -18,7 +20,7 @@ export const Practice = () => {
 
     return (
         <C.Wrapper>
-            <C.Link><TextM>Вернуться к опроснику</TextM></C.Link>
+            <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
             <C.Header>
                 <H2>Задание 1</H2>
                 <TextM>Задание 1 из 6</TextM>
@@ -52,9 +54,9 @@ export const Practice = () => {
                             </TextM>
                         </C.Description>
                         <C.ButtonBox>
-                            <Button size={'S'}>Назад</Button>
+                            <Button size={'S'} view={'outlined'}>Назад</Button>
+                            <Button size={'S'} view={'outlined'}>Далее</Button>
                             <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
-                            <Button size={'S'}>Далее</Button>
                         </C.ButtonBox>
                     </C.LeftBlock>
                     <C.RightBlock>

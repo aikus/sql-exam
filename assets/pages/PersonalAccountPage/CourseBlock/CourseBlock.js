@@ -5,8 +5,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import {Button} from "../../../components/Button";
 import { H2, TextL } from '../../../components/Typography'
+import {useNavigate} from "react-router-dom";
 
 export const CourseBlock = ({id, header, link, items}) => {
+    const navigate = useNavigate();
 
     return (
         <>
@@ -35,7 +37,7 @@ export const CourseBlock = ({id, header, link, items}) => {
                                     <TextL>{item.description}</TextL>
                                     {item.linkToStart &&
                                         <C.ButtonWrapper>
-                                            <Button>Начать прохождение</Button>
+                                            <Button onClick={() => navigate("/react/my-profile/practice")}>Начать прохождение</Button>
                                         </C.ButtonWrapper>
                                     }
                                 </C.Description>
