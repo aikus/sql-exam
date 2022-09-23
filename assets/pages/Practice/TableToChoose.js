@@ -8,22 +8,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-export const TableToChoose = ({setTable}) => {
-
-    const test = (table) => {
+export const TableToChoose = ({tableData, setTable}) => {
+    const setRightTable = (table) => {
         setTable(table)
     }
-
-    function createData(tableName, linesNum) {
-        return { tableName, linesNum };
-    }
-
-    const rows = [
-        createData('Таблица 1', 40),
-        createData('Таблица 2', 38),
-        createData('Таблица 3', 20),
-        createData('Таблица 4', 15),
-    ];
 
     return (
         <TableContainer component={Paper} sx={{maxWidth: '400px'}}>
@@ -35,11 +23,11 @@ export const TableToChoose = ({setTable}) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {tableData.map((row) => (
                         <TableRow
                             key={row.tableName}
                             onClick={() => {
-                                test(row.tableName)
+                                setRightTable(row.tableName)
                             }}
                             sx={{'&:hover': {backgroundColor: '#F5F5F5', cursor: 'pointer'}}}
                         >

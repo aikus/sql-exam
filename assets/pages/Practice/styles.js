@@ -3,29 +3,15 @@ import '../../styles/app.css';
 
 export const Wrapper = styled.div`
   font-family: var(--font-primary);
-  margin: 0 16px;
-
-  & > section {
-    margin: 56px 0;
-  }
+  margin: 16px;
 
   @media (min-width: 768px) {
-    margin: 0 40px;
-  }
-
-  @media (min-width: 1024px) {
-    & > section {
-      margin: 80px 0;
-    }
+    margin: 40px;
   }
 
   @media (min-width: 1280px) {
     max-width: 1200px;
-    margin: auto;
-
-    & > section {
-      margin: 100px 0;
-    }
+    margin: 40px auto;
   }
 `
 
@@ -78,10 +64,15 @@ export const Description = styled.div`
 export const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 8px;
   margin-top: 16px;
+  justify-content: space-between;
   
-  & > button {
+  & > div:first-child {
+    display: flex;
+    gap: 8px;
+  }
+  
+  & * button, & > button {
     width: unset;
   }
 `

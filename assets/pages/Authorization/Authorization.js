@@ -174,7 +174,6 @@ export const Authorization = () => {
     }
 
     useEffect(() => {
-        console.log('jwtToken', localStorage.getItem('jwtToken'))
         if (localStorage.getItem('jwtToken')) {
             navigate("/react/my-profile");
         }

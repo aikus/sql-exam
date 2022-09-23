@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
 import {ExampleTable} from "./ExampleTable";
+import {ResultBlock} from "./ResultBlock";
 import {useNavigate} from "react-router-dom";
 
 export const Practice = () => {
     const navigate = useNavigate();
+    const [taskNum, setTaskNum] = useState(1)
     const [request, setRequest] = useState('')
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
@@ -18,19 +20,37 @@ export const Practice = () => {
         setShowResultTable(true)
     }
 
+    const handgeNextStep = () => {
+        setTaskNum((prevState => prevState + 1))
+    }
+
+    const handgePrevStep = () => {
+        setTaskNum((prevState => prevState - 1))
+    }
+
+    const setTableInfo = (item) => {
+        let result = []
+
+        for (let key in item) {
+            result.push({'tableName': key, 'linesNum': item[key].numOfRows})
+        }
+
+        return result
+    }
+
     return (
         <C.Wrapper>
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
             <C.Header>
-                <H2>Задание 1</H2>
-                <TextM>Задание 1 из 6</TextM>
+                <H2>Задание {taskNum}</H2>
+                <TextM>Задание {taskNum} из {data.length}</TextM>
             </C.Header>
             <C.Main>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
                         <C.Question>
-                            <TextM>Сделать то, использовать это, сортировать так.</TextM>
+                            <TextM>{data[taskNum - 1].question}</TextM>
                         </C.Question>
                         <TextField
                             margin="normal"
@@ -49,33 +69,325 @@ export const Practice = () => {
                         <C.Description>
                             <TextM>
                                 Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
-                                Если он верный, то рядом с номером задания появится значок.
                                 Чтобы перейти к следующему заданию нажмите "Далее"
                             </TextM>
                         </C.Description>
                         <C.ButtonBox>
-                            <Button size={'S'} view={'outlined'}>Назад</Button>
-                            <Button size={'S'} view={'outlined'}>Далее</Button>
-                            <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
+                            <div>
+                                {taskNum !== 1 &&
+                                    <Button size={'S'} view={'outlined'} onClick={handgePrevStep}>Назад</Button>
+                                }
+                                {taskNum !== data.length &&
+                                    <Button size={'S'} view={'outlined'} onClick={handgeNextStep}>Далее</Button>
+                                }
+                                <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
+                            </div>
+                            {taskNum === data.length &&
+                                <Button size={'S'} onClick={() => navigate("/react/my-profile")}>Завершить практику</Button>
+                            }
                         </C.ButtonBox>
                     </C.LeftBlock>
                     <C.RightBlock>
-                        <TableToChoose setTable={setChosenTable}/>
+                        <TableToChoose tableData={setTableInfo(data[taskNum - 1].tableToChoose)} setTable={setChosenTable}/>
                     </C.RightBlock>
                 </C.Task>
                 {chosenTable &&
                     <C.TableWrapper>
                         <TextM>{chosenTable}</TextM>
-                        <ExampleTable table={chosenTable}/>
+                        <ExampleTable tableData={data[taskNum - 1].tableToChoose[chosenTable].exampleTable}/>
                     </C.TableWrapper>
                 }
                 {showResultTable &&
                     <C.TableWrapper>
                         <TextM>Результат запроса</TextM>
-                        <ExampleTable table={chosenTable}/>
+                        <ResultBlock/>
                     </C.TableWrapper>
                 }
             </C.Main>
         </C.Wrapper>
     )
 }
+
+const data = [
+    {
+        'question': 'Сделать то, использовать это, сортировать так.',
+        'tableToChoose': {
+            'Таблица 1': {
+                'numOfRows': '40',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'VARCHAR'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
+                        ['Marco', '38', '', '2022-04-11 03:18:18'],
+                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
+                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+            'Таблица 2': {
+                'numOfRows': '38',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
+                        ['2', '38', '', '2022-04-11 03:18:18'],
+                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
+                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+        }
+    },
+    {
+        'question': 'Сделать SELECT * FROM test',
+        'tableToChoose': {
+            'Таблица 1': {
+                'numOfRows': '12',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'VARCHAR'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
+                        ['Marco', '38', '', '2022-04-11 03:18:18'],
+                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
+                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+            'Таблица 2': {
+                'numOfRows': '4',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
+                        ['2', '38', '', '2022-04-11 03:18:18'],
+                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
+                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+            'Таблица 3': {
+                'numOfRows': '77',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
+                        ['2', '38', '', '2022-04-11 03:18:18'],
+                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
+                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+        }
+    },
+    {
+        'question': 'Вывести название и цену для всех анализов, которые продавались 5 февраля 2020 и всю следующую неделю.',
+        'tableToChoose': {
+            'Таблица 1': {
+                'numOfRows': '40',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'VARCHAR'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
+                        ['Marco', '38', '', '2022-04-11 03:18:18'],
+                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
+                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+            'Таблица 2': {
+                'numOfRows': '38',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
+                        ['2', '38', '', '2022-04-11 03:18:18'],
+                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
+                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+        }
+    },
+    {
+        'question': 'Вывести название и цену для всех анализов, которые продавались 5 февраля 2020 и всю следующую неделю.',
+        'tableToChoose': {
+            'Таблица 1': {
+                'numOfRows': '40',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'VARCHAR'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
+                        ['Marco', '38', '', '2022-04-11 03:18:18'],
+                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
+                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+            'Таблица 2': {
+                'numOfRows': '38',
+                'exampleTable': {
+                    'header': [
+                        {
+                            'attribute': 'Атрибут 1',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 2',
+                            'type': 'INT'
+                        },
+                        {
+                            'attribute': 'Атрибут 3',
+                            'type': 'LONGTEXT'
+                        },
+                        {
+                            'attribute': 'Атрибут 4',
+                            'type': 'DATETIME'
+                        }
+                    ],
+                    'body': [
+                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
+                        ['2', '38', '', '2022-04-11 03:18:18'],
+                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
+                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
+                    ]
+                }
+            },
+        }
+    }
+]
