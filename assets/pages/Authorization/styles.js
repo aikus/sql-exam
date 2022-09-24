@@ -25,8 +25,14 @@ export const TopBlock = styled.div`
     text-align: center;
     
     & > img {
-        height: 80px;
+        height: 100px;
         border-radius: 50%;
+    }
+
+    @media screen and (min-width: 1024px) {
+      & > img {
+        height: 120px;
+      }
     }
 `
 
