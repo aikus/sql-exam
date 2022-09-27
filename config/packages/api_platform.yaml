@@ -9,3 +9,11 @@ api_platform:
         JWT:
             name: Authorization
             type: header
+    formats:
+        jsonld: [ 'application/ld+json' ]
+        jsonhal: [ 'application/hal+json' ]
+        jsonapi: [ 'application/vnd.api+json' ]
+        json: [ 'application/json' ]
+        yaml: [ 'application/x-yaml' ]
+        html: [ 'text/html' ]
+        myformat: [ 'application/vnd.myformat' ]
