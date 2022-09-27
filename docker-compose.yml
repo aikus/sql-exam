@@ -54,6 +54,21 @@ services:
     ports:
       - "80:80"
 
+  pgdb:
+    image: postgres
+    #restart: always
+    container_name: pgdb
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    #restart: always
+    ports:
+      - 8080:8080
+
 volumes:
 ###> doctrine/doctrine-bundle ###
   database:
