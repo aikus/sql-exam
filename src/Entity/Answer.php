@@ -7,6 +7,9 @@ use App\Repository\AnswerRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Ответы на задания по sql
+ */
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
 #[ApiResource]
 class Answer
@@ -19,18 +22,30 @@ class Answer
     #[ORM\JoinColumn(nullable: false)]
     private $question;
 
+    /**
+     * @var string sql-запрос, по сути значимая часть ответа
+     */
     #[ORM\Column(type: 'text')]
     private $sql_text;
 
+    /**
+     * @var array результат ответа, который видел студнет во время ответа на вопрос, если запрос был выполнен.
+     */
     #[ORM\Column(type: 'array', nullable: true)]
     private $result_table;
 
+    /**
+     * @var string Ошбка запроса, отданая базой данных, если при запросе случилась ошибка
+     */
     #[ORM\Column(type: 'text', nullable: true)]
     private $result_error;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private $check_right;
 
+    /**
+     * @var
+     */
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $start;
 
