@@ -1,0 +1,16 @@
+GET http://localhost/api-platform/exams
+Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQyOTc0NzIsImV4cCI6MTY2NDMwMTA3Miwicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.f2rOvo6DAC_ip2RbkghPksTuwut4VkZux9V5PM0xzOdMLZ-tjmBtPD1vNRRQQ8UdHzxDbPV4Z4KiL-d2OV_2E-PcszqXvGfxb-RdPQqHnhMfSKMZbgFTx8yl3FFoqm9Rv1S-KoII3ZNBKmF2dIQ6uiqVnE-sXlwEZK3emeEMhGOeqkRodN8fk4kXk0YMV7bXp2ml9IaCGQljJGR_xpdFkE8z6RYdzOwbk6tO1oNTYgZKGiYlr_qAEN2mS2sBAYC1fbcE-nZ9DvIa1NiGrCn6MJ-gWxKwhybfQL9va_wghh1FSbl3uFHZngML731mPOxjWed2a0_-8VRWuwucXJIPHg
+
+###
+POST http://localhost/api-platform/exams
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQyOTc0NzIsImV4cCI6MTY2NDMwMTA3Miwicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.f2rOvo6DAC_ip2RbkghPksTuwut4VkZux9V5PM0xzOdMLZ-tjmBtPD1vNRRQQ8UdHzxDbPV4Z4KiL-d2OV_2E-PcszqXvGfxb-RdPQqHnhMfSKMZbgFTx8yl3FFoqm9Rv1S-KoII3ZNBKmF2dIQ6uiqVnE-sXlwEZK3emeEMhGOeqkRodN8fk4kXk0YMV7bXp2ml9IaCGQljJGR_xpdFkE8z6RYdzOwbk6tO1oNTYgZKGiYlr_qAEN2mS2sBAYC1fbcE-nZ9DvIa1NiGrCn6MJ-gWxKwhybfQL9va_wghh1FSbl3uFHZngML731mPOxjWed2a0_-8VRWuwucXJIPHg
+
+{
+  "description": "Тест с id",
+  "questions": [],
+  "examinationSheets": [],
+  "timeLimit": 3600,
+  "status": "enable"
+}
