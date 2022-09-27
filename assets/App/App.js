@@ -9,14 +9,14 @@ import {Questionnaire} from "../pages/Questionnaire";
 export const App = () => {
     return (
         <>
-            {/*<BrowserRouter>*/}
-            {/*    <Routes>*/}
-            {/*        <Route path="/react/" element={<Authorization/>}/>*/}
-            {/*        <Route path="/react/my-profile" element={<PersonalAccountPage/>}/>*/}
-            {/*        <Route path="/react/my-profile/practice" element={<Practice/>}/>*/}
-            {/*    </Routes>*/}
-            {/*</BrowserRouter>*/}
-            <Questionnaire/>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/react/" element={<Authorization/>}/>
+                    <Route path="/react/my-profile" element={<PersonalAccountPage/>}/>
+                    <Route path="/react/my-profile/practice" element={<Practice/>}/>
+                </Routes>
+            </BrowserRouter>
+            {/*<Questionnaire/>*/}
         </>
     )
 }

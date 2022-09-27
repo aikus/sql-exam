@@ -13,24 +13,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-const initType = () => {
-    let accumulator = {}
-
-    for (let i = 0; i < data.length; i++) {
-        accumulator[i] = ''
-    }
-
-    return accumulator
-}
-
-export const SkillTable = () => {
-    const [type, setType] = useState(initType)
-
+export const SkillTable = ({rawData, typeData, setType}) => {
     const handleChangeType = (e, i) => {
-        console.log(e.target.value)
         setType((prevState) => ({
             ...prevState,
-            [i]: e.target.value
+            [i]: {type: e.target.value, link: ''}
         }))
     }
 
@@ -61,7 +48,7 @@ export const SkillTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, i) => (
+                    {rawData.map((row, i) => (
                         <TableRow
                             key={i}
                         >
@@ -73,7 +60,7 @@ export const SkillTable = () => {
                             <TableCell>
                                 <FormControl sx={{minWidth: 130}} size="small">
                                     <Select
-                                        value={type[i]}
+                                        value={typeData[i].type}
                                         onChange={(e) => handleChangeType(e, i)}
                                         displayEmpty
                                         sx={{fontSize: '14px'}}
@@ -90,12 +77,3 @@ export const SkillTable = () => {
         </TableContainer>
     )
 }
-
-const data = [
-    {'skill': 'BPMN 2.0', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': '', 'belonging': 'Общий'},
-    {'skill': 'API', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': '', 'belonging': 'Общий'},
-    {'skill': 'Камунда', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': 'теория', 'belonging': 'Общий'},
-    {'skill': 'BPMN 2.0', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': 'практика', 'belonging': 'Общий'},
-    {'skill': 'BPMN 2.0', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': '', 'belonging': 'Общий'},
-    {'skill': 'BPMN 2.0', 'description': 'тут текст с описанием', 'skill_group': 'построение диаграмм/схем', 'done': '', 'belonging': 'Общий'},
-]

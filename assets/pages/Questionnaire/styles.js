@@ -38,3 +38,15 @@ export const Main = styled.div`
   border-radius: 16px;
 `
 
+export const ArtefactBlock = styled.div`
+    margin-top: 24px;
+`
+
+export const TextBlock = styled.div`
+  margin-bottom: 16px;
+  
+  & > *:first-child {
+    margin-bottom: 8px;
+  }
+`
+
