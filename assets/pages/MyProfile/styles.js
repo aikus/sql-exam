@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import '../../../styles/app.css';
+import '../../styles/app.css';
 
 export const MyProfileBox = styled.div`
     margin-top: 24px;

@@ -2,11 +2,10 @@ import styled from "styled-components";
 import '../../styles/app.css';
 
 export const Wrapper = styled.div`
-  font-family: var(--font-primary);
-  margin: 16px;
+  margin: 16px 0;
 
   @media (min-width: 768px) {
-    margin: 40px;
+    margin: 40px 0;
   }
 
   @media (min-width: 1280px) {

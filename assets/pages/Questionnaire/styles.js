@@ -39,7 +39,7 @@ export const Main = styled.div`
 `
 
 export const ArtefactBlock = styled.div`
-    margin-top: 24px;
+    margin-top: 32px;
 `
 
 export const TextBlock = styled.div`
@@ -50,3 +50,12 @@ export const TextBlock = styled.div`
   }
 `
 
+export const ButtonBlock = styled.div`
+  display: flex;
+  margin-top: 32px;
+  justify-content: right;
+  
+  & > button {
+    width: unset;
+  }
+`

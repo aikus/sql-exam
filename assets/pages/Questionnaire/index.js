@@ -54,14 +54,17 @@ export const Questionnaire = () => {
                                 В таблице приведены скиллы, которые вы пометили к сдаче на практике.
                                 Приложите к каждому скиллу не менее двух ссылок на  артефакты, подтверждающие ваше владение скиллом.
                             </TextM>
-                            <ArtefactTable
-                                rawData={data}
-                                tableData={formData}
-                                setLinks={setFormData}
-                            />
                         </C.TextBlock>
+                        <ArtefactTable
+                            rawData={data}
+                            tableData={formData}
+                            setLinks={setFormData}
+                        />
                     </C.ArtefactBlock>
                 }
+                <C.ButtonBlock>
+                    <Button>Завершить заполнение</Button>
+                </C.ButtonBlock>
             </C.Main>
         </C.Wrapper>
     )

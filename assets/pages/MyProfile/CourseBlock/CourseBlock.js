@@ -7,15 +7,15 @@ import {Button} from "../../../components/Button";
 import { H2, TextL } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
 
-export const CourseBlock = ({id, header, link, items}) => {
+export const CourseBlock = ({id, items}) => {
     const navigate = useNavigate();
 
     return (
         <>
             <C.HeaderBlock>
-                <H2>{header}</H2>
+                <H2>В процессе</H2>
                 <C.SeeAll>
-                    <a href={link}>
+                    <a href={'#'}>
                         <div>Посмотреть всё</div>
                         <img src={arrowRight}/>
                     </a>
@@ -30,16 +30,14 @@ export const CourseBlock = ({id, header, link, items}) => {
                                 aria-controls={id + '-' + i + '-content'}
                                 id={id + '-' + i + '-header'}
                             >
-                                <C.Title><TextL>{item.title}</TextL></C.Title>
+                                <C.Title><TextL>{item.description}</TextL></C.Title>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <C.Description>
-                                    <TextL>{item.description}</TextL>
-                                    {item.linkToStart &&
-                                        <C.ButtonWrapper>
-                                            <Button onClick={() => navigate("/react/my-profile/practice")}>Начать прохождение</Button>
-                                        </C.ButtonWrapper>
-                                    }
+                                    <TextL>ЗАГЛУШКА</TextL>
+                                    <C.ButtonWrapper>
+                                        <Button onClick={() => navigate("/react/my-profile/practice")}>Начать прохождение</Button>
+                                    </C.ButtonWrapper>
                                 </C.Description>
                             </AccordionDetails>
                         </Accordion>

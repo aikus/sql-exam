@@ -23,3 +23,8 @@ app_react_practice:
     path: react/my-profile/practice
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]
+
+app_react_questionnaire:
+    path: react/my-profile/questionnaire
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]

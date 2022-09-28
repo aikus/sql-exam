@@ -15,31 +15,9 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {TextField} from "@mui/material";
 
 export const ArtefactTable = ({rawData, tableData, setLinks}) => {
-    // const [type, setType] = useState(initType)
-    //
-    // const handleChangeType = (e, i) => {
-    //     console.log(e.target.value)
-    //     setType((prevState) => ({
-    //         ...prevState,
-    //         [i]: {type: e.target.value, link: ''}
-    //     }))
-    // }
-    //
-    // const chooseField = (done) => {
-    //     const status = done.toLowerCase()
-    //
-    //     if (!status) {
-    //         return [
-    //             <MenuItem value='практика'>Практика</MenuItem>,
-    //             <MenuItem value='теория'>Теория</MenuItem>
-    //         ]
-    //     }
-    //     if (status === 'практика') return  <MenuItem value='теория'>Теория</MenuItem>
-    //     if (status === 'теория') return <MenuItem value='практика'>Практика</MenuItem>
-    // }
 
     return (
-        <TableContainer component={Paper} sx={{marginTop: '16px'}}>
+        <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>
                     <TableRow sx={{backgroundColor: '#CCCCCC', '& > th': { fontWeight: '600' }}}>
@@ -58,15 +36,20 @@ export const ArtefactTable = ({rawData, tableData, setLinks}) => {
                                         <TableCell>{row.skill}</TableCell>
                                         <TableCell>{row.description}</TableCell>
                                         <TableCell>
-                                            {/*<TextField*/}
-                                            {/*    id={`form-${i+1}`}*/}
-                                            {/*    type="text"*/}
-                                            {/*    variant="outlined"*/}
-                                            {/*    multiline={true}*/}
-                                            {/*    fullWidth={true}*/}
-                                            {/*    value={request}*/}
-                                            {/*    onChange={(e) => handleChangeLinks(e)}*/}
-                                            {/*/>*/}
+                                            <TextField
+                                                id={`form-${i+1}`}
+                                                type="text"
+                                                variant="outlined"
+                                                multiline={true}
+                                                fullWidth={true}
+                                                value={tableData[i].link}
+                                                onChange={(e) => {
+                                                    setLinks((prevState) => ({
+                                                        ...prevState,
+                                                        [i]: {type: prevState[i].type, link: e.target.value}
+                                                    }))
+                                                }}
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 )

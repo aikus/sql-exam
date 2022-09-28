@@ -26,12 +26,12 @@ export const SkillTable = ({rawData, typeData, setType}) => {
 
         if (!status) {
             return [
-                <MenuItem value='практика'>Практика</MenuItem>,
-                <MenuItem value='теория'>Теория</MenuItem>
+                <MenuItem value='практика' key={1}>Практика</MenuItem>,
+                <MenuItem value='теория' key={2}>Теория</MenuItem>
             ]
         }
-        if (status === 'практика') return  <MenuItem value='теория'>Теория</MenuItem>
-        if (status === 'теория') return <MenuItem value='практика'>Практика</MenuItem>
+        if (status === 'практика') return <MenuItem value='теория' key={1}>Теория</MenuItem>
+        if (status === 'теория') return <MenuItem value='практика' key={2}>Практика</MenuItem>
     }
 
     return (
@@ -65,7 +65,7 @@ export const SkillTable = ({rawData, typeData, setType}) => {
                                         displayEmpty
                                         sx={{fontSize: '14px'}}
                                     >
-                                        <MenuItem value=''>Не выбрано</MenuItem>
+                                        <MenuItem value='' key={0}>Не выбрано</MenuItem>
                                         {chooseField(row.done)}
                                     </Select>
                                 </FormControl>
