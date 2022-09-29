@@ -22,6 +22,9 @@ export const PersonalAccountPage = () => {
             })
                 .then(response => response.json())
                 .then(data => {
+                    if (data.code === 401) {
+                        return
+                    }
                     setInProgress(data['hydra:member'])
                 })
         }
@@ -31,7 +34,6 @@ export const PersonalAccountPage = () => {
         <C.Wrapper>
             <C.NavBar>
                 <Logo onClick={() => {
-                    console.log(111)
                     navigate("/react/my-profile")
                 }}/>
                 <C.NavBarItemsBox>

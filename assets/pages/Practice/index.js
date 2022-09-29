@@ -74,13 +74,9 @@ export const Practice = () => {
                         </C.Description>
                         <C.ButtonBox>
                             <div>
-                                {taskNum !== 1 &&
-                                    <Button size={'S'} view={'outlined'} onClick={handgePrevStep}>Назад</Button>
-                                }
-                                {taskNum !== data.length &&
-                                    <Button size={'S'} view={'outlined'} onClick={handgeNextStep}>Далее</Button>
-                                }
                                 <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
+                                <Button size={'S'} view={'outlined'} onClick={handgePrevStep} disabled={taskNum !== 1 ? false : true}>Назад</Button>
+                                <Button size={'S'} view={'outlined'} onClick={handgeNextStep} disabled={taskNum !== data.length ? false : true}>Далее</Button>
                             </div>
                             {taskNum === data.length &&
                                 <Button size={'S'} onClick={() => navigate("/react/my-profile")}>Завершить практику</Button>
