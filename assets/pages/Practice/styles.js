@@ -62,8 +62,9 @@ export const Description = styled.div`
 
 export const ButtonBox = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 16px;
+  gap: 16px;
   justify-content: space-between;
   
   & > div:first-child {
@@ -73,6 +74,14 @@ export const ButtonBox = styled.div`
   
   & * button, & > button {
     width: unset;
+  }
+  
+  & > button {
+    align-self: flex-start;
+  }
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
   }
 `
 

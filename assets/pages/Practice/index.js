@@ -15,6 +15,24 @@ export const Practice = () => {
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
 
+    const test = () => {
+        fetch('http://localhost/api/studentData/10', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data: ', data)
+            })
+    }
+
+    useEffect(() => {
+        console.log(111)
+        test()
+    }, [])
+
     const checkRequest = () => {
         // логика проверки запроса
         setShowResultTable(true)

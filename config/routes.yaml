@@ -28,3 +28,13 @@ app_react_questionnaire:
     path: react/my-profile/questionnaire
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]
+
+app_react_course-management:
+    path: react/my-profile/course-management
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_create-course:
+    path: react/my-profile/create-course
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
