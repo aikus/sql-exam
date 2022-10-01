@@ -69,6 +69,7 @@ security:
         - { path: ^/react$, roles: PUBLIC_ACCESS }
         - { path: ^/api-platform/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api-platform, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
         # User section
         - { path: ^/user-change-password, roles: ROLE_USER }
