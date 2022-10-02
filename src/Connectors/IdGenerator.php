@@ -22,4 +22,9 @@ class IdGenerator implements ExamIdGenerator, QuestionIdGenerator
     {
         return $this->generate();
     }
+
+    public function generateAnswerId(): string
+    {
+        return $this->generate();
+    }
 }
