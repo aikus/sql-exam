@@ -3,10 +3,12 @@ import * as C from './styles'
 import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel } from "@mui/material";
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
+import {TaskSheet} from './TaskSheet'
 import {useNavigate} from "react-router-dom";
 
 export const CreateCourse = () => {
-  const [courseInfo, setCourseInfo] = useState({
+  const [step, setStep] = useState(1)
+  const [courseMainInfo, setCourseMainInfo] = useState({
     name: '',
     description: '',
     intendedFor: [],
@@ -19,102 +21,121 @@ export const CreateCourse = () => {
     const {
       target: { value },
     } = event;
-    setCourseInfo(prevState => ({...prevState, intendedFor: typeof value === 'string' ? value.split(',') : value}));
+    setCourseMainInfo(prevState => ({...prevState, intendedFor: typeof value === 'string' ? value.split(',') : value}));
   };
 
   const handleExamChange = (event) => {
-    setCourseInfo(prevState => ({...prevState, exam: event.target.checked}));
+    setCourseMainInfo(prevState => ({...prevState, exam: event.target.checked}));
+  };
+
+  const handleNextStep = () => {
+    setStep(prevState => prevState + 1);
+  };
+
+  const handlePrevStep = () => {
+    setStep(prevState => prevState - 1);
   };
 
   return (
       <C.Wrapper>
         <H2>Создание нового курса</H2>
         <C.Main>
-          <C.FieldBox>
-            <H5>Название курса</H5>
-            <TextField
-              required
-              type="text"
-              multiline={true}
-              fullWidth={true}
-              value={courseInfo.name}
-              onChange={(e) => {
-                setCourseInfo((prevState) => ({...prevState, name: e.target.value}))
-              }}
-            />
-          </C.FieldBox>
-          <C.FieldBox>
-            <H5>Описание курса</H5>
-            <TextField
-              required
-              placeholder="Введите описание"
-              type="text"
-              multiline={true}
-              fullWidth={true}
-              minRows={5}
-              value={courseInfo.description}
-              onChange={(e) => {
-                setCourseInfo((prevState) => ({...prevState, description: e.target.value}))
-              }}
-            />
-          </C.FieldBox>
-          <C.FieldBox>
-            <H5>Принадлежность</H5>
-            <Select
-              multiple
-              displayEmpty
-              value={courseInfo.intendedFor}
-              onChange={handleIntendedForChange}
-              input={<OutlinedInput />}
-              renderValue={(selected) => {
-                if (selected.length === 0) {
-                  return <TextL>Для всех (общий)</TextL>;
-                }
+          {step === 1 &&
+            <C.FirstStep>
+              <C.FieldBox>
+                <H5>Название курса</H5>
+                <TextField
+                  required
+                  type="text"
+                  multiline={true}
+                  fullWidth={true}
+                  value={courseMainInfo.name}
+                  onChange={(e) => {
+                    setCourseMainInfo((prevState) => ({...prevState, name: e.target.value}))
+                  }}
+                />
+              </C.FieldBox>
+              <C.FieldBox>
+                <H5>Описание курса</H5>
+                <TextField
+                  required
+                  placeholder="Введите описание"
+                  type="text"
+                  multiline={true}
+                  fullWidth={true}
+                  minRows={5}
+                  value={courseMainInfo.description}
+                  onChange={(e) => {
+                    setCourseMainInfo((prevState) => ({...prevState, description: e.target.value}))
+                  }}
+                />
+              </C.FieldBox>
+              <C.FieldBox>
+                <H5>Принадлежность</H5>
+                <Select
+                  multiple
+                  displayEmpty
+                  value={courseMainInfo.intendedFor}
+                  onChange={handleIntendedForChange}
+                  input={<OutlinedInput />}
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return <TextL>Для всех (общий)</TextL>;
+                    }
 
-                return selected.join(', ');
-              }}
-              MenuProps={MenuProps}
-              sx={{minWidth: '300px', maxWidth: '100%'}}
-            >
-              {names.map((name) => (
-                <MenuItem key={name} value={name}>
-                  <Checkbox checked={courseInfo.intendedFor.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </C.FieldBox>
-          <C.CheckBoxWrapper>
-            <FormControlLabel control={<Checkbox checked={courseInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />
-            <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>
-          </C.CheckBoxWrapper>
-          {courseInfo.exam &&
-            <C.CheckBoxControled>
-              <C.FieldBox>
-                <H5>Количество попыток</H5>
-                <TextField
-                  required
-                  type="number"
-                  value={courseInfo.numOfTries}
-                  onChange={(e) => {
-                    setCourseInfo((prevState) => ({...prevState, numOfTries: e.target.value}))
+                    return selected.join(', ');
                   }}
-                />
+                  MenuProps={MenuProps}
+                  sx={{minWidth: '300px', maxWidth: '100%'}}
+                >
+                  {names.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={courseMainInfo.intendedFor.indexOf(name) > -1} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
               </C.FieldBox>
-              <C.FieldBox>
-                <H5>Время на одну попытку в минутах</H5>
-                <TextField
-                  required
-                  type="number"
-                  value={courseInfo.minForTrie}
-                  onChange={(e) => {
-                    setCourseInfo((prevState) => ({...prevState, minForTrie: e.target.value}))
-                  }}
-                />
-              </C.FieldBox>
-            </C.CheckBoxControled>
+              <C.CheckBoxWrapper>
+                <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />
+                <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>
+              </C.CheckBoxWrapper>
+              {courseMainInfo.exam &&
+                <C.CheckBoxControled>
+                  <C.FieldBox>
+                    <H5>Количество попыток</H5>
+                    <TextField
+                      required
+                      type="number"
+                      value={courseMainInfo.numOfTries}
+                      onChange={(e) => {
+                        setCourseMainInfo((prevState) => ({...prevState, numOfTries: e.target.value}))
+                      }}
+                    />
+                  </C.FieldBox>
+                  <C.FieldBox>
+                    <H5>Время на одну попытку в минутах</H5>
+                    <TextField
+                      required
+                      type="number"
+                      value={courseMainInfo.minForTrie}
+                      onChange={(e) => {
+                        setCourseMainInfo((prevState) => ({...prevState, minForTrie: e.target.value}))
+                      }}
+                    />
+                  </C.FieldBox>
+                </C.CheckBoxControled>
+              }
+              <Button onClick={handleNextStep}>Далее</Button>
+            </C.FirstStep>
           }
-          <Button>Далее</Button>
+          {step >= 2 &&
+            <TaskSheet
+              step={step}
+              nextStep={handleNextStep}
+              prevStep={handlePrevStep}
+            />
+          }
         </C.Main>
       </C.Wrapper>
   )

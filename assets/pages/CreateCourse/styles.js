@@ -20,7 +20,9 @@ export const Main = styled.div`
   padding: 24px;
   border-radius: 16px;
   margin-top: 24px;
-  
+`
+
+export const FirstStep = styled.div`
   & > button {
     width: unset;
     margin-top: 32px;
@@ -46,4 +48,7 @@ export const CheckBoxWrapper = styled.div`
 
 export const CheckBoxControled = styled.div`
   margin-top: 24px;
+`
+
+export const Type = styled.div`
 `
