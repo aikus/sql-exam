@@ -28,7 +28,7 @@ class Answer
      * @var string sql-запрос, по сути значимая часть ответа
      */
     #[ORM\Column(type: 'text')]
-    private $sql_text;
+    private $sql_text = '';
 
     /**
      * @var array результат ответа, который видел студнет во время ответа на вопрос, если запрос был выполнен.
