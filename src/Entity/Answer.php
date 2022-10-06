@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\AnswerListener;
 use App\Repository\AnswerRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Ответы на задания по sql
  */
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
+#[ORM\EntityListeners([AnswerListener::class])]
 #[ApiResource]
 class Answer
 {
@@ -26,7 +28,7 @@ class Answer
      * @var string sql-запрос, по сути значимая часть ответа
      */
     #[ORM\Column(type: 'text')]
-    private $sql_text;
+    private $sql_text = '';
 
     /**
      * @var array результат ответа, который видел студнет во время ответа на вопрос, если запрос был выполнен.
