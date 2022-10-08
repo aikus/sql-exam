@@ -15,13 +15,13 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjUwNjI1M
 ###
 POST http://localhost/api-platform/exams
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQzNzMyNTAsImV4cCI6MTY2NDM3Njg1MCwicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.FmZ5L0FQx0CVsHhEFUq65_aKeUFHvyalcRYlfepOkoojtYrd6a30XAoMzi-Eg7rkM6QzOF7L_sjEpdH-6gv8Mn_CqlOWZiPU7pcjytw_tiMmUzkHJpJ04zKGCRg45-IMoijsEUHkzrFYACgLpDavRWX8O2aVW8TMjo4aWQeh1Ys4y72iBoXxmDJXrRgpmsJ09mwDKnNmANwOXaOW4tAv6-DfhI6mLKLrZn23vLjM9J_0leZ7xVHVgjgbpl6VcrVuf68SaTMAdyX-ZBD9lUMNZqUKqeJZh0x2eGQBIeH7A3IUCj4hDiJ3oXLJuD1ErHfc616o5lHc9-TAFthNl4szhA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjUyNDIzMDcsImV4cCI6MTY2NTI0NTkwNywicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InNsdW16QHlhbmRleC5ydSJ9.Kz-qLOY1AjDL87ZMmWGOVSBg72TiHKfBojzKGBUmhUrcRWSvmm9e2Qk44i9SnfGf48idpLSK9IFYZc8ez6d1BeO-no3Wpn_jmpf2OJhyS-tlSnrQLxs5n6jLX-YODT3WEEU_CEQdixmdHFG95b-r7kCIQZKOyqP23kvY0GZ9nlsIRuk3j9Bi52pV0u1dusmFhGCYnDaByFwpzCmrT14XcxS0mvt9JuT4FygRVhhSUuR71RHOIsbfNfGNLZRA2yjzFbm8BB55YdqmDxLhLKYC6PvE6GYpHaC09bjnBxq0EmIMTeeo3IaAcCOIvsDIYY-zp0NHB8Ii-8r6ZWIAzSctlQ
 
 {
-  "description": "Тест с id",
+  "description": "Тест с id 111",
   "questions": [],
   "examinationSheets": [],
-  "timeLimit": 3600,
+  "timeLimit": 0,
   "status": "enable"
 }
 

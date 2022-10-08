@@ -14,9 +14,13 @@ export const Practice = () => {
     const [request, setRequest] = useState('')
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
+    const [givenTables, setGivenTables] = useState([])
+    const [givenTablesData, setGivenTablesData] = useState(null)
 
-    const test = () => {
-        fetch('http://localhost/api/studentData/10', {
+    // передать answer при нажатии далее в PUT http://localhost/api-platform/answers/4770872d-4033-4a02-9996-b3fc7feaec3d, файл answer.http
+    // сам текст ответа передавать в sql_text
+    const getTableData = () => {
+        fetch('/api/studentData/10', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -24,13 +28,20 @@ export const Practice = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('data: ', data)
+                let dataTableArr = []
+                for (let key in data) {
+                    dataTableArr.push({
+                        tableName: [key],
+                        linesNum: data[key].length
+                    })
+                }
+                setGivenTables(dataTableArr)
+                setGivenTablesData(data)
             })
     }
 
     useEffect(() => {
-        console.log(111)
-        test()
+        getTableData()
     }, [])
 
     const checkRequest = () => {
@@ -46,14 +57,12 @@ export const Practice = () => {
         setTaskNum((prevState => prevState - 1))
     }
 
-    const setTableInfo = (item) => {
-        let result = []
-
-        for (let key in item) {
-            result.push({'tableName': key, 'linesNum': item[key].numOfRows})
+    const setHeader = () => {
+        let accumArr = []
+        for (let key in givenTablesData[chosenTable][0]) {
+            accumArr.push(key)
         }
-
-        return result
+        return accumArr
     }
 
     return (
@@ -102,13 +111,13 @@ export const Practice = () => {
                         </C.ButtonBox>
                     </C.LeftBlock>
                     <C.RightBlock>
-                        <TableToChoose tableData={setTableInfo(data[taskNum - 1].tableToChoose)} setTable={setChosenTable}/>
+                        <TableToChoose tableData={givenTables} setTable={setChosenTable}/>
                     </C.RightBlock>
                 </C.Task>
                 {chosenTable &&
                     <C.TableWrapper>
                         <TextM>{chosenTable}</TextM>
-                        <ExampleTable tableData={data[taskNum - 1].tableToChoose[chosenTable].exampleTable}/>
+                        <ExampleTable header={setHeader()} tableData={givenTablesData[chosenTable]}/>
                     </C.TableWrapper>
                 }
                 {showResultTable &&
