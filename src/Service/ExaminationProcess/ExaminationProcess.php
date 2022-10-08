@@ -71,7 +71,7 @@ class ExaminationProcess
         ]);
 
         $nextQuestion = $exam->getQuestions()->filter(function (Question $question) use ($currentQuestion) {
-            return (int) ($currentQuestion->getOrd() + 2) === (int) $question->getOrd();
+            return (int) ($currentQuestion->getOrd() + 1) === (int) $question->getOrd();
         })->first();
 
         if (!$nextQuestion) {
