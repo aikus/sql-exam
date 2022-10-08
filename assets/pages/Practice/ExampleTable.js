@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import TableContainer from "@mui/material/TableContainer";
@@ -9,27 +9,28 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 
-export const ExampleTable = ({tableData}) => {
+export const ExampleTable = ({header, tableData}) => {
 
     return (
         <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>
                     <TableRow sx={{backgroundColor: '#CCCCCC', '& > th': { fontWeight: '600' }}}>
-                        {tableData.header.map((column) => (
-                            <TableCell key={column.attribute}>
-                                <div>{column.attribute}</div><div>{column.type}</div>
+                        {header.map((column) => (
+                            <TableCell key={column}>
+                                <div>{column}</div>
+                                {/*<div>{column.type}</div>*/}
                             </TableCell>
                         ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableData.body.map((row) => (
+                    {tableData.map((row, i) => (
                         <TableRow
-                            key={row[0]}
+                            key={i}
                         >
-                            {row.map((cell) => (
-                                <TableCell key={cell}>{cell}</TableCell>
+                            {header.map((cell) => (
+                              <TableCell key={cell}>{row[cell]}</TableCell>
                             ))}
                         </TableRow>
                     ))}

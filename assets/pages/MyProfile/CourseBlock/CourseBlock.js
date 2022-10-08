@@ -10,6 +10,20 @@ import {useNavigate} from "react-router-dom";
 export const CourseBlock = ({id, items}) => {
     const navigate = useNavigate();
 
+    const goToPractice = (id) => {
+      fetch(`/api-process/${id}/start`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          navigate("/react/my-profile/practice")
+          document.location.hash = data.answer
+        })
+    }
+
     return (
         <>
             <C.HeaderBlock>
@@ -36,7 +50,7 @@ export const CourseBlock = ({id, items}) => {
                                 <C.Description>
                                     <TextL>ЗАГЛУШКА</TextL>
                                     <C.ButtonWrapper>
-                                        <Button onClick={() => navigate("/react/my-profile/practice")}>Начать прохождение</Button>
+                                        <Button onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
                                     </C.ButtonWrapper>
                                 </C.Description>
                             </AccordionDetails>

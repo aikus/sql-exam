@@ -12,19 +12,19 @@ import {CreateCourse} from "../pages/CreateCourse";
 export const App = () => {
   return (
     <>
-      {/*<BrowserRouter>*/}
-      {/*    <Routes>*/}
-      {/*        <Route path="/react/" element={<Authorization/>}/>*/}
-      {/*        <Route path="/react/my-profile" element={<PersonalAccountPage/>}>*/}
-      {/*          <Route index element={<MyProfile/>}/>*/}
-      {/*          <Route path="practice" element={<Practice/>}/>*/}
-      {/*          <Route path="questionnaire" element={<Questionnaire/>}/>*/}
-      {/*          <Route path="course-management" element={<CourseManagement/>}/>*/}
-      {/*          <Route path="create-course" element={<CreateCourse/>}/>*/}
-      {/*        </Route>*/}
-      {/*    </Routes>*/}
-      {/*</BrowserRouter>*/}
-      <CreateCourse/>
+      <BrowserRouter>
+          <Routes>
+              <Route path="/react/" element={<Authorization/>}/>
+              <Route path="/react/my-profile" element={<PersonalAccountPage/>}>
+                <Route index element={<MyProfile/>}/>
+                <Route path="practice" element={<Practice/>}/>
+                <Route path="questionnaire" element={<Questionnaire/>}/>
+                <Route path="course-management" element={<CourseManagement/>}/>
+                <Route path="create-course" element={<CreateCourse/>}/>
+              </Route>
+          </Routes>
+      </BrowserRouter>
+      {/*<CreateCourse/>*/}
     </>
   )
 }

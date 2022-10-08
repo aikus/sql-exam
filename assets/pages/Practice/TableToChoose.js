@@ -7,11 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import {passFilterLogic} from "@mui/x-data-grid/internals";
 
 export const TableToChoose = ({tableData, setTable}) => {
-    const setRightTable = (table) => {
-        setTable(table)
-    }
 
     return (
         <TableContainer component={Paper} sx={{maxWidth: '400px'}}>
@@ -23,18 +21,20 @@ export const TableToChoose = ({tableData, setTable}) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableData.map((row) => (
+                    {tableData.map((row) =>
+                        (
                         <TableRow
                             key={row.tableName}
                             onClick={() => {
-                                setRightTable(row.tableName)
+                                setTable(row.tableName)
                             }}
                             sx={{'&:hover': {backgroundColor: '#F5F5F5', cursor: 'pointer'}}}
                         >
                             <TableCell>{row.tableName}</TableCell>
                             <TableCell>{row.linesNum}</TableCell>
                         </TableRow>
-                    ))}
+                    )
+                    )}
                 </TableBody>
             </Table>
         </TableContainer>

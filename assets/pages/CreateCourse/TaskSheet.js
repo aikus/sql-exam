@@ -13,10 +13,54 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
   ])
 
   const handleSelectChange = (e) => {
-    setCourseContent(prevState => ([{
-      'type': e.target.value,
-      'question': '',
-    }]))
+    let typeObject = {}
+
+    if (e.target.value === 'текст' && courseContent[step - 2].type !== 'текст') {
+      typeObject = {
+        'type': 'текст',
+        'question': '',
+      }
+    } else if (e.target.value === 'практика' && courseContent[step - 2].type !== 'практика') {
+      typeObject = {
+        'type': 'практика',
+        'question': '',
+        'answer': ''
+      }
+    } else if (e.target.value === 'тест' && courseContent[step - 2].type !== 'тест') {
+      typeObject = {
+        'type': 'тест',
+        'question': '',
+        'variant-1': '',
+        'variant-2': '',
+        'variant-3': '',
+        'right-variant': ''
+      }
+    }
+
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+      newState[step - 2] = typeObject
+      return newState
+    })
+  }
+
+  const handleNextStep = () => {
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+
+      newState.push({
+        'type': 'текст',
+        'question': '',
+      })
+
+      return newState
+    })
+
+    nextStep()
+  }
+
+  const handlePrevStep = () => {
+    prevStep()
   }
 
   return (
@@ -31,8 +75,25 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
           <MenuItem value={'практика'}>Практика</MenuItem>
           <MenuItem value={'тест'}>Тест</MenuItem>
         </Select>
-
       </C.Type>
+      {/*<C.QuestionBlock>*/}
+      {/*  <H5>Введите текст вопроса</H5>*/}
+      {/*  <TextField*/}
+      {/*    margin="normal"*/}
+      {/*    id="course-1"*/}
+      {/*    type="text"*/}
+      {/*    variant="outlined"*/}
+      {/*    multiline={true}*/}
+      {/*    fullWidth={true}*/}
+      {/*    minRows={5}*/}
+      {/*    value={request}*/}
+      {/*    onChange={(e) => {*/}
+      {/*      setRequest(e.target.value)*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</C.QuestionBlock>*/}
+      <Button onClick={handlePrevStep}>Назад</Button>
+      <Button onClick={handleNextStep}>Далее</Button>
     </>
   )
 }
