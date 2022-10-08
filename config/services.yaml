@@ -34,3 +34,13 @@ services:
     App\Service\RandomGeneratorFactory: ~
     RandomLib\Generator:
         factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
+
+    App\Connectors\ExamListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}
+    App\Connectors\AnswerListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}
+    App\Connectors\QuestionListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}

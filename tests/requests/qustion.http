@@ -1,0 +1,53 @@
+GET http://localhost/api-platform/questions
+Accept: application/ld+json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+
+###
+GET http://localhost/api-platform/questions/4770872d-4033-4a02-9996-b3fc7feaec3d
+Accept: application/ld+json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+
+###
+POST http://localhost/api-platform/questions
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+
+{
+  "content": "Тестовый вопрос",
+  "timeLimit": 0,
+  "ord": 1,
+  "exam": "\/api-platform\/exams\/c0b9edc1-bedd-48b0-9a99-64d8bf3f591f",
+  "examinationSheets": [],
+  "rightAnswers": []
+}
+
+###
+PUT http://localhost/api-platform/questions/4770872d-4033-4a02-9996-b3fc7feaec3d
+Accept: application/ld+json
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+
+{
+  "id": "4770872d-4033-4a02-9996-b3fc7feaec3d",
+  "content": "Вопрос без лимита времени",
+  "timeLimit": 0,
+  "ord": 7,
+  "exam": "\/api-platform\/exams\/c0b9edc1-bedd-48b0-9a99-64d8bf3f591f",
+  "examinationSheets": [],
+  "rightAnswers": []
+}
+
+###
+PATCH http://localhost/api-platform/questions/4770872d-4033-4a02-9996-b3fc7feaec3d
+Accept: application/ld+json
+Content-Type: application/merge-patch+json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+
+{
+  "ord": 1
+}
+
+###
+DELETE http://localhost/api-platform/questions/7e683e2d-5e8f-4666-88bc-7378baf0c80c
+Accept: application/ld+json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
