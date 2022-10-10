@@ -1,43 +1,71 @@
-Структура БД:
+# Структура БД:
 
-SkillCategory
- - name | string
- - description | string
- - create_time
- - update_time
+# SkillCategory
+skill_category
+-
+id FK >- skill.category
+name string
+description string
+create_time
+update_time
 
-Skill
- - alias | string
- - name | string
- - description | string
- - category | relation
- - check_type
- - create_time
- - update_time
+# Skill
+skill
+-
+id FK >- skill_summary.skill
+alias string
+name string
+description string
+category relation
+check_type
+create_time
+update_time
 
-SkillValue
- - name | string
- - description | string
- - value | string
- - create_time
- - update_time
+# SkillValue
+skill_value
+-
+id FK >- skill_summary.skill_value
+name string
+description string
+value string
+create_time
+update_time
 
-SkillQuarter
- - alias | string
- - create_time
- - update_time
+# SkillQuarter
+skill_quarter
+-
+id FK >- skill_user_quarter.quarter
+alias string
+create_time
+update_time
 
-Team
- - name | string
- - description | string
- - create_time
- - update_time
+# Team
+team
+-
+id FK >- skill_user_quarter.team
+name string
+description string
+create_time
+update_time
 
-SkillSummary
- - quarter | relation
- - user | relation
- - skill | relation
- - skill_value | relation
- - team | relation
- - create_time
- - update_time
+# SkillUserQuarter
+skill_user_quarter
+-
+id FK >- skill_summary.userQuarter
+quarter relation
+user relation
+team relation
+reviewer relation
+status
+create_time
+update_time
+
+# SkillSummary
+skill_summary
+-
+id
+userQuarter relation
+skill relation
+skill_value relation
+create_time
+update_time

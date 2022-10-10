@@ -6,6 +6,11 @@ use Psr\Log\AbstractLogger;
 
 class FileParserLogger extends AbstractLogger
 {
+    public function notice($message, array $context = []): void
+    {
+        echo $message;
+    }
+
     public function log($level, $message, array $context = []): void
     {
         echo '<pre style="background-color: #ffffff30; margin-bottom: 1rem;">';

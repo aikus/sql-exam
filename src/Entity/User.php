@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Skill\SkillQuarter;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,9 +43,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: ExaminationSheet::class, orphanRemoval: true)]
     private $examinationSheets;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: SkillQuarter::class)]
+    private Collection $quarters;
+
     public function __construct()
     {
         $this->examinationSheets = new ArrayCollection();
+        $this->quarters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,5 +163,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     public function getName(): string
     {
         return $this->getFio() ?? $this->getEmail();
+    }
+
+    /**
+     * @return Collection<int, SkillQuarter>
+     */
+    public function getQuarters(): Collection
+    {
+        return $this->quarters;
+    }
+
+    public function addQuarter(SkillQuarter $quarter): self
+    {
+        if (!$this->quarters->contains($quarter)) {
+            $this->quarters->add($quarter);
+            $quarter->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuarter(SkillQuarter $quarter): self
+    {
+        if ($this->quarters->removeElement($quarter)) {
+            // set the owning side to null (unless already changed)
+            if ($quarter->getUser() === $this) {
+                $quarter->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

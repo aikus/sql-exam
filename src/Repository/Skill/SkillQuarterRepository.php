@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Skill;
 
-use App\Entity\SkillCategory;
+use App\Entity\Skill\SkillQuarter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<SkillCategory>
+ * @extends ServiceEntityRepository<SkillQuarter>
  *
- * @method SkillCategory|null find($id, $lockMode = null, $lockVersion = null)
- * @method SkillCategory|null findOneBy(array $criteria, array $orderBy = null)
- * @method SkillCategory[]    findAll()
- * @method SkillCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SkillQuarter|null find($id, $lockMode = null, $lockVersion = null)
+ * @method SkillQuarter|null findOneBy(array $criteria, array $orderBy = null)
+ * @method SkillQuarter[]    findAll()
+ * @method SkillQuarter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SkillCategoryRepository extends ServiceEntityRepository
+class SkillQuarterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, SkillCategory::class);
+        parent::__construct($registry, SkillQuarter::class);
     }
 
-    public function add(SkillCategory $entity, bool $flush = false): void
+    public function add(SkillQuarter $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class SkillCategoryRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(SkillCategory $entity, bool $flush = false): void
+    public function remove(SkillQuarter $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class SkillCategoryRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return SkillCategory[] Returns an array of SkillCategory objects
+//     * @return SkillQuarter[] Returns an array of SkillQuarter objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class SkillCategoryRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?SkillCategory
+//    public function findOneBySomeField($value): ?SkillQuarter
 //    {
 //        return $this->createQueryBuilder('s')
 //            ->andWhere('s.exampleField = :val')

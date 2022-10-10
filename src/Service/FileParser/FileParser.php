@@ -2,6 +2,7 @@
 
 namespace App\Service\FileParser;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
@@ -14,10 +15,10 @@ class FileParser
 
     private CellHandler $cellHandler;
 
-    public function __construct()
+    public function __construct(ManagerRegistry $managerRegistry, CellHandler $cellHandler = null, LoggerInterface $logger = null)
     {
-        $this->logger = new FileParserLogger();
-        $this->cellHandler = new CellHandler(new CollectorFactory($this->logger));
+        $this->logger = $logger ?? new FileParserLogger();
+        $this->cellHandler = $cellHandler ?? new CellHandler(new CollectorFactory($managerRegistry, $this->logger));
     }
 
     public function run(UploadedFile $file): void
@@ -30,10 +31,10 @@ class FileParser
             'no_headers' => true,
         ]);
 
-        echo '<body style="background-color: #333">';
+        $this->logger->notice('<body style="background-color: #333">');
         $this->parseTable($data);
         $this->logger->debug('EntityContainer', $this->cellHandler->getEntityContainer());
-        echo '</body>';
+        $this->logger->notice('</body>');
     }
 
     private function parseTable(array $table): void

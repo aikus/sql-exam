@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Skill;
 
-use App\Entity\Skill;
+use App\Entity\Skill\SkillCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Skill>
+ * @extends ServiceEntityRepository<SkillCategory>
  *
- * @method Skill|null find($id, $lockMode = null, $lockVersion = null)
- * @method Skill|null findOneBy(array $criteria, array $orderBy = null)
- * @method Skill[]    findAll()
- * @method Skill[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SkillCategory|null find($id, $lockMode = null, $lockVersion = null)
+ * @method SkillCategory|null findOneBy(array $criteria, array $orderBy = null)
+ * @method SkillCategory[]    findAll()
+ * @method SkillCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SkillRepository extends ServiceEntityRepository
+class SkillCategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Skill::class);
+        parent::__construct($registry, SkillCategory::class);
     }
 
-    public function add(Skill $entity, bool $flush = false): void
+    public function add(SkillCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class SkillRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Skill $entity, bool $flush = false): void
+    public function remove(SkillCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class SkillRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Skill[] Returns an array of Skill objects
+//     * @return SkillCategory[] Returns an array of SkillCategory objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class SkillRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Skill
+//    public function findOneBySomeField($value): ?SkillCategory
 //    {
 //        return $this->createQueryBuilder('s')
 //            ->andWhere('s.exampleField = :val')
