@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Skill;
 
-use App\Repository\SkillCategoryRepository;
+use App\Repository\Skill\SkillCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -31,10 +31,10 @@ class SkillCategory
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Skill::class)]
     private Collection $skills;
 
-    public function __construct()
+    public function __construct(\DateTimeInterface $update_time = null)
     {
         $this->skills = new ArrayCollection();
-        $this->update_time = new \DateTime();
+        $this->update_time = $update_time ?? new \DateTime();
     }
 
     public function getId(): ?int

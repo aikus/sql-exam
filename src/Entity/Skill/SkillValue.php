@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Skill;
 
-use App\Repository\SkillQuarterRepository;
+use App\Repository\Skill\SkillValueRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SkillQuarterRepository::class)]
-class SkillQuarter
+#[ORM\Entity(repositoryClass: SkillValueRepository::class)]
+class SkillValue
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,13 @@ class SkillQuarter
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $alias = null;
+    private ?string $name = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $value = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $create_time = null;
@@ -25,13 +31,13 @@ class SkillQuarter
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $update_time = null;
 
-    #[ORM\OneToMany(mappedBy: 'quarter', targetEntity: SkillSummary::class)]
+    #[ORM\OneToMany(mappedBy: 'skill_value', targetEntity: SkillSummary::class)]
     private Collection $skillSummaries;
 
-    public function __construct()
+    public function __construct(\DateTimeInterface $update_time = null)
     {
         $this->skillSummaries = new ArrayCollection();
-        $this->update_time = new \DateTime();
+        $this->update_time = $update_time ?? new \DateTime();
     }
 
     public function getId(): ?int
@@ -39,14 +45,38 @@ class SkillQuarter
         return $this->id;
     }
 
-    public function getAlias(): ?string
+    public function getName(): ?string
     {
-        return $this->alias;
+        return $this->name;
     }
 
-    public function setAlias(string $alias): self
+    public function setName(string $name): self
     {
-        $this->alias = $alias;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    public function setValue(string $value): self
+    {
+        $this->value = $value;
 
         return $this;
     }
@@ -87,7 +117,7 @@ class SkillQuarter
     {
         if (!$this->skillSummaries->contains($skillSummary)) {
             $this->skillSummaries->add($skillSummary);
-            $skillSummary->setQuarter($this);
+            $skillSummary->setSkillValue($this);
         }
 
         return $this;
@@ -97,8 +127,8 @@ class SkillQuarter
     {
         if ($this->skillSummaries->removeElement($skillSummary)) {
             // set the owning side to null (unless already changed)
-            if ($skillSummary->getQuarter() === $this) {
-                $skillSummary->setQuarter(null);
+            if ($skillSummary->getSkillValue() === $this) {
+                $skillSummary->setSkillValue(null);
             }
         }
 

@@ -2,8 +2,9 @@
 
 namespace App\Service\FileParser;
 
-use App\Entity\Skill;
-use App\Entity\SkillSummary;
+use App\Entity\Skill\Skill;
+use App\Entity\Skill\SkillSummary;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
 class CollectorFactory
@@ -12,12 +13,15 @@ class CollectorFactory
 
     private array $container;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(ManagerRegistry $managerRegistry, LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->container = [
-            Skill::class => new SkillCollector($this->logger),
-            SkillSummary::class => new SkillSummaryCollector($this->logger),
+            Skill::class => new DataCollector(
+                $managerRegistry,
+                new \DateTime(),
+                $this->logger
+            ),
         ];
     }
 

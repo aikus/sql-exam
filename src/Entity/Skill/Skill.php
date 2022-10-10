@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Skill;
 
-use App\Repository\SkillRepository;
+use App\Repository\Skill\SkillRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -40,10 +40,10 @@ class Skill
     #[ORM\OneToMany(mappedBy: 'skill', targetEntity: SkillSummary::class)]
     private Collection $skillSummaries;
 
-    public function __construct()
+    public function __construct(\DateTimeInterface $update_time = null)
     {
         $this->skillSummaries = new ArrayCollection();
-        $this->update_time = new \DateTime();
+        $this->update_time = $update_time ?? new \DateTime();
     }
 
     public function getId(): ?int

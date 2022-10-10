@@ -2,12 +2,11 @@
 
 namespace App\Service\FileParser;
 
-use App\Entity\Skill;
-use App\Entity\SkillCategory;
-use App\Entity\SkillQuarter;
-use App\Entity\SkillSummary;
-use App\Entity\SkillValue;
-use App\Entity\User;
+use App\Entity\Skill\Skill;
+use App\Entity\Skill\SkillCategory;
+use App\Entity\Skill\SkillQuarter;
+use App\Entity\Skill\SkillSummary;
+use App\Entity\Skill\SkillValue;
 use Exception;
 
 class CellHandler
@@ -16,9 +15,7 @@ class CellHandler
 
     private const DIRECTION_FROM_TOP_TO_DOWN = 'from_top_to_down';
 
-    private array $entityCollectors;
-
-    private CollectorFactory $collectorFactory;
+    private DataCollector $collector;
 
     private array $mapConfigs = [
         Skill::class => [
@@ -48,13 +45,6 @@ class CellHandler
                     'col' => 0,
                     'mapMethod' => 'setQuarter',
                 ],
-                [
-                    'name' => User::class,
-                    'method' => 'setFio',
-                    'type' => 'left',
-                    'col' => 1,
-                    'mapMethod' => 'setUser',
-                ],
             ],
             'relations' => [
                 'setSkillValue' => ['name' => SkillValue::class, 'mapMethod' => 'setValue'],
@@ -64,58 +54,61 @@ class CellHandler
 
     public function __construct(CollectorFactory $collectorFactory)
     {
-        $this->collectorFactory = $collectorFactory;
+        $this->collector = $collectorFactory->create(Skill::class);
     }
 
     public function getEntityContainer(): array
     {
-        return $this->entityCollectors;
+        return $this->collector->getEntityContainer();
     }
 
     /** @throws Exception */
     public function process(int $rowNum, int $colNum, string $cellValue, array $table): void
     {
-        $collector = $this->collectorFactory->create(SkillSummary::class);
-
         foreach ($this->mapConfigs as $entityName => $mapConfig) {
 
-            $pinedConfigList = $mapConfig['pined'] ?? [];
+            if ($this->isTargetCell($mapConfig, $rowNum, $colNum)) {
 
-            foreach ($pinedConfigList as $pinedConfig) {
-                $collector->collectRelatedPined(
-                    $pinedConfig['name'],
-                    $pinedConfig['mapMethod'],
-                    $pinedConfig['method'],
-                    $table[$pinedConfig['row'] ?? $rowNum][$pinedConfig['col'] ?? $colNum]
-                );
-            }
+                $index = $this->resolveIndex($colNum, $rowNum, $mapConfig['direction']);
 
-            if (
-                $mapConfig['start']['row'] <= $rowNum
-                && $mapConfig['start']['col'] <= $colNum
-                && $mapConfig['end']['row'] >= $rowNum
-                && $mapConfig['end']['col'] >= $colNum
-            ) {
-                $indexes = [
-                    self::DIRECTION_FROM_LEFT_TO_RIGHT => $colNum,
-                    self::DIRECTION_FROM_TOP_TO_DOWN => $rowNum,
-                ];
-
-                $index = $indexes[$mapConfig['direction']] ?? null;
+                foreach ($mapConfig['pined'] ?? [] as $pinedConfig) {
+                    $this->collector->collectRelatedPined(
+                        $pinedConfig['name'],
+                        $pinedConfig['mapMethod'],
+                        $pinedConfig['method'],
+                        $table[$pinedConfig['row'] ?? $rowNum][$pinedConfig['col'] ?? $colNum]
+                    );
+                }
 
                 $method = $mapConfig['mapMethod'][$rowNum - $mapConfig['start']['row']] ?? null;
 
                 $relation = $this->getRelation($mapConfig, $method);
 
                 if (null !== $relation) {
-                    $collector->collectRelations($relation['name'], $relation['mapMethod'], $cellValue);
+                    $this->collector->collectRelations($relation['name'], $relation['mapMethod'], $cellValue);
                 }
 
-                $collector->collect($table, $entityName, $index, $method, $cellValue, $relation['name'] ?? null);
-
-                $this->entityCollectors[$entityName] = $collector->getEntityContainer();
+                $this->collector->collect($table, $entityName, $index, $method, $cellValue, $relation['name'] ?? null);
             }
         }
+    }
+
+    private function resolveIndex(int $rowNum, int $colNum, string $direction): int
+    {
+        $indexes = [
+            self::DIRECTION_FROM_LEFT_TO_RIGHT => $colNum,
+            self::DIRECTION_FROM_TOP_TO_DOWN => $rowNum,
+        ];
+
+        return $indexes[$direction] ?? $colNum;
+    }
+
+    private function isTargetCell(array $mapConfig, int $rowNum, int $colNum): bool
+    {
+        return $mapConfig['start']['row'] <= $rowNum
+            && $mapConfig['start']['col'] <= $colNum
+            && $mapConfig['end']['row'] >= $rowNum
+            && $mapConfig['end']['col'] >= $colNum;
     }
 
     private function getRelation(array $mapConfig, string $method): ?array

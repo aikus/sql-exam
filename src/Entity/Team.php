@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Skill\SkillQuarter;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,12 +29,12 @@ class Team
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $update_time = null;
 
-    #[ORM\OneToMany(mappedBy: 'team', targetEntity: SkillSummary::class)]
-    private Collection $skillSummaries;
+    #[ORM\OneToMany(mappedBy: 'team', targetEntity: SkillQuarter::class)]
+    private Collection $quarters;
 
     public function __construct()
     {
-        $this->skillSummaries = new ArrayCollection();
+        $this->quarters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,29 +91,29 @@ class Team
     }
 
     /**
-     * @return Collection<int, SkillSummary>
+     * @return Collection<int, SkillQuarter>
      */
-    public function getSkillSummaries(): Collection
+    public function getQuarters(): Collection
     {
-        return $this->skillSummaries;
+        return $this->quarters;
     }
 
-    public function addSkillSummary(SkillSummary $skillSummary): self
+    public function addQuarter(SkillQuarter $quarter): self
     {
-        if (!$this->skillSummaries->contains($skillSummary)) {
-            $this->skillSummaries->add($skillSummary);
-            $skillSummary->setTeam($this);
+        if (!$this->quarters->contains($quarter)) {
+            $this->quarters->add($quarter);
+            $quarter->setTeam($this);
         }
 
         return $this;
     }
 
-    public function removeSkillSummary(SkillSummary $skillSummary): self
+    public function removeQuarter(SkillQuarter $quarter): self
     {
-        if ($this->skillSummaries->removeElement($skillSummary)) {
+        if ($this->quarters->removeElement($quarter)) {
             // set the owning side to null (unless already changed)
-            if ($skillSummary->getTeam() === $this) {
-                $skillSummary->setTeam(null);
+            if ($quarter->getTeam() === $this) {
+                $quarter->setTeam(null);
             }
         }
 

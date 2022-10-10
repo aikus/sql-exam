@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Skill;
 
-use App\Repository\SkillSummaryRepository;
+use App\Repository\Skill\SkillSummaryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,16 +18,10 @@ class SkillSummary
     private ?SkillQuarter $quarter = null;
 
     #[ORM\ManyToOne(inversedBy: 'skillSummaries')]
-    private ?User $user = null;
-
-    #[ORM\ManyToOne(inversedBy: 'skillSummaries')]
     private ?Skill $skill = null;
 
     #[ORM\ManyToOne(inversedBy: 'skillSummaries')]
     private ?SkillValue $skill_value = null;
-
-    #[ORM\ManyToOne(inversedBy: 'skillSummaries')]
-    private ?Team $team = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $create_time = null;
@@ -35,9 +29,9 @@ class SkillSummary
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $update_time = null;
 
-    public function __construct()
+    public function __construct(\DateTimeInterface $update_time = null)
     {
-        $this->update_time = new \DateTime();
+        $this->update_time = $update_time ?? new \DateTime();
     }
 
     public function getId(): ?int
@@ -53,18 +47,6 @@ class SkillSummary
     public function setQuarter(?SkillQuarter $quarter): self
     {
         $this->quarter = $quarter;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }
@@ -89,18 +71,6 @@ class SkillSummary
     public function setSkillValue(?SkillValue $skill_value): self
     {
         $this->skill_value = $skill_value;
-
-        return $this;
-    }
-
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?Team $team): self
-    {
-        $this->team = $team;
 
         return $this;
     }

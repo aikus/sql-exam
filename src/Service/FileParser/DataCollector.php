@@ -2,20 +2,28 @@
 
 namespace App\Service\FileParser;
 
+use App\Entity\Skill\SkillSummary;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
-abstract class DataCollector
+class DataCollector
 {
-    protected LoggerInterface $logger;
+    private LoggerInterface $logger;
 
-    protected array $entityContainer = [];
+    private array $entityContainer = [];
 
-    protected array $relatedEntities = [];
+    private array $relatedEntities = [];
 
-    protected array $relatedPined = [];
+    private array $relatedPined = [];
 
-    public function __construct(LoggerInterface $logger)
+    private \DateTimeInterface $now;
+
+    private ManagerRegistry $managerRegistry;
+
+    public function __construct(ManagerRegistry $managerRegistry, \DateTimeInterface $now, LoggerInterface $logger)
     {
+        $this->managerRegistry = $managerRegistry;
+        $this->now = $now;
         $this->logger = $logger;
     }
 
@@ -24,36 +32,42 @@ abstract class DataCollector
         return $this->entityContainer;
     }
 
-    protected abstract function collect(
-        array $table,
-        string $entityName,
-        int $index,
-        string $method,
-        string $value,
-        ?string $relationEntity
-    ): void;
+    public function collect(array $table, string $entityName, int $index, string $method, string $value, ?string $relationEntity): void
+    {
+        if (null !== $relationEntity) {
+            $value = $this->relatedEntities[$relationEntity];
+        }
+
+        if ($entityName === SkillSummary::class) {
+            foreach ($this->relatedPined as $pinedMapMethod => $pinedEntity) {
+                $this->create($entityName, $index, $pinedMapMethod, $pinedEntity);
+            }
+        }
+
+        $this->create($entityName, $index, $method, $value);
+    }
 
     public function collectRelatedPined(string $entityName, string $mapMethod, string $method, $value): void
     {
-        $this->relatedPined[$mapMethod] = new $entityName();
+        $this->relatedPined[$mapMethod] = new $entityName($this->now);
         if (method_exists($entityName, 'setCreateTime')) {
-            $this->relatedPined[$mapMethod]->setCreateTime(new \DateTime());
+            $this->relatedPined[$mapMethod]->setCreateTime($this->now);
         }
         $this->relatedPined[$mapMethod]->$method($value);
     }
 
     public function collectRelations(string $entityName, string $method, $value): void
     {
-        $this->relatedEntities[$entityName] = new $entityName();
+        $this->relatedEntities[$entityName] = new $entityName($this->now);
         if (method_exists($entityName, 'setCreateTime')) {
-            $this->relatedEntities[$entityName]->setCreateTime(new \DateTime());
+            $this->relatedEntities[$entityName]->setCreateTime($this->now);
         }
         $this->relatedEntities[$entityName]->$method($value);
     }
 
     public function create(string $entityName, int $index, string $method, $value)
     {
-        $entity = $this->find($entityName, $index);
+        $entity = $this->find($entityName, $value);
 
         if (null === $entity) {
             $entity = $this->add($entityName, $index);
@@ -64,19 +78,20 @@ abstract class DataCollector
         return $entity;
     }
 
-    private function find(string $entityName, int $index)
+    private function find(string $entityName, $value)
     {
-        $entity = $this->relatedPined[$entityName] ?? null;
-        $entity = $entity ?? $this->relatedPined[$entityName] ?? null;
-        $entity = $entity ?? $this->entityContainer[$entityName]    [$index] ?? null;
+        $repository = $this->managerRegistry->getRepository($entityName);
 
-        return $entity ?? null;
+        // TODO: сделать подбор нужного объекта
+        return $repository->findOneBy([]);
     }
 
     private function add(string $entityName, int $index)
     {
-        $this->entityContainer[$entityName][$index] = new $entityName();
-        $this->entityContainer[$entityName][$index]->setCreateTime(new \DateTime());
+        $this->entityContainer[$entityName][$index] = new $entityName($this->now);
+        if (method_exists($entityName, 'setCreateTime')) {
+            $this->entityContainer[$entityName][$index]->setCreateTime($this->now);
+        }
         return $this->entityContainer[$entityName][$index];
     }
 }
