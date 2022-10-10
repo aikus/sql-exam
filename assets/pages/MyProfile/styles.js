@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import '../../../styles/app.css';
+import '../../styles/app.css';
 
 export const MyProfileBox = styled.div`
     margin-top: 24px;
@@ -25,32 +25,25 @@ export const MyProfile = styled.div`
 `
 
 export const Text = styled.div`
-    & > p {
-        margin-top: 0;
-    }
+  display: flex;
+  flex-direction: column;
+  
+  & > span {
+    margin-bottom: 8px;
+  }
 `
 
 export const ButtonBox = styled.div`
     margin-top: 48px;
     display: flex;
+  flex-direction: column;
     gap: 16px;
     
     & > button {
         width: unset;
     }
-`
 
-export const Button = styled.button`
-    font-family: var(--font-primary);
-    background-color: #FFCC00;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 16px 48px;
-
-    &:hover {
-        background-color: #FAC000;
-        cursor: pointer;
-    }
+  @media (min-width: 1024px) {
+    flex-direction: row;
+  }
 `

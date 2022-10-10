@@ -4,15 +4,32 @@ import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails } from "@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import {Button} from "../../../components/Button";
+import { H2, TextL } from '../../../components/Typography'
+import {useNavigate} from "react-router-dom";
 
-export const CourseBlock = ({id, header, link, items}) => {
+export const CourseBlock = ({id, items}) => {
+    const navigate = useNavigate();
+
+    const goToPractice = (id) => {
+      fetch(`/api-process/${id}/start`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          navigate("/react/my-profile/practice")
+          document.location.hash = data.answer
+        })
+    }
 
     return (
         <>
             <C.HeaderBlock>
-                <h2>{header}</h2>
+                <H2>В процессе</H2>
                 <C.SeeAll>
-                    <a href={link}>
+                    <a href={'#'}>
                         <div>Посмотреть всё</div>
                         <img src={arrowRight}/>
                     </a>
@@ -27,16 +44,14 @@ export const CourseBlock = ({id, header, link, items}) => {
                                 aria-controls={id + '-' + i + '-content'}
                                 id={id + '-' + i + '-header'}
                             >
-                                <C.Title>{item.title}</C.Title>
+                                <C.Title><TextL>{item.description}</TextL></C.Title>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <C.Description>
-                                    <div>{item.description}</div>
-                                    {item.linkToStart &&
-                                        <C.ButtonWrapper>
-                                            <Button>Начать прохождение</Button>
-                                        </C.ButtonWrapper>
-                                    }
+                                    <TextL>ЗАГЛУШКА</TextL>
+                                    <C.ButtonWrapper>
+                                        <Button onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
+                                    </C.ButtonWrapper>
                                 </C.Description>
                             </AccordionDetails>
                         </Accordion>
