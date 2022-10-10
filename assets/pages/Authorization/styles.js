@@ -25,12 +25,19 @@ export const TopBlock = styled.div`
     text-align: center;
     
     & > img {
-        height: 80px;
+        height: 100px;
         border-radius: 50%;
+    }
+
+    @media screen and (min-width: 1024px) {
+      & > img {
+        height: 120px;
+      }
     }
 `
 
-export const Header = styled.h2`
+export const Header = styled.div`
+    margin: 20px 0;
 `
 
 export const ForgotPassword = styled.div`

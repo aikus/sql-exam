@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { H3 } from '../../components/Typography'
 
 export const Authorization = () => {
     const navigate = useNavigate();
@@ -34,7 +35,6 @@ export const Authorization = () => {
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
-        token: null,
     })
 
     const handleAuthorizationSubmit = (e) => {
@@ -68,8 +68,9 @@ export const Authorization = () => {
                         })
                     } else {
                         setState((prevState) => {
-                            return { ...prevState, token: data.token, passwordError: false }
+                            return { ...prevState, passwordError: false }
                         })
+                        localStorage.setItem('jwtToken', data.token)
                         navigate("/react/my-profile");
                     }
                 })
@@ -171,6 +172,12 @@ export const Authorization = () => {
             }
         })
     }
+
+    useEffect(() => {
+        if (localStorage.getItem('jwtToken')) {
+            navigate("/react/my-profile");
+        }
+    }, [])
 
     const renderAuthorizationForm = () => {
         return (
@@ -308,7 +315,7 @@ export const Authorization = () => {
         <C.Wrapper>
             <C.TopBlock>
                 <Logo/>
-                <C.Header>{state.headerText}</C.Header>
+                <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
             {!state.restorePassword && !state.registrationBlock && renderAuthorizationForm()}
