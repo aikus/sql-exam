@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Connectors\CourseListener;
+use App\Connectors\ExamListener;
 use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,9 +12,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
+#[ORM\EntityListeners([CourseListener::class])]
 #[ApiResource]
 class Course
 {
+    public const STATUS_ENABLE = 'enable';
+    public const STATUS_DISABLE = 'disable';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -119,7 +125,7 @@ class Course
     {
         if (!$this->type->contains($type)) {
             $this->type->add($type);
-            $type->setCource($this);
+            $type->setCourse($this);
         }
 
         return $this;
@@ -129,8 +135,8 @@ class Course
     {
         if ($this->type->removeElement($type)) {
             // set the owning side to null (unless already changed)
-            if ($type->getCource() === $this) {
-                $type->setCource(null);
+            if ($type->getCourse() === $this) {
+                $type->setCourse(null);
             }
         }
 
