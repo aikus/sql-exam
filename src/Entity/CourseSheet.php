@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CourseSheetRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
