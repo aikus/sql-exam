@@ -39,6 +39,14 @@ class CourseSheetRepository extends ServiceEntityRepository
         }
     }
 
+    public function add(CourseSheet $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
 //    /**
 //     * @return CourseSheet[] Returns an array of CourseSheet objects
 //     */

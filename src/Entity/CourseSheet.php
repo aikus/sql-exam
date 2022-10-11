@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CourseSheetRepository;
-use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,11 +30,11 @@ class CourseSheet
     #[ORM\JoinColumn(nullable: false)]
     private ?CourseElement $actualElement = null;
 
-    #[ORM\Column]
-    private ?DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?DateTimeInterface $createdAt = null;
 
-    #[ORM\Column]
-    private ?DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'courceSheet', targetEntity: CourseAnswer::class, orphanRemoval: true)]
     private Collection $courseAnswers;
@@ -85,24 +85,24 @@ class CourseSheet
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

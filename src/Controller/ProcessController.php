@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Exam;
-use App\Entity\Question;
+use App\Entity\Course;
+use App\Entity\CourseElement;
 use App\Service\ExaminationProcess\ExaminationProcess;
 use DateTime;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Exception;
 use RusakovNikita\MysqlExam\Exam\Student;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,13 +17,11 @@ use Symfony\Component\Security\Core\Security;
 class ProcessController extends AbstractController
 {
     /**
-     * @throws OptimisticLockException
-     * @throws ORMException
      * @throws Exception
      */
     #[Route('/{id}/start', name: 'app_exam_start', methods: ['GET'])]
     public function start(
-        Exam $exam,
+        Course $course,
         Security $security,
         ExaminationProcess $process
     ): JsonResponse {
@@ -33,17 +29,12 @@ class ProcessController extends AbstractController
         /** @var Student $user */
         $user = $security->getUser();
         $now = new DateTime();
-        return new JsonResponse($process->start($user, $exam, $now));
+        return new JsonResponse($process->start($user, $course, $now));
     }
 
-    /**
-     * @throws OptimisticLockException
-     * @throws ORMException
-     */
-    #[Route('/{exam}/next/{question}', name: 'app_exam_next', methods: ['GET'])]
+    #[Route('/{course}/next', name: 'app_exam_next', methods: ['GET'])]
     public function next(
-        Exam $exam,
-        Question $question,
+        Course $course,
         Security $security,
         ExaminationProcess $process
     ): JsonResponse {
@@ -51,6 +42,6 @@ class ProcessController extends AbstractController
         /** @var Student $user */
         $user = $security->getUser();
         $now = new DateTime();
-        return new JsonResponse($process->next($user, $exam, $question, $now));
+        return new JsonResponse($process->next($user, $course, $now));
     }
 }
