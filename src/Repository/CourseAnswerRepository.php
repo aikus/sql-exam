@@ -39,6 +39,14 @@ class CourseAnswerRepository extends ServiceEntityRepository
         }
     }
 
+    public function add(CourseAnswer $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
 //    /**
 //     * @return CourseAnswer[] Returns an array of CourseAnswer objects
 //     */
