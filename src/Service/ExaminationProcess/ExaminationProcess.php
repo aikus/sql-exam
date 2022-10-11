@@ -3,7 +3,6 @@
 namespace App\Service\ExaminationProcess;
 
 use App\Entity\Course;
-use App\Entity\CourseElement;
 use App\Entity\User;
 use DateTimeInterface;
 
