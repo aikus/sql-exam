@@ -31,7 +31,7 @@ class CourseExaminationProcess implements ExaminationProcess
         $examSheet = $this->creator->createSheet($course, $user, $actualElement, $now);
 
         return [
-            'examinationSheet' => $examSheet->getId(),
+            'sheet' => $examSheet->getId(),
             'element' => $actualElement->getId(),
         ];
 
