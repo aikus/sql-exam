@@ -52,3 +52,6 @@ export const CheckBoxControled = styled.div`
 
 export const Type = styled.div`
 `
+
+export const QuestionBlock = styled.div`
+`

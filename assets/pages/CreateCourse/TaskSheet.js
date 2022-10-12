@@ -59,6 +59,15 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
     nextStep()
   }
 
+  const handleQuestion = (e) => {
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+      newState[step - 2].question = e.target.value
+
+      return newState
+    })
+  }
+
   const handlePrevStep = () => {
     prevStep()
   }
@@ -67,6 +76,9 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
     <>
       <C.Type>
         <H5>Выберите тип шага</H5>
+        <div onClick={() => {
+          console.log(courseContent)
+        }}>GGG</div>
         <Select
           value={courseContent[step - 2].type}
           onChange={(e) => handleSelectChange(e)}
@@ -76,22 +88,20 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
           <MenuItem value={'тест'}>Тест</MenuItem>
         </Select>
       </C.Type>
-      {/*<C.QuestionBlock>*/}
-      {/*  <H5>Введите текст вопроса</H5>*/}
-      {/*  <TextField*/}
-      {/*    margin="normal"*/}
-      {/*    id="course-1"*/}
-      {/*    type="text"*/}
-      {/*    variant="outlined"*/}
-      {/*    multiline={true}*/}
-      {/*    fullWidth={true}*/}
-      {/*    minRows={5}*/}
-      {/*    value={request}*/}
-      {/*    onChange={(e) => {*/}
-      {/*      setRequest(e.target.value)*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*</C.QuestionBlock>*/}
+      <C.QuestionBlock>
+        <H5>Введите текст вопроса</H5>
+        <TextField
+          margin="normal"
+          id="course-1"
+          type="text"
+          variant="outlined"
+          multiline={true}
+          fullWidth={true}
+          minRows={5}
+          value={courseContent[step - 2].question}
+          onChange={(e) => handleQuestion(e)}
+        />
+      </C.QuestionBlock>
       <Button onClick={handlePrevStep}>Назад</Button>
       <Button onClick={handleNextStep}>Далее</Button>
     </>
