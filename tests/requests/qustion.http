@@ -10,13 +10,13 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyM
 ###
 POST http://localhost/api-platform/questions
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjQ3MTUyMzMsImV4cCI6MTY2NDcxODgzMywicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9URUFDSEVSIl0sInVzZXJuYW1lIjoiYWlrdXNAeWFuZGV4LnJ1In0.tIrYqfFWoy7vrjk3rVWBIHe8F961PpZ45LFzr9hbJKj1f9gfVEUmoVtkPcP1hsDWvD1WhQ3kxXSWtFEapg43QqbW8IvuHjCLt17CpWCcDuOyygUIRMFiLXyHMbCHnz7PSYulazKOlSz2sQUKDIAjmHk3crXrCCuLDIgDmtCI-cKwDVokmn-C-g6iM4i6XbaY8BeGQPi_4bc0W7s2VtmNZ4gDy79ho0IqY93KiJnWa20OxUTIWpwEnH4VdziaTnYRKLpSBGvprsSpDYpJzizeESX-t-mTyj1pVTVZcrhnmxxP-qn9_3hhl95MqDvEIC1Y_cBs62Y4q6zeb_PlQW480A
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NjUyNDYyMjYsImV4cCI6MTY2NTI0OTgyNiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InNsdW16QHlhbmRleC5ydSJ9.sycp-1UCFRyDfv7x7q0m8nTVMJwSw5XWt62OeqzrdbhXy41ozr94PKUfzE4GLBk-tYf4XHX32waJdflXHu25f_UbYa4JupBhnSCtp3MdVYo0_a7YEJRT4Qjt8Omz8_lMo39-gWvJej7yxl10G1m_T1FIr9fHBnnZhgjOmeaw8I5_CByk5P-xqcS-vs6jqorzynXZkIrFcjs8YqlUzxGVxIW3KGVCRxpNzUJmIDl3CfqnQRiZZO0nwBYsYKwQPY7BhZopV6UOiZiNrOFVWD-Sy92fhReO4uVVFuIH9OwK18Q7vjDQBLRyyvrdkjO7qTTbI-xOWE8OMHAyVVWuQXSQ9Q
 
 {
   "content": "Тестовый вопрос",
   "timeLimit": 0,
   "ord": 1,
-  "exam": "\/api-platform\/exams\/c0b9edc1-bedd-48b0-9a99-64d8bf3f591f",
+  "exam": "\/api-platform\/exams\/08b4e741-fb67-490a-8250-92df7ecce101",
   "examinationSheets": [],
   "rightAnswers": []
 }

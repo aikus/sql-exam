@@ -4,6 +4,9 @@
     --font-primary: 'Roboto', sans-serif;
     --link-color-primary: #0044BB;
     --link-color-hover-primary: #CC0000;
+    --text-color-primary: #262626;
+    --button-color: #FFCC00;
+    --hover-button-color: #FAC000;
 }
 body {
     margin: 0;

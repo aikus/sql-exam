@@ -2,6 +2,10 @@ app_api_login:
     path: /api/login
     methods: ['POST']
 
+app_logout:
+    path: /api/logout
+    methods: ['GET']
+
 controllers:
     resource: ../src/Controller/
     type: annotation
@@ -9,3 +13,28 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
+
+app_react_my-profile:
+    path: react/my-profile
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_practice:
+    path: react/my-profile/practice
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_questionnaire:
+    path: react/my-profile/questionnaire
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_course-management:
+    path: react/my-profile/course-management
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_create-course:
+    path: react/my-profile/create-course
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]

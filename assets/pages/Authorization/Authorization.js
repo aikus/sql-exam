@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { H3 } from '../../components/Typography'
 
 export const Authorization = () => {
     const navigate = useNavigate();
 
-    const [disableLogin, setDisableLogin] = useState(false)
+    const [disableButton, setDisableButton] = useState(false)
     const [state, setState] = useState({
         emailValue: '',
         emailError: false,
@@ -34,7 +35,6 @@ export const Authorization = () => {
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
-        token: null,
     })
 
     const handleAuthorizationSubmit = (e) => {
@@ -42,7 +42,7 @@ export const Authorization = () => {
 
         if (state.emailValue && state.passwordValue) {
             document.body.style.cursor = 'wait';
-            setDisableLogin(true)
+            setDisableButton(true)
             fetch('http://localhost/api/login', {
                 method: 'POST',
                 headers: {
@@ -57,7 +57,7 @@ export const Authorization = () => {
                 .then(response => response.json())
                 .then(data => {
                     document.body.style.cursor = 'default';
-                    setDisableLogin(false)
+                    setDisableButton(false)
                     if (data.code === 401) {
                         setState((prevState) => {
                             return {
@@ -68,8 +68,9 @@ export const Authorization = () => {
                         })
                     } else {
                         setState((prevState) => {
-                            return { ...prevState, token: data.token, passwordError: false }
+                            return { ...prevState, passwordError: false }
                         })
+                        localStorage.setItem('jwtToken', data.token)
                         navigate("/react/my-profile");
                     }
                 })
@@ -78,7 +79,33 @@ export const Authorization = () => {
 
     const handleRegistrationSubmit = (e) => {
         e.preventDefault()
-        // отправка значений на бэк
+
+        if (state.fio && state.emailRegistrationValue && state.passwordRegistration1Value && checkPasswordMatch()) {
+            document.body.style.cursor = 'wait';
+            setDisableButton(true)
+
+            fetch('http://localhost/api/register', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    email: state.emailRegistrationValue,
+                    agreeTerms: 1,
+                    fio: state.fio,
+                    plainPassword: state.passwordRegistration2Value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.body.style.cursor = 'default';
+                    setDisableButton(false)
+                    if (data.status === 'success') {
+                        navigate("/react/my-profile");
+                    }
+                })
+        }
     }
 
     const handleRestorePasswordSubmit = (e) => {
@@ -124,10 +151,14 @@ export const Authorization = () => {
             setState((prevState) => {
                 return { ...prevState, passwordRegistration2Error: true }
             })
+
+            return false
         } else {
             setState((prevState) => {
                 return { ...prevState, passwordRegistration2Error: false }
             })
+
+            return true
         }
     }
 
@@ -141,6 +172,12 @@ export const Authorization = () => {
             }
         })
     }
+
+    useEffect(() => {
+        if (localStorage.getItem('jwtToken')) {
+            navigate("/react/my-profile");
+        }
+    }, [])
 
     const renderAuthorizationForm = () => {
         return (
@@ -173,7 +210,7 @@ export const Authorization = () => {
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
                     <C.ButtonBox>
-                        <Button type="submit" disabled={disableLogin}>Войти</Button>
+                        <Button type="submit" disabled={disableButton}>Войти</Button>
                     </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
@@ -239,7 +276,7 @@ export const Authorization = () => {
                         onBlur={checkPasswordMatch}
                     />
                     <C.ButtonReg>
-                        <Button type="submit">Зарегистрироваться</Button>
+                        <Button type="submit" disabled={disableButton}>Зарегистрироваться</Button>
                     </C.ButtonReg>
                 </form>
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
@@ -278,7 +315,7 @@ export const Authorization = () => {
         <C.Wrapper>
             <C.TopBlock>
                 <Logo/>
-                <C.Header>{state.headerText}</C.Header>
+                <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
             {!state.restorePassword && !state.registrationBlock && renderAuthorizationForm()}
