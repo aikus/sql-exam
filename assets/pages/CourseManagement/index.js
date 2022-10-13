@@ -35,8 +35,8 @@ export const CourseManagement = () => {
         <H2>Администрирование курсов</H2>
         <C.CreateCourse>
             <Button onClick={() => {
-                // test()
-                navigate("/react/my-profile/create-course")
+                test()
+                // navigate("/react/my-profile/create-course")
             }}>Создать новый курс</Button>
         </C.CreateCourse>
         <C.CourseList>
