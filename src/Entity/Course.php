@@ -9,10 +9,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 #[ORM\EntityListeners([CourseListener::class])]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Course
 {
     public const STATUS_ENABLE = 'enable';
@@ -21,25 +25,31 @@ class Course
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['write', 'read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['write', 'read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['write', 'read'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['write', 'read'])]
     private ?int $timeLimit = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['write', 'read'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
-    #[ORM\OneToMany(mappedBy: 'cource', targetEntity: CourseElement::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseElement::class, orphanRemoval: true)]
+    #[Groups(['write', 'read'])]
     private Collection $type;
 
     public function __construct()
