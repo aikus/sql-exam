@@ -14,7 +14,7 @@ export const PersonalAccountPage = () => {
 
     useEffect(() => {
         if (Object.keys(inProgress).length === 0) {
-            fetch('http://localhost/api-platform/exams', {
+            fetch('http://localhost/api-platform/courses', {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -22,7 +22,7 @@ export const PersonalAccountPage = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                  console.log('data: ', data)
+                    console.log('data: ', data)
                     if (data.code === 401) {
                         return
                     }

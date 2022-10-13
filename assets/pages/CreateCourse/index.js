@@ -127,6 +127,7 @@ export const CreateCourse = () => {
                 </C.CheckBoxControled>
               }
               <Button onClick={handleNextStep}>Далее</Button>
+              <Button>Создать</Button>
             </C.FirstStep>
           }
           {step >= 2 &&
