@@ -27,7 +27,7 @@ class CourseElement
 
     #[ORM\ManyToOne(inversedBy: 'type')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Course $cource = null;
+    private ?Course $course = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
@@ -73,14 +73,14 @@ class CourseElement
         return $this;
     }
 
-    public function getCource(): ?Course
+    public function getCourse(): ?Course
     {
-        return $this->cource;
+        return $this->course;
     }
 
-    public function setCource(?Course $cource): self
+    public function setCourse(?Course $course): self
     {
-        $this->cource = $cource;
+        $this->course = $course;
 
         return $this;
     }
