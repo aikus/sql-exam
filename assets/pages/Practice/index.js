@@ -70,7 +70,7 @@ export const Practice = () => {
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
             <C.Header>
                 <H2>Задание {taskNum}</H2>
-                <TextM>Задание {taskNum} из {data.length}</TextM>
+                <TextL>Задание {taskNum} из {data.length}</TextL>
             </C.Header>
             <C.Main>
                 <C.Task>

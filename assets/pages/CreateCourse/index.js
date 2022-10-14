@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(1)
+  const [stepsTotal, setStepsTotal] = useState(step)
   const [courseMainInfo, setCourseMainInfo] = useState({
     name: '',
     description: '',
@@ -16,6 +17,27 @@ export const CreateCourse = () => {
     numOfTries: '',
     minForTrie: ''
   })
+
+  const createCourseReq = () => {
+    fetch('http://localhost/api-platform/courses', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+      },
+      body: JSON.stringify({
+        name: courseMainInfo.name,
+        description: courseMainInfo.description,
+        timeLimit: 0,
+        status: "string"
+      })
+    })
+        .then(response => response.json())
+        .then(data => {
+          console.log('data: ', data)
+        })
+  }
 
   const handleIntendedForChange = (event) => {
     const {
@@ -29,6 +51,9 @@ export const CreateCourse = () => {
   };
 
   const handleNextStep = () => {
+    if (step + 1 > stepsTotal) {
+      setStepsTotal((prevState) => prevState + 1)
+    }
     setStep(prevState => prevState + 1);
   };
 
@@ -38,7 +63,10 @@ export const CreateCourse = () => {
 
   return (
       <C.Wrapper>
-        <H2>Создание нового курса</H2>
+        <C.Header>
+          <H2>Создание нового курса</H2>
+          <TextL>Шаг {step} из {stepsTotal}</TextL>
+        </C.Header>
         <C.Main>
           {step === 1 &&
             <C.FirstStep>
@@ -126,8 +154,12 @@ export const CreateCourse = () => {
                   </C.FieldBox>
                 </C.CheckBoxControled>
               }
-              <Button onClick={handleNextStep}>Далее</Button>
-              <Button>Создать</Button>
+              <Button
+                onClick={() => {
+                  // createCourseReq()
+                  handleNextStep()
+                }}
+              >Далее</Button>
             </C.FirstStep>
           }
           {step >= 2 &&
