@@ -47,6 +47,10 @@ export const FieldBox = styled.div`
   }
 `
 
+export const Hint = styled.div`
+  margin-top: 8px;
+`
+
 export const CheckBoxWrapper = styled.div`
   display: flex;
   flex-direction: column;

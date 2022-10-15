@@ -5,11 +5,16 @@ import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {TaskSheet} from './TaskSheet'
 import {useNavigate} from "react-router-dom";
+import {Loader} from "../../components/Loader";
+import {HttpRequest} from '../../Service/HttpRequest'
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(1)
   const [stepsTotal, setStepsTotal] = useState(step)
+  const [disableButton, setDisableButton] = useState(true)
+  const [loader, setLoader] = useState(false)
   const [courseMainInfo, setCourseMainInfo] = useState({
+    courseId: '',
     name: '',
     description: '',
     intendedFor: [],
@@ -25,24 +30,44 @@ export const CreateCourse = () => {
   ])
 
   const createCourseReq = () => {
-    fetch('http://localhost/api-platform/courses', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=utf-8',
-        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-      },
-      body: JSON.stringify({
-        name: courseMainInfo.name,
-        description: courseMainInfo.description,
-        timeLimit: 0,
-        status: "string"
-      })
-    })
-        .then(response => response.json())
-        .then(data => {
-          console.log('data: ', data)
-        })
+    const body = {
+      name: courseMainInfo.name,
+      description: courseMainInfo.description,
+      timeLimit: +courseMainInfo.minForTrie,
+      status: "enable"
+    }
+
+    const handleSuccess = (data) => {
+      setCourseMainInfo(prevState => ({...prevState, courseId: data.id}))
+      setLoader(false)
+      handleNextStep()
+    }
+
+    const handleError = () => {
+      setLoader(false)
+    }
+
+    HttpRequest.post('http://localhost/api-platform/courses', body, (data) => handleSuccess(data), (error) => handleError())
+  }
+
+  const changeCourseReq = () => {
+    const body = {
+      name: courseMainInfo.name,
+      description: courseMainInfo.description,
+      timeLimit: +courseMainInfo.minForTrie,
+      status: "enable"
+    }
+
+    const handleSuccess = (data) => {
+      setLoader(false)
+      handleNextStep()
+    }
+
+    const handleError = () => {
+      setLoader(false)
+    }
+
+    HttpRequest.put(`http://localhost/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const handleIntendedForChange = (event) => {
@@ -67,6 +92,18 @@ export const CreateCourse = () => {
     setStep(prevState => prevState - 1);
   };
 
+  const handleInputChange = (value, field) => {
+    setCourseMainInfo((prevState) => ({...prevState, [field]: value}))
+  };
+
+  useEffect(() => {
+    if (courseMainInfo.name && courseMainInfo.description && courseMainInfo.minForTrie) {
+      setDisableButton(false)
+    } else {
+      setDisableButton(true)
+    }
+  }, [courseMainInfo.name, courseMainInfo.description, courseMainInfo.minForTrie])
+
   return (
       <C.Wrapper>
         <C.Header>
@@ -84,9 +121,7 @@ export const CreateCourse = () => {
                   multiline={true}
                   fullWidth={true}
                   value={courseMainInfo.name}
-                  onChange={(e) => {
-                    setCourseMainInfo((prevState) => ({...prevState, name: e.target.value}))
-                  }}
+                  onChange={(e) => handleInputChange(e.target.value, 'name')}
                 />
               </C.FieldBox>
               <C.FieldBox>
@@ -99,9 +134,7 @@ export const CreateCourse = () => {
                   fullWidth={true}
                   minRows={5}
                   value={courseMainInfo.description}
-                  onChange={(e) => {
-                    setCourseMainInfo((prevState) => ({...prevState, description: e.target.value}))
-                  }}
+                  onChange={(e) => handleInputChange(e.target.value, 'description')}
                 />
               </C.FieldBox>
               <C.FieldBox>
@@ -139,13 +172,17 @@ export const CreateCourse = () => {
                   <C.FieldBox>
                     <H5>Количество попыток</H5>
                     <TextField
-                      required
                       type="number"
                       value={courseMainInfo.numOfTries}
                       onChange={(e) => {
-                        setCourseMainInfo((prevState) => ({...prevState, numOfTries: e.target.value}))
+                        if (e.target.value >= 0 && e.target.value <= 100) {
+                          handleInputChange(e.target.value, 'numOfTries')
+                        }
                       }}
                     />
+                    <C.Hint>
+                      <TextM>Количество попыток может быть от 0 до 100, где 0 - неограниченное количество</TextM>
+                    </C.Hint>
                   </C.FieldBox>
                   <C.FieldBox>
                     <H5>Время на одну попытку в минутах</H5>
@@ -154,17 +191,27 @@ export const CreateCourse = () => {
                       type="number"
                       value={courseMainInfo.minForTrie}
                       onChange={(e) => {
-                        setCourseMainInfo((prevState) => ({...prevState, minForTrie: e.target.value}))
+                        if (e.target.value >= 0 && e.target.value <= 480) {
+                          handleInputChange(e.target.value, 'minForTrie')
+                        }
                       }}
                     />
+                    <C.Hint>
+                      <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
+                    </C.Hint>
                   </C.FieldBox>
                 </C.CheckBoxControled>
               }
               <Button
                 onClick={() => {
-                  // createCourseReq()
-                  handleNextStep()
+                  setLoader(true)
+                  if (courseMainInfo.courseId) {
+                    changeCourseReq()
+                  } else {
+                    createCourseReq()
+                  }
                 }}
+                disabled={disableButton}
               >Далее</Button>
             </C.FirstStep>
           }
@@ -178,6 +225,8 @@ export const CreateCourse = () => {
             />
           }
         </C.Main>
+
+        <Loader show={loader}/>
       </C.Wrapper>
   )
 }
