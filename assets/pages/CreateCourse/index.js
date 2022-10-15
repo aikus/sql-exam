@@ -17,6 +17,12 @@ export const CreateCourse = () => {
     numOfTries: '',
     minForTrie: ''
   })
+  const [courseContent, setCourseContent] = useState([
+    {
+      'type': 'текст',
+      'question': '',
+    }
+  ])
 
   const createCourseReq = () => {
     fetch('http://localhost/api-platform/courses', {
@@ -167,6 +173,8 @@ export const CreateCourse = () => {
               step={step}
               nextStep={handleNextStep}
               prevStep={handlePrevStep}
+              courseContent={courseContent}
+              setCourseContent={setCourseContent}
             />
           }
         </C.Main>

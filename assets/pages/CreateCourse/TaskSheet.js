@@ -3,15 +3,11 @@ import * as C from './styles'
 import { TextField, MenuItem, Select, FormControlLabel, RadioGroup, Radio, InputAdornment, IconButton } from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import {Button} from "../../components/Button";
+import {Loader} from "../../components/Loader";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 
-export const TaskSheet = ({step, nextStep, prevStep}) => {
-  const [courseContent, setCourseContent] = useState([
-    {
-      'type': 'текст',
-      'question': '',
-    }
-  ])
+export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent}) => {
+  const [loader, setLoader] = useState(false)
 
   const handleSelectChange = (e) => {
     let typeObject = {}
@@ -61,24 +57,6 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
     nextStep()
   }
 
-  const handleQuestion = (e) => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 2].question = e.target.value
-
-      return newState
-    })
-  }
-
-  const handleAnswer = (e) => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 2].answer = e.target.value
-
-      return newState
-    })
-  }
-
   const handlePrevStep = () => {
     prevStep()
   }
@@ -90,6 +68,23 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
 
       return newState
     })
+  }
+
+  const handleInputChange = (value, field) => {
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+      newState[step - 2][field] = value
+
+      return newState
+    })
+  }
+
+  const handleCreateCourse = () => {
+    setLoader(true)
+
+    setTimeout(() => {
+      setLoader(false)
+    }, 5000)
   }
 
   const handleVariantDelete = (i) => {
@@ -135,7 +130,7 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
           fullWidth={true}
           minRows={5}
           value={courseContent[step - 2].question}
-          onChange={(e) => handleQuestion(e)}
+          onChange={(e) => handleInputChange(e.target.value, 'question')}
         />
       </C.QuestionBlock>
       {courseContent[step - 2].type === 'практика' &&
@@ -150,7 +145,7 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
             fullWidth={true}
             minRows={5}
             value={courseContent[step - 2].answer}
-            onChange={(e) => handleAnswer(e)}
+            onChange={(e) => handleInputChange(e.target.value, 'answer')}
           />
         </C.AnswerBlock>
       }
@@ -186,7 +181,12 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
                         </InputAdornment>,
                       }}
                     />
-                    <FormControlLabel value={i + 1} control={<Radio />} label="Правильный ответ" />
+                    <FormControlLabel
+                      value={i + 1}
+                      control={<Radio />}
+                      label="Правильный ответ"
+                      sx={{marginRight: 0}}
+                    />
                   </C.Row>
                 )
               })}
@@ -199,11 +199,10 @@ export const TaskSheet = ({step, nextStep, prevStep}) => {
           <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
           <Button onClick={handleNextStep} size={'S'}>Далее</Button>
         </div>
-        <Button size={'S'}>Завершить создание курса</Button>
+        <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
       </C.ButtonsBlock>
-      <div onClick={() => {
-        console.log(courseContent)
-      }}>GGG</div>
+
+      <Loader show={loader}/>
     </>
   )
 }

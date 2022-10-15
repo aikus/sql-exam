@@ -75,12 +75,31 @@ export const AnswerBlock = styled(QuestionBlock)`
 `
 
 export const VariantsBlock = styled.div`
+  max-width: 800px;
+  
+  & > button {
+    width: unset;
+    margin-top: 24px;
+  }
 `
 
 export const VariantsRow = styled.div`
+  margin-top: 24px;
 `
 
 export const Row = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  & > *:first-child, *:last-child {
+    flex-shrink: 0;
+  }
 `
 
 export const ButtonsBlock = styled.div`
