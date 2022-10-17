@@ -3,12 +3,13 @@
 namespace App\Service\ExaminationProcess;
 
 use App\Entity\Course;
+use App\Entity\CourseElement;
 use App\Entity\User;
 use DateTimeInterface;
 
 interface ExaminationProcess
 {
-    public function start(User $user, Course $course, DateTimeInterface $now): array;
+    public function start(User $user, Course $course, DateTimeInterface $now): CourseElement;
 
-    public function next(User $user, Course $course, DateTimeInterface $now): array;
+    public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ?CourseElement;
 }

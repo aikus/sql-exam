@@ -36,7 +36,7 @@ class CourseSheet
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'courceSheet', targetEntity: CourseAnswer::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'courceSheet', targetEntity: CourseAnswer::class, cascade: ["persist"], orphanRemoval: true)]
     private Collection $courseAnswers;
 
     public function __construct()

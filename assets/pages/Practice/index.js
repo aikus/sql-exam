@@ -7,41 +7,82 @@ import {TableToChoose} from "./TableToChoose";
 import {ExampleTable} from "./ExampleTable";
 import {ResultBlock} from "./ResultBlock";
 import {useNavigate} from "react-router-dom";
+import {HttpRequest} from "../../Service/HttpRequest";
+import {Loader} from "../../components/Loader";
+import {UrlService} from "../../Service/UrlService";
+import {StudentTableData} from "../../Service/StudentTableData";
 
 export const Practice = () => {
     const navigate = useNavigate();
-    const [taskNum, setTaskNum] = useState(1)
-    const [request, setRequest] = useState('')
+    const [element, setElement] = useState({
+        name: null,
+        description: null,
+        ord: null,
+        type: null
+    })
+    const [practice, setPractice] = useState({
+        courseId: null,
+        sheetId: null,
+        elementId: null,
+        answer: null,
+        elementCount: 0
+    })
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
     const [givenTables, setGivenTables] = useState([])
     const [givenTablesData, setGivenTablesData] = useState(null)
+    const [loader, setLoader] = useState(true)
+    const [isNext, setIsNext] = useState(true)
 
-    // передать answer при нажатии далее в PUT http://localhost/api-platform/answers/4770872d-4033-4a02-9996-b3fc7feaec3d, файл answer.http
-    // сам текст ответа передавать в sql_text
-    const getTableData = () => {
-        fetch('/api/studentData/10', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-            }
-        })
-            .then(response => response.json())
+    const urlContainer = (key, id) => {
+        let container = {
+            tableData: `/api/studentData/10`,
+            start: `/api-process/${id}/start`,
+            answer: `/api-process/${id}/answer`,
+            element: `/api-platform/course_elements/${id}`,
+        };
+        return container[key];
+    }
+
+    const getStart = () => {
+        let course = UrlService.param('course');
+        HttpRequest.get(urlContainer('start', course))
             .then(data => {
-                let dataTableArr = []
-                for (let key in data) {
-                    dataTableArr.push({
-                        tableName: [key],
-                        linesNum: data[key].length
-                    })
-                }
-                setGivenTables(dataTableArr)
-                setGivenTablesData(data)
+                setPractice({
+                    courseId: course,
+                    elementId: data.elementId,
+                    elementCount: data.elementCount,
+                })
+                getElement(data.elementId)
+            });
+    }
+
+    const getElement = id => {
+        HttpRequest.get(urlContainer('element', id))
+            .then(data => {
+                setElement({
+                    name: data.name,
+                    description: data.description,
+                    ord: data.ord,
+                    type: data.type
+                })
+                setLoader(false)
             })
     }
 
     useEffect(() => {
-        getTableData()
+        getStart()
+        StudentTableData(urlContainer('tableData'), data => {
+            let dataTableArr = []
+            for (let key in data) {
+                dataTableArr.push({
+                    tableName: [key],
+                    linesNum: data[key].length
+                })
+            }
+            setGivenTables(dataTableArr)
+            setGivenTablesData(data)
+        })
     }, [])
 
     const checkRequest = () => {
@@ -49,12 +90,23 @@ export const Practice = () => {
         setShowResultTable(true)
     }
 
-    const handgeNextStep = () => {
-        setTaskNum((prevState => prevState + 1))
+    const handleNextStep = () => {
+        setLoader(true)
+        HttpRequest.post(urlContainer('answer', UrlService.param('course')), {
+                answerText: practice.answer,
+            })
+            .then(data => {
+                let nextElementId = data.nextElementId;
+                if (nextElementId > 0) setIsNext(true);
+                setPractice({
+                    elementId: nextElementId
+                })
+                getElement(nextElementId)
+            })
+            .catch(e => console.log('error', e))
     }
 
-    const handgePrevStep = () => {
-        setTaskNum((prevState => prevState - 1))
+    const handlePrevStep = () => {
     }
 
     const setHeader = () => {
@@ -67,17 +119,19 @@ export const Practice = () => {
 
     return (
         <C.Wrapper>
+            <Loader show={loader}/>
+
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
             <C.Header>
-                <H2>Задание {taskNum}</H2>
-                <TextL>Задание {taskNum} из {data.length}</TextL>
+                <H2>{element.name}</H2>
+                <TextL>Задание {element.ord} из {practice.elementCount}</TextL>
             </C.Header>
             <C.Main>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
                         <C.Question>
-                            <TextM>{data[taskNum - 1].question}</TextM>
+                            <TextM>{element.description}</TextM>
                         </C.Question>
                         <TextField
                             margin="normal"
@@ -88,9 +142,9 @@ export const Practice = () => {
                             multiline={true}
                             fullWidth={true}
                             minRows={5}
-                            value={request}
+                            value={practice.answer}
                             onChange={(e) => {
-                                setRequest(e.target.value)
+                                setPractice({answer: e.target.value})
                             }}
                         />
                         <C.Description>
@@ -102,11 +156,14 @@ export const Practice = () => {
                         <C.ButtonBox>
                             <div>
                                 <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
-                                <Button size={'S'} view={'outlined'} onClick={handgePrevStep} disabled={taskNum !== 1 ? false : true}>Назад</Button>
-                                <Button size={'S'} view={'outlined'} onClick={handgeNextStep} disabled={taskNum !== data.length ? false : true}>Далее</Button>
+                                <Button size={'S'} view={'outlined'} onClick={handlePrevStep} disabled={true}>Назад</Button>
+                                <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!isNext}>Далее</Button>
                             </div>
-                            {taskNum === data.length &&
-                                <Button size={'S'} onClick={() => navigate("/react/my-profile")}>Завершить практику</Button>
+                            {
+                                !isNext
+                                && <Button size={'S'} onClick={() => navigate("/react/my-profile")}>
+                                    Завершить практику
+                                </Button>
                             }
                         </C.ButtonBox>
                     </C.LeftBlock>
@@ -130,287 +187,3 @@ export const Practice = () => {
         </C.Wrapper>
     )
 }
-
-const data = [
-    {
-        'question': 'Сделать то, использовать это, сортировать так.',
-        'tableToChoose': {
-            'Таблица 1': {
-                'numOfRows': '40',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'VARCHAR'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
-                        ['Marco', '38', '', '2022-04-11 03:18:18'],
-                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
-                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-            'Таблица 2': {
-                'numOfRows': '38',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
-                        ['2', '38', '', '2022-04-11 03:18:18'],
-                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
-                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-        }
-    },
-    {
-        'question': 'Сделать SELECT * FROM test',
-        'tableToChoose': {
-            'Таблица 1': {
-                'numOfRows': '12',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'VARCHAR'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
-                        ['Marco', '38', '', '2022-04-11 03:18:18'],
-                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
-                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-            'Таблица 2': {
-                'numOfRows': '4',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
-                        ['2', '38', '', '2022-04-11 03:18:18'],
-                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
-                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-            'Таблица 3': {
-                'numOfRows': '77',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
-                        ['2', '38', '', '2022-04-11 03:18:18'],
-                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
-                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-        }
-    },
-    {
-        'question': 'Вывести название и цену для всех анализов, которые продавались 5 февраля 2020 и всю следующую неделю.',
-        'tableToChoose': {
-            'Таблица 1': {
-                'numOfRows': '40',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'VARCHAR'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
-                        ['Marco', '38', '', '2022-04-11 03:18:18'],
-                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
-                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-            'Таблица 2': {
-                'numOfRows': '38',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
-                        ['2', '38', '', '2022-04-11 03:18:18'],
-                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
-                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-        }
-    },
-    {
-        'question': 'Вывести название и цену для всех анализов, которые продавались 5 февраля 2020 и всю следующую неделю.',
-        'tableToChoose': {
-            'Таблица 1': {
-                'numOfRows': '40',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'VARCHAR'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['Giacoma Guilizzoni', '40', 'Peldi', '2022-04-11 03:18:18'],
-                        ['Marco', '38', '', '2022-04-11 03:18:18'],
-                        ['Mariah', '20', 'Patata', '2022-04-11 03:18:18'],
-                        ['Valerie', '15', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-            'Таблица 2': {
-                'numOfRows': '38',
-                'exampleTable': {
-                    'header': [
-                        {
-                            'attribute': 'Атрибут 1',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 2',
-                            'type': 'INT'
-                        },
-                        {
-                            'attribute': 'Атрибут 3',
-                            'type': 'LONGTEXT'
-                        },
-                        {
-                            'attribute': 'Атрибут 4',
-                            'type': 'DATETIME'
-                        }
-                    ],
-                    'body': [
-                        ['1', '2', 'Peldi', '2022-04-11 03:18:18'],
-                        ['2', '38', '', '2022-04-11 03:18:18'],
-                        ['3', '600', 'Patata', '2022-04-11 03:18:18'],
-                        ['4', '1231234', 'Val', '2022-04-11 03:18:18']
-                    ]
-                }
-            },
-        }
-    }
-]
