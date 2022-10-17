@@ -105,6 +105,17 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
     })
   }
 
+  const removeRightAnswer = (e) => {
+    if (e.target.value === courseContent[step - 2]['right-variant']) {
+      setCourseContent((prevState) => {
+        let newState = [...prevState]
+        newState[step - 2]['right-variant'] = ''
+
+        return newState
+      })
+    }
+  }
+
   return (
     <>
       <C.Type>
@@ -155,8 +166,15 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
+              value={courseContent[step - 2]['right-variant']}
+              onChange={(e) => handleInputChange(e.target.value, 'right-variant')}
+              onClick={(e) => {
+                if (e.target.value === courseContent[step - 2]['right-variant']) {
+                  handleInputChange('', 'right-variant')
+                }
+              }}
             >
-              {courseContent[step - 2].variants.map((item, i) => {
+              {courseContent[step - 2].variants.map((item, i, arr) => {
                 return (
                   <C.Row key={i}>
                     <TextM>Вариант {i + 1}</TextM>
@@ -171,14 +189,17 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
                       onChange={(e) => handleVariantInput(e.target.value, i)}
                       size={'small'}
                       InputProps={{
-                        endAdornment: <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => handleVariantDelete(i)}
-                            edge="end"
-                          >
-                            <DeleteForeverRoundedIcon/>
-                          </IconButton>
-                        </InputAdornment>,
+                        endAdornment: arr.length > 2 ?
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => handleVariantDelete(i)}
+                              edge="end"
+                            >
+                              <DeleteForeverRoundedIcon/>
+                            </IconButton>
+                          </InputAdornment>
+                          :
+                          '',
                       }}
                     />
                     <FormControlLabel

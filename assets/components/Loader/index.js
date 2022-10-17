@@ -17,7 +17,7 @@ export const Loader = ({show}) => {
 }
 
 const Container = styled.div`
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
