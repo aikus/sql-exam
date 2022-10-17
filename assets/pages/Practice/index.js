@@ -36,7 +36,6 @@ export const Practice = () => {
 
     const urlContainer = (key, id) => {
         let container = {
-            tableData: `/api/studentData/10`,
             start: `/api-process/${id}/start`,
             answer: `/api-process/${id}/answer`,
             element: `/api-platform/course_elements/${id}`,
@@ -46,8 +45,7 @@ export const Practice = () => {
 
     const getStart = () => {
         let course = UrlService.param('course');
-        HttpRequest.get(urlContainer('start', course))
-            .then(data => {
+        HttpRequest.get(urlContainer('start', course), data => {
                 setPractice({
                     courseId: course,
                     elementId: data.elementId,
@@ -58,8 +56,7 @@ export const Practice = () => {
     }
 
     const getElement = id => {
-        HttpRequest.get(urlContainer('element', id))
-            .then(data => {
+        HttpRequest.get(urlContainer('element', id), data => {
                 setElement({
                     name: data.name,
                     description: data.description,
@@ -72,7 +69,7 @@ export const Practice = () => {
 
     useEffect(() => {
         getStart()
-        StudentTableData(urlContainer('tableData'), data => {
+        StudentTableData(data => {
             let dataTableArr = []
             for (let key in data) {
                 dataTableArr.push({
@@ -94,16 +91,14 @@ export const Practice = () => {
         setLoader(true)
         HttpRequest.post(urlContainer('answer', UrlService.param('course')), {
                 answerText: practice.answer,
-            })
-            .then(data => {
-                let nextElementId = data.nextElementId;
+            }, data => {
+                let nextElementId = data.elementId;
                 if (nextElementId > 0) setIsNext(true);
                 setPractice({
                     elementId: nextElementId
                 })
                 getElement(nextElementId)
             })
-            .catch(e => console.log('error', e))
     }
 
     const handlePrevStep = () => {

@@ -1,5 +1,5 @@
 import {HttpRequest} from "./HttpRequest";
 
-export const StudentTableData = (url, callback) => {
-    HttpRequest.get(url).then(callback)
+export const StudentTableData = (callback) => {
+    HttpRequest.get(`/api/studentData/10`, callback)
 }
