@@ -52,9 +52,8 @@ class EntityCreator
         return $answer;
     }
 
-    public function updateSheet(CourseSheet $sheet, CourseElement $element): CourseSheet
+    public function updateSheet(CourseSheet $sheet): CourseSheet
     {
-        $sheet->setActualElement($element);
         $this->sheetRepository->add($sheet);
         return $sheet;
     }

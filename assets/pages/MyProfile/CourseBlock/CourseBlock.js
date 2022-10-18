@@ -9,19 +9,8 @@ import {useNavigate} from "react-router-dom";
 
 export const CourseBlock = ({id, items}) => {
     const navigate = useNavigate();
-
-    const goToPractice = (id) => {
-      fetch(`/api-process/${id}/start`, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          navigate("/react/my-profile/practice")
-          document.location.hash = data.answer
-        })
+    const goToPractice = id => {
+        navigate(`/react/my-profile/practice#course=${id}`)
     }
 
     return (
