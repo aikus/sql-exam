@@ -11,7 +11,7 @@ RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/Asia/Yekaterinburg /etc/localtime
 RUN "date"
 
-RUN docker-php-ext-install pdo pdo_mysql zip
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
 
 RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet
 
