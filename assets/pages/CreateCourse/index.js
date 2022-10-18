@@ -70,6 +70,27 @@ export const CreateCourse = () => {
     HttpRequest.put(`http://localhost/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
+  const getCourseInfo = (id) => {
+    const handleSuccess = (data) => {
+      setCourseMainInfo(prevState => ({
+        ...prevState,
+        courseId: id,
+        name: data.name,
+        description: data.description,
+        minForTrie: data.timeLimit,
+        exam: data.timeLimit || data.timeLimit === 0 ? true : false
+      }))
+
+      setLoader(false)
+    }
+
+    const handleError = () => {
+      // setLoader(false)
+    }
+
+    HttpRequest.get(`http://localhost/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+  }
+
   const handleIntendedForChange = (event) => {
     const {
       target: { value },
@@ -103,6 +124,16 @@ export const CreateCourse = () => {
       setDisableButton(true)
     }
   }, [courseMainInfo.name, courseMainInfo.description, courseMainInfo.minForTrie])
+
+  useEffect(() => {
+    const courseId = new URL(window.location.href).searchParams.get('course')
+    if (courseId) {
+      setLoader(true)
+      getCourseInfo(courseId)
+    }
+
+    // HttpRequest.get
+  }, [])
 
   return (
       <C.Wrapper>
@@ -204,12 +235,12 @@ export const CreateCourse = () => {
               }
               <Button
                 onClick={() => {
-                  setLoader(true)
-                  if (courseMainInfo.courseId) {
-                    changeCourseReq()
-                  } else {
-                    createCourseReq()
-                  }
+                  // setLoader(true)
+                  // if (courseMainInfo.courseId) {
+                  //   changeCourseReq()
+                  // } else {
+                  //   createCourseReq()
+                  // }
                 }}
                 disabled={disableButton}
               >Далее</Button>

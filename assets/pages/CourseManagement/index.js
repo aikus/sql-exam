@@ -5,9 +5,27 @@ import {Button} from "../../components/Button";
 import {CourseBlock} from './CourseBlock'
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
+import {HttpRequest} from "../../Service/HttpRequest";
 
 export const CourseManagement = () => {
   const navigate = useNavigate();
+  const [courseList, setCourseList] = useState([])
+
+  useEffect(() => {
+    getCourseInf()
+  }, [])
+
+  const getCourseInf = () => {
+    const handleSuccess = (data) => {
+      setCourseList(data)
+    }
+
+    const handleError = () => {
+
+    }
+
+    HttpRequest.get('http://localhost/api-platform/courses', (data) => handleSuccess(data), (error) => handleError())
+  }
 
   return (
       <C.Wrapper>
@@ -19,25 +37,9 @@ export const CourseManagement = () => {
         </C.CreateCourse>
         <C.CourseList>
             <H3>Список курсов</H3>
-            <CourseBlock items={data}/>
+            <CourseBlock items={courseList}/>
         </C.CourseList>
       </C.Wrapper>
   )
 }
-
-const data = [
-  {
-      'title': 'Курс какой-то там чего-то там',
-      'description': 'Описание курса чего-то там'
-  },
-  {
-    'title': 'Курс какой-то там чего-то там',
-    'description': 'Описание курса чего-то там'
-  },
-  {
-    'title': 'Курс какой-то там чего-то там',
-    'description': 'Описание курса чего-то там'
-  }
-]
-
 
