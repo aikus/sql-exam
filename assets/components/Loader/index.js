@@ -28,6 +28,7 @@ const Container = styled.div`
   left: 0;
   opacity: 0;
   animation: ani 1s forwards;
+  z-index: 100;
 
   @keyframes ani {
     0% {opacity: 0;}

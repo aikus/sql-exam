@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 export const CourseBlock = ({id, items}) => {
     const navigate = useNavigate();
     const goToPractice = id => {
-        navigate(`/react/my-profile/practice#course=${id}`)
+        navigate(`/react/my-profile/practice?course=${id}`)
     }
 
     return (
