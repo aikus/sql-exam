@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class CourseElement
 {
-    const TYPE_TEXT = 'text';
+    const TYPE_ARTICLE = 'article';
     const TYPE_MYSQL = 'mysql';
     const TYPE_POSTGRE = 'postgre';
     const TYPE_ORACLE = 'oracle';
@@ -101,7 +101,7 @@ class CourseElement
      */
     public function setType(string $type): self
     {
-        if(!in_array($type, [self::TYPE_MYSQL, self::TYPE_ORACLE, self::TYPE_POLL, self::TYPE_POSTGRE, self::TYPE_TEXT])) {
+        if(!in_array($type, [self::TYPE_MYSQL, self::TYPE_ORACLE, self::TYPE_POLL, self::TYPE_POSTGRE, self::TYPE_ARTICLE])) {
             throw new CourseElementTypeNotFound($type);
         }
         $this->type = $type;
