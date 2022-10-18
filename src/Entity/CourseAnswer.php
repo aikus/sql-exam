@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\CourseAnswerListener;
 use App\Repository\CourseAnswerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\EntityListeners([CourseAnswerListener::class])]
 #[ORM\Entity(repositoryClass: CourseAnswerRepository::class)]
 #[ApiResource]
 class CourseAnswer

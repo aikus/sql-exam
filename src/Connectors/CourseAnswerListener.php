@@ -30,7 +30,6 @@ class CourseAnswerListener
             ]);
         } catch (Exception $exception) {
             $answer->setResult([
-
                 'error' => $exception->getMessage(),
                 'result' => []
             ]);
