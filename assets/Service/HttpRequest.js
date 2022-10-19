@@ -51,7 +51,7 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
     return await fetch(url, init)
         .then(response => {
             if (response.status >= 400) {
-                return Promise.reject(new Error(response.statusText))
+                return Promise.reject(response)
             }
             return Promise.resolve(response)
         })
@@ -65,7 +65,13 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
         .catch(error => {
             if (HttpRequest.isDev) console.log('error', error)
             if (handleError) {
-                handleError(error)
+                error.json().then(json => {
+                    handleError({
+                        status: error.status,
+                        statusText: error.statusText,
+                        body: json
+                    })
+                })
             }
         })
 }
