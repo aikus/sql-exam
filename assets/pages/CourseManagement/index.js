@@ -37,7 +37,11 @@ export const CourseManagement = () => {
         </C.CreateCourse>
         <C.CourseList>
             <H3>Список курсов</H3>
-            <CourseBlock items={courseList}/>
+            <CourseBlock
+              items={courseList}
+              getNewCourseList={getCourseInf}
+              updateCourseList={() => setCourseList([])}
+            />
         </C.CourseList>
       </C.Wrapper>
   )

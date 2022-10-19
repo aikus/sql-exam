@@ -74,3 +74,13 @@ export const Title = styled.div`
         padding: 20px 16px;
     }
 `
+
+export const DialogContent = styled.div`
+  padding: 24px;
+`
+
+export const DialogButtonWrap = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+`

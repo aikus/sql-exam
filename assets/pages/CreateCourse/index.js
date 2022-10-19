@@ -235,12 +235,12 @@ export const CreateCourse = () => {
               }
               <Button
                 onClick={() => {
-                  // setLoader(true)
-                  // if (courseMainInfo.courseId) {
-                  //   changeCourseReq()
-                  // } else {
-                  //   createCourseReq()
-                  // }
+                  setLoader(true)
+                  if (courseMainInfo.courseId) {
+                    changeCourseReq()
+                  } else {
+                    createCourseReq()
+                  }
                 }}
                 disabled={disableButton}
               >Далее</Button>
