@@ -1,5 +1,5 @@
 export const UrlService = {
     param: key => {
-        return document.location.hash.match('\#'+key+'=(.+)&?')[1];
+        return new URL(window.location.href).searchParams.get(key)
     }
 }

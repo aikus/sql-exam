@@ -5,6 +5,7 @@ namespace App\Service\ExaminationProcess;
 use App\Entity\Course;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
+use App\Entity\CourseSheet;
 use App\Entity\User;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,7 +13,7 @@ use Exception;
 
 class CourseExaminationProcess implements ExaminationProcess
 {
-    public const ERROR_MESSAGE_EMPTY_ANSWER = 'Ответ на вопрос не может быть пустым';
+    public const ERROR_MESSAGE_EMPTY_SHEET = 'Не найден список с ответами для данного ученика';
 
     public function __construct(
         private readonly EntityCreator $creator,
@@ -24,7 +25,13 @@ class CourseExaminationProcess implements ExaminationProcess
      */
     public function start(User $user, Course $course, DateTimeInterface $now): CourseElement
     {
-        $iterator = $course->getType()->getIterator();
+        $typeCollection = $course->getType();
+
+        if ($typeCollection->count() <= 0) {
+            throw new ExaminationProcessException('Не найдено ни одного шага курса');
+        }
+
+        $iterator = $typeCollection->getIterator();
         $iterator->uasort(function (CourseElement $a, CourseElement $b) {
             return $a->getOrd() <=> $b->getOrd();
         });
@@ -45,7 +52,6 @@ class CourseExaminationProcess implements ExaminationProcess
         }
 
         return $sheet->getActualElement();
-
     }
 
     /**
@@ -63,20 +69,13 @@ class CourseExaminationProcess implements ExaminationProcess
             'course' => $course,
         ]);
 
-        if (null === $sheet) return null;
-
-        if (null === $sqlText) {
-            throw new Exception(self::ERROR_MESSAGE_EMPTY_ANSWER);
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
         }
 
         $currentElement = $sheet->getActualElement();
 
-        $answer = new CourseAnswer();
-        $answer->setQuestion($currentElement);
-        $answer->setAnswer($sqlText);
-
-        $sheet->addCourseAnswer($answer);
-        $sheet = $this->creator->updateSheet($sheet);
+        $sheet = $this->executeAnswer($sheet, $currentElement, $sqlText);
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
@@ -88,5 +87,18 @@ class CourseExaminationProcess implements ExaminationProcess
         $sheet = $this->creator->updateSheet($sheet);
 
         return $nextElement;
+    }
+
+    private function executeAnswer(CourseSheet $sheet, CourseElement $element, ?string $sqlText): CourseSheet
+    {
+        if (null !== $sqlText) {
+            $answer = new CourseAnswer();
+            $answer->setQuestion($element);
+            $answer->setAnswer($sqlText);
+            $sheet->addCourseAnswer($answer);
+            $sheet = $this->creator->updateSheet($sheet);
+        }
+
+        return $sheet;
     }
 }

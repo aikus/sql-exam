@@ -3,6 +3,34 @@ export const HttpRequest = {
     post: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'POST'),
     put: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT'),
     get: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET'),
+    delete: (url, handleSuccess = null, handleError = null) => {
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            },
+        })
+          .then(response => {
+              if (response.status >= 400) {
+                  return Promise.reject(new Error(response.statusText))
+              }
+              return Promise.resolve(response)
+          })
+          .then(data => {
+              if (HttpRequest.isDev) console.log('data: ', data)
+              if (handleSuccess) {
+                  handleSuccess(data)
+              }
+          })
+          .catch(error => {
+              if (HttpRequest.isDev) console.log('error', error)
+              if (handleError) {
+                  handleError(error)
+              }
+          })
+    },
 }
 
 const request = async (url, body, handleSuccess = null, handleError, method) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import { TextField } from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
@@ -33,6 +33,7 @@ export const Practice = () => {
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
     const [isNext, setIsNext] = useState(true)
+    const [error, setError] = useState(false)
 
     const urlContainer = (key, id) => {
         let container = {
@@ -40,23 +41,34 @@ export const Practice = () => {
             answer: `/api-process/${id}/answer`,
             element: `/api-platform/course_elements/${id}`,
         };
+        if (null === id) {
+            throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
+        }
         return container[key];
     }
 
     const getStart = () => {
         let course = UrlService.param('course');
-        HttpRequest.get(urlContainer('start', course), data => {
+        HttpRequest.get(
+            urlContainer('start', course),
+            data => {
                 setPractice({
                     courseId: course,
                     elementId: data.elementId,
                     elementCount: data.elementCount,
                 })
                 getElement(data.elementId)
-            });
+            },
+            error => {
+                setError(error)
+            }
+        );
     }
 
     const getElement = id => {
-        HttpRequest.get(urlContainer('element', id), data => {
+        HttpRequest.get(
+            urlContainer('element', id),
+            data => {
                 setElement({
                     name: data.name,
                     description: data.description,
@@ -64,7 +76,11 @@ export const Practice = () => {
                     type: data.type
                 })
                 setLoader(false)
-            })
+            },
+            error => {
+                setError(error)
+            }
+        )
     }
 
     useEffect(() => {
@@ -89,16 +105,23 @@ export const Practice = () => {
 
     const handleNextStep = () => {
         setLoader(true)
-        HttpRequest.post(urlContainer('answer', UrlService.param('course')), {
+        HttpRequest.post(
+            urlContainer('answer', UrlService.param('course')),
+            {
                 answerText: practice.answer,
-            }, data => {
+            },
+            data => {
                 let nextElementId = data.elementId;
                 if (nextElementId > 0) setIsNext(true);
                 setPractice({
                     elementId: nextElementId
                 })
                 getElement(nextElementId)
-            })
+            },
+            error => {
+                setError(error)
+            }
+        )
     }
 
     const handlePrevStep = () => {
@@ -114,6 +137,8 @@ export const Practice = () => {
 
     return (
         <C.Wrapper>
+            {error && <Alert severity="error">{error?.message}</Alert>}
+
             <Loader show={loader}/>
 
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>

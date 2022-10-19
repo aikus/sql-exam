@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Course;
 use App\Service\ExaminationProcess\ExaminationProcess;
+use App\Service\ExaminationProcess\ExaminationProcessException;
 use DateTime;
 use Exception;
 use RusakovNikita\MysqlExam\Exam\Student;
@@ -29,10 +30,15 @@ class ProcessController extends AbstractController
 
         /** @var Student $user */
         $user = $security->getUser();
-        return new JsonResponse([
-            'elementId' => $process->start($user, $course, new DateTime())->getId(),
-            'elementCount' => $course->getType()->count(),
-        ]);
+        try {
+            return new JsonResponse([
+                'elementId' => $process->start($user, $course, new DateTime())->getId(),
+                'elementCount' => $course->getType()->count(),
+            ]);
+        }
+        catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     #[Route('/{course}/answer', name: 'app_exam_answer', methods: ['POST'])]
