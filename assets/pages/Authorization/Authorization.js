@@ -5,6 +5,7 @@ import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { H3 } from '../../components/Typography'
+import {HttpRequest} from "../../Service/HttpRequest";
 
 export const Authorization = () => {
     const navigate = useNavigate();

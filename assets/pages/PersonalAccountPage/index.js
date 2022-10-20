@@ -6,6 +6,7 @@ import { Logo } from "../../components/Logo";
 import { MyProfile } from '../MyProfile'
 import { CourseBlock } from '../MyProfile/CourseBlock/CourseBlock'
 import {Outlet, Link, useNavigate} from "react-router-dom";
+import {HttpRequest} from "../../Service/HttpRequest";
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
@@ -13,18 +14,12 @@ export const PersonalAccountPage = () => {
     const [inProgress, setInProgress] = useState([])
 
     useEffect(() => {
-        if (Object.keys(inProgress).length === 0) {
-            fetch('http://localhost/api-platform/courses', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('data PersonalAccountPage: ', data)
-                    setInProgress(data['hydra:member'])
-                })
+        if (inProgress.length === 0) {
+            const handleSuccess = (data) => {
+                setInProgress(data)
+            }
+
+            HttpRequest.get('http://localhost/api-platform/courses', (data) => handleSuccess(data),)
         }
     }, [])
 

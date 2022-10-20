@@ -43,6 +43,10 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
         })
         .catch(error => {
             if (HttpRequest.isDev) console.log('error', error)
+            if (error.status === 401) {
+                window.location.href = location.origin + '/react';
+                localStorage.removeItem('jwtToken')
+            }
             if (handleError) {
                 if (init.method !== 'DELETE') {
                     error.json().then(json => {
