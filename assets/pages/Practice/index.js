@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {Alert, AlertTitle, TextField} from "@mui/material";
+import {TextField} from "@mui/material";
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
@@ -30,6 +30,7 @@ export const Practice = () => {
     })
     const [chosenTable, setChosenTable] = useState(null)
     const [showResultTable, setShowResultTable] = useState(false)
+    const [result, setResult] = useState([])
     const [givenTables, setGivenTables] = useState([])
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
@@ -40,6 +41,7 @@ export const Practice = () => {
         let container = {
             start: `/api-process/${id}/start`,
             answer: `/api-process/${id}/answer`,
+            execution: `/api-process/${id}/execution`,
             element: `/api-platform/course_elements/${id}`,
         };
         if (null === id) {
@@ -58,6 +60,7 @@ export const Practice = () => {
                     elementId: data.elementId,
                     elementCount: data.elementCount,
                 })
+                setError(false)
                 getElement(data.elementId)
             },
             error => {
@@ -77,6 +80,7 @@ export const Practice = () => {
                     ord: data.ord,
                     type: data.type
                 })
+                setError(false)
                 setLoader(false)
             },
             error => {
@@ -86,24 +90,28 @@ export const Practice = () => {
         )
     }
 
-    useEffect(() => {
-        getStart()
-        StudentTableData(data => {
-            let dataTableArr = []
-            for (let key in data) {
-                dataTableArr.push({
-                    tableName: [key],
-                    linesNum: data[key].length
+    const handleExecution = () => {
+        setLoader(true)
+        HttpRequest.post(
+            urlContainer('execution', UrlService.param('course')),
+            {
+                answerText: practice.answer,
+            },
+            data => {
+                let elementId = data.elementId;
+                setPractice({
+                    elementId: elementId,
+                    elementCount: data.elementCount,
                 })
+                setResult(data.result)
+                setError(false)
+                getElement(elementId)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
             }
-            setGivenTables(dataTableArr)
-            setGivenTablesData(data)
-        })
-    }, [])
-
-    const checkRequest = () => {
-        // логика проверки запроса
-        setShowResultTable(true)
+        )
     }
 
     const handleNextStep = () => {
@@ -117,8 +125,10 @@ export const Practice = () => {
                 let nextElementId = data.elementId;
                 if (nextElementId > 0) setIsNext(true);
                 setPractice({
-                    elementId: nextElementId
+                    elementId: nextElementId,
+                    elementCount: data.elementCount,
                 })
+                setError(false)
                 getElement(nextElementId)
             },
             error => {
@@ -138,6 +148,21 @@ export const Practice = () => {
         }
         return accumArr
     }
+
+    useEffect(() => {
+        getStart()
+        StudentTableData(data => {
+            let dataTableArr = []
+            for (let key in data) {
+                dataTableArr.push({
+                    tableName: [key],
+                    linesNum: data[key].length
+                })
+            }
+            setGivenTables(dataTableArr)
+            setGivenTablesData(data)
+        })
+    }, [])
 
     return (
         <C.Wrapper>
@@ -178,7 +203,7 @@ export const Practice = () => {
                         </C.Description>
                         <C.ButtonBox>
                             <div>
-                                <Button size={'S'} onClick={checkRequest}>Выполнить запрос</Button>
+                                <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
                                 <Button size={'S'} view={'outlined'} onClick={handlePrevStep} disabled={true}>Назад</Button>
                                 <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!isNext}>Далее</Button>
                             </div>

@@ -37,16 +37,16 @@ class EntityCreator
         return $sheet;
     }
 
-    public function createAnswer(
+    public function addNewAnswer(
         CourseSheet $sheet,
         CourseElement $element,
-        string $textAnswer
+        ?string $textAnswer
     ): CourseAnswer {
 
         $answer = new CourseAnswer();
         $answer->setCourceSheet($sheet);
         $answer->setQuestion($element);
-        $answer->setAnswer($textAnswer);
+        $answer->setAnswer($textAnswer ?? '');
 
         $this->answerRepository->add($answer);
         return $answer;

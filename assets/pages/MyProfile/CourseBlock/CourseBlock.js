@@ -33,11 +33,11 @@ export const CourseBlock = ({id, items}) => {
                                 aria-controls={id + '-' + i + '-content'}
                                 id={id + '-' + i + '-header'}
                             >
-                                <C.Title><TextL>{item.description}</TextL></C.Title>
+                                <C.Title><TextL>{item.name}</TextL></C.Title>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <C.Description>
-                                    <TextL>ЗАГЛУШКА</TextL>
+                                    <TextL>{item.description}</TextL>
                                     <C.ButtonWrapper>
                                         <Button onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
                                     </C.ButtonWrapper>

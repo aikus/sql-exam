@@ -21,6 +21,7 @@ class CourseExaminationProcess implements ExaminationProcess
     }
 
     /**
+     * @throws ExaminationProcessException
      * @throws Exception
      */
     public function start(User $user, Course $course, DateTimeInterface $now): CourseElement
@@ -55,14 +56,14 @@ class CourseExaminationProcess implements ExaminationProcess
     }
 
     /**
-     * @throws Exception
+     * @throws ExaminationProcessException
      */
     public function answer(
         User $user,
         Course $course,
         ?string $sqlText,
         DateTimeInterface $now
-    ): ?CourseElement {
+    ): CourseSheet {
 
         $sheet = $this->creator->findSheet([
             'student' => $user,
@@ -75,29 +76,40 @@ class CourseExaminationProcess implements ExaminationProcess
 
         $currentElement = $sheet->getActualElement();
 
-        $sheet = $this->executeAnswer($sheet, $currentElement, $sqlText);
+        $this->creator->addNewAnswer($sheet, $currentElement, $sqlText);
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
         })->first();
 
-        if (!$nextElement) return null;
+        $sheet->setActualElement($nextElement ?: null);
+        $this->creator->updateSheet($sheet);
 
-        $sheet->setActualElement($nextElement);
-        $sheet = $this->creator->updateSheet($sheet);
-
-        return $nextElement;
+        return $sheet;
     }
 
-    private function executeAnswer(CourseSheet $sheet, CourseElement $element, ?string $sqlText): CourseSheet
-    {
-        if (null !== $sqlText) {
-            $answer = new CourseAnswer();
-            $answer->setQuestion($element);
-            $answer->setAnswer($sqlText);
-            $sheet->addCourseAnswer($answer);
-            $sheet = $this->creator->updateSheet($sheet);
+    /**
+     * @throws ExaminationProcessException
+     */
+    public function execution(
+        User $user,
+        Course $course,
+        ?string $sqlText,
+        DateTimeInterface $now
+    ): CourseSheet {
+
+        $sheet = $this->creator->findSheet([
+            'student' => $user,
+            'course' => $course,
+        ]);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
         }
+
+        $currentElement = $sheet->getActualElement();
+
+        $this->creator->addNewAnswer($sheet, $currentElement, $sqlText);
 
         return $sheet;
     }
