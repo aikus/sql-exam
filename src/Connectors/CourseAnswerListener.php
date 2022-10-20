@@ -9,15 +9,15 @@ use Exception;
 
 class CourseAnswerListener
 {
-    public function __construct(/*private PdoConnection $studentConnection*/)
+    public function __construct(private readonly PdoConnection $studentConnection)
     {
     }
 
-    public function prePersist(CourseAnswer $answer, LifecycleEventArgs $event)
+    public function prePersist(CourseAnswer $answer, LifecycleEventArgs $event): void
     {
-        /*if($answer->getQuestion()->getType() === CourseElement::TYPE_MYSQL && (bool) $answer->getAnswer()) {
-            $this->studentConnection->fetchAll($answer->getAnswer());
-        }*/
+        if($answer->getQuestion()->getType() === CourseElement::TYPE_MYSQL && (bool) $answer->getAnswer()) {
+            $this->addSqlResult($answer);
+        }
     }
 
     private function addSqlResult(CourseAnswer $answer): void

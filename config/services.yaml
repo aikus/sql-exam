@@ -47,3 +47,6 @@ services:
     App\Connectors\QuestionListener:
         tags:
             - {name: doctrine.orm.entity_listener}
+    App\Connectors\CourseAnswerListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}
