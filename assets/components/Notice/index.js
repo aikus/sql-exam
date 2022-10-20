@@ -5,7 +5,7 @@ export const Notice = ({message}) => {
 
     return (
         <>
-            {message && <Alert severity="error">
+            {message && <Alert severity={ message?.status === 400 ? "warning" : "error" }>
                 <AlertTitle>{message?.status} {message?.statusText}</AlertTitle>
                 {message?.body?.message}
             </Alert>}
