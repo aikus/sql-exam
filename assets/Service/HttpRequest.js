@@ -3,34 +3,7 @@ export const HttpRequest = {
     post: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'POST'),
     put: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT'),
     get: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET'),
-    delete: (url, handleSuccess = null, handleError = null) => {
-        fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=utf-8',
-                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-            },
-        })
-          .then(response => {
-              if (response.status >= 400) {
-                  return Promise.reject(new Error(response.statusText))
-              }
-              return Promise.resolve(response)
-          })
-          .then(data => {
-              if (HttpRequest.isDev) console.log('data: ', data)
-              if (handleSuccess) {
-                  handleSuccess(data)
-              }
-          })
-          .catch(error => {
-              if (HttpRequest.isDev) console.log('error', error)
-              if (handleError) {
-                  handleError(error)
-              }
-          })
-    },
+    delete: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE'),
 }
 
 const request = async (url, body, handleSuccess = null, handleError, method) => {
@@ -51,11 +24,17 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
     return await fetch(url, init)
         .then(response => {
             if (response.status >= 400) {
-                return Promise.reject(new Error(response.statusText))
+                return Promise.reject(response)
             }
             return Promise.resolve(response)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (init.method !== 'DELETE') {
+                return response.json()
+            }
+
+            return response
+        })
         .then(data => {
             if (HttpRequest.isDev) console.log('data: ', data)
             if (handleSuccess) {
@@ -65,7 +44,17 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
         .catch(error => {
             if (HttpRequest.isDev) console.log('error', error)
             if (handleError) {
-                handleError(error)
+                if (init.method !== 'DELETE') {
+                    error.json().then(json => {
+                        handleError({
+                            status: error.status,
+                            statusText: error.statusText,
+                            body: json
+                        })
+                    })
+                }
+
+                return error
             }
         })
 }

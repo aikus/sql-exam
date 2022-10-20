@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {Alert, TextField} from "@mui/material";
+import {Alert, AlertTitle, TextField} from "@mui/material";
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
@@ -11,6 +11,7 @@ import {HttpRequest} from "../../Service/HttpRequest";
 import {Loader} from "../../components/Loader";
 import {UrlService} from "../../Service/UrlService";
 import {StudentTableData} from "../../Service/StudentTableData";
+import {Notice} from "../../components/Notice";
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -61,6 +62,7 @@ export const Practice = () => {
             },
             error => {
                 setError(error)
+                setLoader(false)
             }
         );
     }
@@ -79,6 +81,7 @@ export const Practice = () => {
             },
             error => {
                 setError(error)
+                setLoader(false)
             }
         )
     }
@@ -120,6 +123,7 @@ export const Practice = () => {
             },
             error => {
                 setError(error)
+                setLoader(false)
             }
         )
     }
@@ -137,8 +141,7 @@ export const Practice = () => {
 
     return (
         <C.Wrapper>
-            {error && <Alert severity="error">{error?.message}</Alert>}
-
+            <Notice message={error}/>
             <Loader show={loader}/>
 
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
