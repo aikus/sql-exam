@@ -15,6 +15,8 @@ class CourseExaminationProcess implements ExaminationProcess
 {
     public const ERROR_MESSAGE_EMPTY_SHEET = 'Не найден список с ответами для данного ученика';
 
+    public const ERROR_MESSAGE_EMPTY_ELEMENT = 'Не найден следующий шаг';
+
     public function __construct(
         private readonly EntityCreator $creator,
     ) {
@@ -75,6 +77,10 @@ class CourseExaminationProcess implements ExaminationProcess
         }
 
         $currentElement = $sheet->getActualElement();
+
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
 
         $this->creator->addNewAnswer($sheet, $currentElement, $sqlText);
 

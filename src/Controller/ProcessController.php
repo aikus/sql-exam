@@ -59,7 +59,8 @@ class ProcessController extends AbstractController
             return new JsonResponse([
                 'elementId' => $sheet->getActualElement()->getId(),
                 'elementCount' => $course->getType()->count(),
-                'result' => $sheet->getCourseAnswers()->last(),
+                'sqlRequest' => $sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $sheet->getCourseAnswers()?->last()?->getResult(),
             ]);
         }
         catch (ExaminationProcessException $e) {
@@ -85,7 +86,8 @@ class ProcessController extends AbstractController
             return new JsonResponse([
                 'elementId' => $sheet->getActualElement()?->getId(),
                 'elementCount' => $course->getType()->count(),
-                'result' => $sheet->getCourseAnswers()?->last()->getResult(),
+                'sqlRequest' => $sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $sheet->getCourseAnswers()?->last()?->getResult(),
             ]);
         }
         catch (ExaminationProcessException $e) {

@@ -29,8 +29,7 @@ export const Practice = () => {
         elementCount: 0
     })
     const [chosenTable, setChosenTable] = useState(null)
-    const [showResultTable, setShowResultTable] = useState(false)
-    const [result, setResult] = useState([])
+    const [sqlResponse, setSqlResponse] = useState(null)
     const [givenTables, setGivenTables] = useState([])
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
@@ -38,22 +37,23 @@ export const Practice = () => {
     const [error, setError] = useState(false)
 
     const urlContainer = (key, id) => {
-        let container = {
-            start: `/api-process/${id}/start`,
-            answer: `/api-process/${id}/answer`,
-            execution: `/api-process/${id}/execution`,
-            element: `/api-platform/course_elements/${id}`,
-        };
         if (null === id) {
             throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
         }
+
+        let container = {
+            processStart: `/api-process/${id}/start`,
+            processAnswer: `/api-process/${id}/answer`,
+            processExecution: `/api-process/${id}/execution`,
+            courseElement: `/api-platform/course_elements/${id}`,
+        };
         return container[key];
     }
 
     const getStart = () => {
         let course = UrlService.param('course');
         HttpRequest.get(
-            urlContainer('start', course),
+            urlContainer('processStart', course),
             data => {
                 setPractice({
                     courseId: course,
@@ -72,7 +72,7 @@ export const Practice = () => {
 
     const getElement = id => {
         HttpRequest.get(
-            urlContainer('element', id),
+            urlContainer('courseElement', id),
             data => {
                 setElement({
                     name: data.name,
@@ -93,19 +93,20 @@ export const Practice = () => {
     const handleExecution = () => {
         setLoader(true)
         HttpRequest.post(
-            urlContainer('execution', UrlService.param('course')),
+            urlContainer('processExecution', UrlService.param('course')),
             {
                 answerText: practice.answer,
             },
             data => {
-                let elementId = data.elementId;
+                let id = data.elementId;
                 setPractice({
-                    elementId: elementId,
+                    elementId: id,
                     elementCount: data.elementCount,
+                    answer: data.sqlRequest,
                 })
-                setResult(data.result)
+                setSqlResponse(data.response)
                 setError(false)
-                getElement(elementId)
+                getElement(id)
             },
             error => {
                 setError(error)
@@ -117,7 +118,7 @@ export const Practice = () => {
     const handleNextStep = () => {
         setLoader(true)
         HttpRequest.post(
-            urlContainer('answer', UrlService.param('course')),
+            urlContainer('processAnswer', UrlService.param('course')),
             {
                 answerText: practice.answer,
             },
@@ -139,6 +140,7 @@ export const Practice = () => {
     }
 
     const handlePrevStep = () => {
+
     }
 
     const setHeader = () => {
@@ -225,11 +227,9 @@ export const Practice = () => {
                         <ExampleTable header={setHeader()} tableData={givenTablesData[chosenTable]}/>
                     </C.TableWrapper>
                 }
-                {showResultTable &&
-                    <C.TableWrapper>
-                        <TextM>Результат запроса</TextM>
-                        <ResultBlock/>
-                    </C.TableWrapper>
+                {
+                    null !== sqlResponse &&
+                    <ResultBlock data={sqlResponse}/>
                 }
             </C.Main>
         </C.Wrapper>
