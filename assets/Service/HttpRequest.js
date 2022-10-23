@@ -36,13 +36,13 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
             return response
         })
         .then(data => {
-            if (HttpRequest.isDev) console.log('data: ', data)
+            if (HttpRequest.isDev) console.log('HttpRequest: ', data)
             if (handleSuccess) {
                 handleSuccess(data)
             }
         })
         .catch(error => {
-            if (HttpRequest.isDev) console.log('error', error)
+            if (HttpRequest.isDev) console.error('HttpRequest', error)
             if (error.status === 401) {
                 window.location.href = location.origin + '/react';
                 localStorage.removeItem('jwtToken')
