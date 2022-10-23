@@ -184,13 +184,13 @@ export const Practice = () => {
                         <TextField
                             margin="normal"
                             id="practice-1"
-                            label="Текст запроса"
+                            label="Введите текст запроса"
                             type="text"
                             variant="outlined"
                             multiline={true}
                             fullWidth={true}
                             minRows={5}
-                            value={practice.answer}
+                            value={practice.answer ?? ''}
                             onChange={(e) => {
                                 setPractice({answer: e.target.value})
                             }}
