@@ -26,12 +26,14 @@ class CourseAnswerListener
             $result = $this->studentConnection->fetchAll($answer->getAnswer());
             $answer->setResult([
                 'error' => '',
-                'result' => $result
+                'result' => $result,
+                'header' => $this->studentConnection->getColumnMeta(),
             ]);
         } catch (Exception $exception) {
             $answer->setResult([
                 'error' => $exception->getMessage(),
-                'result' => []
+                'result' => [],
+                'header' => [],
             ]);
         }
     }

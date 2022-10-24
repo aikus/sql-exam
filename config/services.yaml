@@ -27,8 +27,8 @@ services:
         factory: ['@App\Connectors\PdoConnectorFactory', createConnect]
         arguments: ['%env(STUDENT_DB_DSN)%', '%env(STUDENT_DB_USER)%', '%env(STUDENT_DB_PASSWORD)%']
 
-    App\Service\StudentResultTable: ~
-    App\Service\CheckRight: ~
+    App\Service\StudentResultTable\StudentResultTable: ~
+    App\Service\CheckRight\CheckRight: ~
     App\Connectors\Student\ExaminationRepository: ~
     RandomLib\Factory: ~
     App\Service\RandomGeneratorFactory: ~
