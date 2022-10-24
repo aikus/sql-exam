@@ -4,9 +4,9 @@ import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, For
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {TaskSheet} from './TaskSheet'
-import {useNavigate} from "react-router-dom";
 import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
+import {CourseElementRepository} from "./CourseElementRepository";
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(1)
@@ -21,13 +21,13 @@ export const CreateCourse = () => {
     exam: false,
     numOfTries: '',
     minForTrie: ''
-  })
-  const [courseContent, setCourseContent] = useState([
-    {
-      'type': 'текст',
-      'question': '',
-    }
-  ])
+  });
+  const defaultElement = {
+    'type': 'article',
+    'description': '',
+    'name': '',
+  };
+  const [courseContent, setCourseContent] = useState([defaultElement]);
 
   const createCourseReq = () => {
     const body = {
@@ -79,7 +79,9 @@ export const CreateCourse = () => {
         description: data.description,
         minForTrie: data.timeLimit,
         exam: data.timeLimit || data.timeLimit === 0 ? true : false
-      }))
+      }));
+
+      CourseElementRepository.getByCourse(data).then(elements => setCourseContent(elements && elements.length > 0 ? elements : [defaultElement]));
 
       setLoader(false)
     }
@@ -253,6 +255,7 @@ export const CreateCourse = () => {
               prevStep={handlePrevStep}
               courseContent={courseContent}
               setCourseContent={setCourseContent}
+              courseId={courseMainInfo.courseId}
             />
           }
         </C.Main>

@@ -5,35 +5,35 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import {Button} from "../../components/Button";
 import {Loader} from "../../components/Loader";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
+import {CourseElementRepository} from "./CourseElementRepository";
 
-export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent}) => {
-  const [loader, setLoader] = useState(false)
+export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent, courseId}) => {
+  const [loader, setLoader] = useState(false);
+  const isPractice = type => ['mysql', 'postgre', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
-    let typeObject = {}
+    console.log("handleSelectChange", "start", e);
 
-    if (e.target.value === 'текст' && courseContent[step - 2].type !== 'текст') {
-      typeObject = {
-        'type': 'текст',
-        'question': '',
-      }
-    } else if (e.target.value === 'практика' && courseContent[step - 2].type !== 'практика') {
-      typeObject = {
-        'type': 'практика',
-        'question': '',
-        'answer': ''
-      }
-    } else if (e.target.value === 'тест' && courseContent[step - 2].type !== 'тест') {
-      typeObject = {
-        'type': 'тест',
-        'question': '',
-        'variants': [
-          '',
-          ''
-        ],
-        'right-variant': ''
-      }
+    const actual = courseContent[step - 2];
+
+    const typeObject = {
+      'type': e.target.value,
+      'name': actual && actual.name ? actual.name : '',
+      'description': actual && actual.description ? actual.description : '',
     }
+
+    if(actual && actual.id) {
+      typeObject['id'] = actual.id;
+    }
+
+    if (isPractice(e.target.value)) {
+      typeObject['answer'] = '';
+    } else if (e.target.value === 'poll') {
+      typeObject["description"] = '';
+      typeObject["variants"] = ['', ''];
+      typeObject["right-variant"] = '';
+    }
+    console.log("handleSelectChange", "typeObject = ", typeObject);
 
     setCourseContent((prevState) => {
       let newState = [...prevState]
@@ -44,11 +44,19 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
 
   const handleNextStep = () => {
     setCourseContent((prevState) => {
+
+      if(!prevState[step - 2].ord) {
+        prevState[step - 2].ord = step;
+      }
+      CourseElementRepository.save(prevState[step - 2], courseId).then(
+          data => prevState[step - 2] = data
+      );
       let newState = [...prevState]
 
       newState.push({
-        'type': 'текст',
-        'question': '',
+        'type': 'article',
+        'name': '',
+        'description': '',
       })
 
       return newState
@@ -125,26 +133,39 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
           onChange={(e) => handleSelectChange(e)}
           sx={{minWidth: '150px'}}
         >
-          <MenuItem value={'текст'}>Текст</MenuItem>
-          <MenuItem value={'практика'}>Практика</MenuItem>
-          <MenuItem value={'тест'}>Тест</MenuItem>
+          <MenuItem value={'article'}>Текст</MenuItem>
+          <MenuItem value={'mysql'}>Практика Mysql</MenuItem>
+          <MenuItem value={'postgre'}>Практика PostgreSQL</MenuItem>
+          <MenuItem value={'poll'}>Тест</MenuItem>
         </Select>
       </C.Type>
       <C.QuestionBlock>
-        <H5>Введите текст вопроса</H5>
+        <H5>Введите заголовок</H5>
         <TextField
-          required
-          id={`course-${step}`}
-          type="text"
-          variant="outlined"
-          multiline={true}
-          fullWidth={true}
-          minRows={5}
-          value={courseContent[step - 2].question}
-          onChange={(e) => handleInputChange(e.target.value, 'question')}
+            required
+            id={`course-element-name-${step}`}
+            type="text"
+            variant="outlined"
+            multiline={false}
+            fullWidth={true}
+            minRows={5}
+            value={courseContent[step - 2].name}
+            onChange={(e) => handleInputChange(e.target.value, 'name')}
+        />
+        <H5>Введите текст</H5>
+        <TextField
+            required
+            id={`course-${step}`}
+            type="text"
+            variant="outlined"
+            multiline={true}
+            fullWidth={true}
+            minRows={5}
+            value={courseContent[step - 2].description}
+            onChange={(e) => handleInputChange(e.target.value, 'description')}
         />
       </C.QuestionBlock>
-      {courseContent[step - 2].type === 'практика' &&
+      {isPractice(courseContent[step - 2].type) &&
         <C.AnswerBlock>
           <H5>Введите SQL-запрос, по которому система будет определять правильность ответа инженера</H5>
           <TextField
@@ -228,22 +249,22 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   )
 }
 
-const test = [
-  {
-    'type': 'текст',
-    'question': '',
-  },
-  {
-    'type': 'тест',
-    'question': '',
-    'variant-1': '',
-    'variant-2': '',
-    'variant-3': '',
-    'right-variant': ''
-  },
-  {
-    'type': 'практика',
-    'question': '',
-    'answer': ''
-  },
-]
+// const test = [
+//   {
+//     'type': 'текст',
+//     'description': '',
+//   },
+//   {
+//     'type': 'тест',
+//     'description': '',
+//     'variant-1': '',
+//     'variant-2': '',
+//     'variant-3': '',
+//     'right-variant': ''
+//   },
+//   {
+//     'type': 'практика',
+//     'description': '',
+//     'answer': ''
+//   },
+// ]

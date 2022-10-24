@@ -38,6 +38,9 @@ class CourseElement
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $answer = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class CourseElement
             throw new CourseElementTypeNotFound($type);
         }
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getAnswer(): ?string
+    {
+        return $this->answer;
+    }
+
+    public function setAnswer(?string $answer): self
+    {
+        $this->answer = $answer;
 
         return $this;
     }
