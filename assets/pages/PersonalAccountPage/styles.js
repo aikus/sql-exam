@@ -71,9 +71,23 @@ export const NavBarItemsBox = styled.div`
   }
 `
 
-export const ProfileInfo = styled.div`
+export const MenuBlock = styled.div`
+  display: flex;
+  align-items: center;
   flex-grow: 0;
+  
+  &:hover {
+    cursor: pointer;
+  }
 `
 
-export const Logout = styled.div`
+export const Avatar = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color: red;
+  border-radius: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `

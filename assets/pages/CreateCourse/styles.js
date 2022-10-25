@@ -68,6 +68,9 @@ export const Type = styled.div`
   }
 `
 
+export const HeaderBlock = styled(Type)`
+`
+
 export const QuestionBlock = styled.div`
   & > *:first-child {
     margin-bottom: 8px;
@@ -115,7 +118,7 @@ export const ButtonsBlock = styled.div`
   
   & > div:first-child {
     display: flex;
-    gap: 8px;
+    gap: 24px;
   }
   
   & * button, & > button {
@@ -125,4 +128,12 @@ export const ButtonsBlock = styled.div`
   & > button {
     align-self: flex-start;
   }
+`
+
+export const MovementButtons = styled.div`
+  display: flex;
+  gap: 8px;
+`
+
+export const DeleteButton = styled.div`
 `

@@ -6,15 +6,17 @@ import {Button} from "../../components/Button";
 import {Loader} from "../../components/Loader";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
+import {DialogWinDelete} from "../../components/DialogWinDelete";
 
 export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent, courseId}) => {
   const [loader, setLoader] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const isPractice = type => ['mysql', 'postgre', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
     console.log("handleSelectChange", "start", e);
 
-    const actual = courseContent[step - 2];
+    const actual = courseContent[step - 1];
 
     const typeObject = {
       'type': e.target.value,
@@ -37,7 +39,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
 
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 2] = typeObject
+      newState[step - 1] = typeObject
       return newState
     })
   }
@@ -45,11 +47,11 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const handleNextStep = () => {
     setCourseContent((prevState) => {
 
-      if(!prevState[step - 2].ord) {
-        prevState[step - 2].ord = step;
+      if(!prevState[step - 1].ord) {
+        prevState[step - 1].ord = step;
       }
-      CourseElementRepository.save(prevState[step - 2], courseId).then(
-          data => prevState[step - 2] = data
+      CourseElementRepository.save(prevState[step - 1], courseId).then(
+          data => prevState[step - 1] = data
       );
       let newState = [...prevState]
 
@@ -72,7 +74,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const handleVariantInput = (value, i) => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 2].variants[i] = value
+      newState[step - 1].variants[i] = value
 
       return newState
     })
@@ -81,7 +83,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const handleInputChange = (value, field) => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 2][field] = value
+      newState[step - 1][field] = value
 
       return newState
     })
@@ -98,7 +100,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const handleVariantDelete = (i) => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 2].variants.splice(i, 1)
+      newState[step - 1].variants.splice(i, 1)
 
       return newState
     })
@@ -107,21 +109,20 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const addVariant = () => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 2].variants.push('')
+      newState[step - 1].variants.push('')
 
       return newState
     })
   }
 
-  const removeRightAnswer = (e) => {
-    if (e.target.value === courseContent[step - 2]['right-variant']) {
-      setCourseContent((prevState) => {
-        let newState = [...prevState]
-        newState[step - 2]['right-variant'] = ''
+  const deleteCourse = () => {
+    console.log('Удаление курса')
 
-        return newState
-      })
-    }
+    handleClose()
+  }
+
+  const handleClose = () => {
+    setDialogOpen(false)
   }
 
   return (
@@ -129,7 +130,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
       <C.Type>
         <H5>Выберите тип шага</H5>
         <Select
-          value={courseContent[step - 2].type}
+          value={courseContent[step - 1].type}
           onChange={(e) => handleSelectChange(e)}
           sx={{minWidth: '150px'}}
         >
@@ -139,19 +140,21 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
           <MenuItem value={'poll'}>Тест</MenuItem>
         </Select>
       </C.Type>
-      <C.QuestionBlock>
+      <C.HeaderBlock>
         <H5>Введите заголовок</H5>
         <TextField
-            required
-            id={`course-element-name-${step}`}
-            type="text"
-            variant="outlined"
-            multiline={false}
-            fullWidth={true}
-            minRows={5}
-            value={courseContent[step - 2].name}
-            onChange={(e) => handleInputChange(e.target.value, 'name')}
+          required
+          id={`course-element-name-${step}`}
+          type="text"
+          variant="outlined"
+          multiline={false}
+          fullWidth={true}
+          minRows={5}
+          value={courseContent[step - 1].name}
+          onChange={(e) => handleInputChange(e.target.value, 'name')}
         />
+      </C.HeaderBlock>
+      <C.QuestionBlock>
         <H5>Введите текст</H5>
         <TextField
             required
@@ -161,11 +164,11 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
             multiline={true}
             fullWidth={true}
             minRows={5}
-            value={courseContent[step - 2].description}
+            value={courseContent[step - 1].description}
             onChange={(e) => handleInputChange(e.target.value, 'description')}
         />
       </C.QuestionBlock>
-      {isPractice(courseContent[step - 2].type) &&
+      {isPractice(courseContent[step - 1].type) &&
         <C.AnswerBlock>
           <H5>Введите SQL-запрос, по которому система будет определять правильность ответа инженера</H5>
           <TextField
@@ -176,26 +179,26 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
             multiline={true}
             fullWidth={true}
             minRows={5}
-            value={courseContent[step - 2].answer}
+            value={courseContent[step - 1].answer}
             onChange={(e) => handleInputChange(e.target.value, 'answer')}
           />
         </C.AnswerBlock>
       }
-      {courseContent[step - 2].type === 'тест' &&
+      {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>
           <Button size={'S'} onClick={addVariant}>Добавить вариант</Button>
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
-              value={courseContent[step - 2]['right-variant']}
+              value={courseContent[step - 1]['right-variant']}
               onChange={(e) => handleInputChange(e.target.value, 'right-variant')}
               onClick={(e) => {
-                if (e.target.value === courseContent[step - 2]['right-variant']) {
+                if (e.target.value === courseContent[step - 1]['right-variant']) {
                   handleInputChange('', 'right-variant')
                 }
               }}
             >
-              {courseContent[step - 2].variants.map((item, i, arr) => {
+              {courseContent[step - 1].variants.map((item, i, arr) => {
                 return (
                   <C.Row key={i}>
                     <TextM>Вариант {i + 1}</TextM>
@@ -238,33 +241,24 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
       }
       <C.ButtonsBlock>
         <div>
-          <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
-          <Button onClick={handleNextStep} size={'S'}>Далее</Button>
+          <C.MovementButtons>
+            <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
+            <Button onClick={handleNextStep} size={'S'}>Далее</Button>
+          </C.MovementButtons>
+          <C.DeleteButton>
+            <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
+          </C.DeleteButton>
         </div>
         <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
       </C.ButtonsBlock>
 
       <Loader show={loader}/>
+      <DialogWinDelete
+        isOpen={dialogOpen}
+        handleDelete={deleteCourse}
+        handleClose={handleClose}
+        whatToDelete={'шаг'}
+      />
     </>
   )
 }
-
-// const test = [
-//   {
-//     'type': 'текст',
-//     'description': '',
-//   },
-//   {
-//     'type': 'тест',
-//     'description': '',
-//     'variant-1': '',
-//     'variant-2': '',
-//     'variant-3': '',
-//     'right-variant': ''
-//   },
-//   {
-//     'type': 'практика',
-//     'description': '',
-//     'answer': ''
-//   },
-// ]

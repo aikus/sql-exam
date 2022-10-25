@@ -9,6 +9,7 @@ import {LoaderInBLock} from "../../components/Loader/LoaderInBLock";
 import {HttpRequest} from "../../Service/HttpRequest";
 import {Loader} from "../../components/Loader";
 import { hostName } from '../../config'
+import {DialogWinDelete} from "../../components/DialogWinDelete";
 
 export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const navigate = useNavigate();
@@ -81,25 +82,12 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
         })}
       </C.AccordionBlock>
 
-      <Dialog
-        open={delCourseInf.isOpen}
-        onClose={handleClose}
-      >
-        <C.DialogContent>
-          <H4>Вы действительно ходите удалить этот курс?</H4>
-          <C.DialogButtonWrap>
-            <Button
-              size={'S'}
-              view={'outlined'}
-              onClick={deleteCourse}
-            >Да</Button>
-            <Button
-              size={'S'}
-              onClick={handleClose}
-            >Нет</Button>
-          </C.DialogButtonWrap>
-        </C.DialogContent>
-      </Dialog>
+      <DialogWinDelete
+        isOpen={delCourseInf.isOpen}
+        handleDelete={deleteCourse}
+        handleClose={handleClose}
+        whatToDelete={'курс'}
+      />
 
       <Loader show={loader}/>
     </>

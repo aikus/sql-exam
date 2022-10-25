@@ -10,7 +10,7 @@ import {CourseElementRepository} from "./CourseElementRepository";
 import { hostName } from '../../config'
 
 export const CreateCourse = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [stepsTotal, setStepsTotal] = useState(step)
   const [disableButton, setDisableButton] = useState(true)
   const [loader, setLoader] = useState(false)
@@ -142,10 +142,12 @@ export const CreateCourse = () => {
       <C.Wrapper>
         <C.Header>
           <H2>Создание нового курса</H2>
-          <TextL>Шаг {step} из {stepsTotal}</TextL>
+          {step !== 0 &&
+            <TextL>Шаг {step} из {stepsTotal}</TextL>
+          }
         </C.Header>
         <C.Main>
-          {step === 1 &&
+          {step === 0 &&
             <C.FirstStep>
               <C.FieldBox>
                 <H5>Название курса</H5>
@@ -249,7 +251,7 @@ export const CreateCourse = () => {
               >Далее</Button>
             </C.FirstStep>
           }
-          {step >= 2 &&
+          {step >= 1 &&
             <TaskSheet
               step={step}
               nextStep={handleNextStep}
