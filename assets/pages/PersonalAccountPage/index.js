@@ -7,6 +7,7 @@ import { MyProfile } from '../MyProfile'
 import { CourseBlock } from '../MyProfile/CourseBlock/CourseBlock'
 import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
+import { hostName } from '../../config'
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ export const PersonalAccountPage = () => {
                 setInProgress(data)
             }
 
-            HttpRequest.get('http://localhost/api-platform/courses', (data) => handleSuccess(data),)
+            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data),)
         }
     }, [])
 

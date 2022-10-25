@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {LoaderInBLock} from "../../components/Loader/LoaderInBLock";
 import {HttpRequest} from "../../Service/HttpRequest";
 import {Loader} from "../../components/Loader";
+import { hostName } from '../../config'
 
 export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
       setLoader(false)
     }
 
-    HttpRequest.delete(`http://localhost/api-platform/courses/${delCourseInf.id}`,(data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.delete(`${hostName}/api-platform/courses/${delCourseInf.id}`,(data) => handleSuccess(data), (error) => handleError())
 
     handleClose()
   }

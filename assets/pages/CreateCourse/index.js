@@ -7,6 +7,7 @@ import {TaskSheet} from './TaskSheet'
 import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
 import {CourseElementRepository} from "./CourseElementRepository";
+import { hostName } from '../../config'
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(1)
@@ -47,7 +48,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.post('http://localhost/api-platform/courses', body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.post(`${hostName}/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const changeCourseReq = () => {
@@ -67,7 +68,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.put(`http://localhost/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.put(`${hostName}/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const getCourseInfo = (id) => {
@@ -90,7 +91,7 @@ export const CreateCourse = () => {
       // setLoader(false)
     }
 
-    HttpRequest.get(`http://localhost/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.get(`${hostName}/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
   }
 
   const handleIntendedForChange = (event) => {

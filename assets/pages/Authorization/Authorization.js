@@ -5,7 +5,7 @@ import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { H3 } from '../../components/Typography'
-import {HttpRequest} from "../../Service/HttpRequest";
+import { hostName } from '../../config'
 
 export const Authorization = () => {
     const navigate = useNavigate();
@@ -44,7 +44,7 @@ export const Authorization = () => {
         if (state.emailValue && state.passwordValue) {
             document.body.style.cursor = 'wait';
             setDisableButton(true)
-            fetch('http://localhost/api/login', {
+            fetch(`${hostName}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -85,7 +85,7 @@ export const Authorization = () => {
             document.body.style.cursor = 'wait';
             setDisableButton(true)
 
-            fetch('http://localhost/api/register', {
+            fetch(`${hostName}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -113,7 +113,7 @@ export const Authorization = () => {
         e.preventDefault()
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", 'http://localhost/confirm/password', false);
+        xhr.open("POST", `${hostName}/confirm/password`, false);
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         let emailObject = {
             "email": state.emailRestoreValue
