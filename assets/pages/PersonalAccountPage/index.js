@@ -7,6 +7,8 @@ import { MyProfile } from '../MyProfile'
 import { CourseBlock } from '../MyProfile/CourseBlock/CourseBlock'
 import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
+import { hostName } from '../../config'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
@@ -19,7 +21,7 @@ export const PersonalAccountPage = () => {
                 setInProgress(data)
             }
 
-            HttpRequest.get('http://localhost/api-platform/courses', (data) => handleSuccess(data),)
+            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data),)
         }
     }, [])
 
@@ -38,10 +40,10 @@ export const PersonalAccountPage = () => {
                     <Link to="questionnaire"><TextL>Форма опросника PR</TextL></Link>
                     <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                 </C.NavBarItemsBox>
-                {/*<C.ProfileInfo>*/}
-                {/*    <TextL>slumz@yandex.ru</TextL>*/}
-                {/*    <C.Logout><TextL>Выйти</TextL></C.Logout>*/}
-                {/*</C.ProfileInfo>*/}
+                {/*<C.MenuBlock>*/}
+                {/*    <C.Avatar><TextM>T</TextM></C.Avatar>*/}
+                {/*    <ArrowDropDownIcon/>*/}
+                {/*</C.MenuBlock>*/}
             </C.NavBar>
             <Outlet context={inProgress}/>
         </C.Wrapper>

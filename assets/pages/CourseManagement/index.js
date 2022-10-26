@@ -6,6 +6,7 @@ import {CourseBlock} from './CourseBlock'
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
+import { hostName } from '../../config'
 
 export const CourseManagement = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export const CourseManagement = () => {
 
     }
 
-    HttpRequest.get('http://localhost/api-platform/courses', (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data), (error) => handleError())
   }
 
   return (

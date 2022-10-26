@@ -7,9 +7,10 @@ import {TaskSheet} from './TaskSheet'
 import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
 import {CourseElementRepository} from "./CourseElementRepository";
+import { hostName } from '../../config'
 
 export const CreateCourse = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [stepsTotal, setStepsTotal] = useState(step)
   const [disableButton, setDisableButton] = useState(true)
   const [loader, setLoader] = useState(false)
@@ -47,7 +48,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.post('http://localhost/api-platform/courses', body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.post(`${hostName}/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const changeCourseReq = () => {
@@ -67,7 +68,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.put(`http://localhost/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.put(`${hostName}/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const getCourseInfo = (id) => {
@@ -90,7 +91,7 @@ export const CreateCourse = () => {
       // setLoader(false)
     }
 
-    HttpRequest.get(`http://localhost/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.get(`${hostName}/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
   }
 
   const handleIntendedForChange = (event) => {
@@ -141,10 +142,12 @@ export const CreateCourse = () => {
       <C.Wrapper>
         <C.Header>
           <H2>Создание нового курса</H2>
-          <TextL>Шаг {step} из {stepsTotal}</TextL>
+          {step !== 0 &&
+            <TextL>Шаг {step} из {stepsTotal}</TextL>
+          }
         </C.Header>
         <C.Main>
-          {step === 1 &&
+          {step === 0 &&
             <C.FirstStep>
               <C.FieldBox>
                 <H5>Название курса</H5>
@@ -248,7 +251,7 @@ export const CreateCourse = () => {
               >Далее</Button>
             </C.FirstStep>
           }
-          {step >= 2 &&
+          {step >= 1 &&
             <TaskSheet
               step={step}
               nextStep={handleNextStep}
