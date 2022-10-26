@@ -63,6 +63,7 @@ class ProcessController extends AbstractController
             return new JsonResponse([
                 'elementId' => $response->currentElement?->getId(),
                 'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
                 'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
                 'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
             ]);
@@ -90,6 +91,7 @@ class ProcessController extends AbstractController
             return new JsonResponse([
                 'elementId' => $response->sheet->getActualElement()?->getId(),
                 'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
                 'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
                 'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
             ]);

@@ -25,15 +25,15 @@ export const Practice = () => {
         courseId: null,
         sheetId: null,
         elementId: null,
-        answer: null,
+        nextElementId: null,
         elementCount: 0
     })
+    const [answer, setAnswer] = useState(null)
     const [chosenTable, setChosenTable] = useState(null)
     const [sqlResponse, setSqlResponse] = useState(null)
     const [givenTables, setGivenTables] = useState([])
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
-    const [isNext, setIsNext] = useState(false)
     const [error, setError] = useState(false)
 
     const urlContainer = (key, id) => {
@@ -59,6 +59,7 @@ export const Practice = () => {
                     courseId: course,
                     elementId: data.elementId,
                     elementCount: data.elementCount,
+                    nextElementId: data.nextElement
                 })
                 setError(false)
                 getElement(data.elementId)
@@ -90,22 +91,24 @@ export const Practice = () => {
         )
     }
 
-    const handleExecution = () => {
+    const handleExecution = (callBack) => {
         setLoader(true)
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
             {
-                answerText: practice.answer,
+                answerText: answer,
             },
             data => {
                 let id = data.elementId;
                 setPractice({
                     elementId: id,
                     elementCount: data.elementCount,
-                    answer: data.sqlRequest,
+                    nextElementId: data.nextElement
                 })
+                setAnswer(data.sqlRequest)
                 setSqlResponse(data.response)
                 setError(false)
+                callBack()
                 getElement(id)
             },
             error => {
@@ -120,17 +123,15 @@ export const Practice = () => {
         HttpRequest.post(
             urlContainer('processAnswer', UrlService.param('course')),
             {
-                answerText: practice.answer,
+                answerText: answer,
             },
             data => {
                 let nextElementId = data.elementId;
 
-                if (nextElementId > 0) setIsNext(true)
-                else setIsNext(false)
-
                 setPractice({
                     elementId: nextElementId,
                     elementCount: data.elementCount,
+                    nextElementId: data.nextElement
                 })
                 setError(false)
                 getElement(nextElementId)
@@ -195,9 +196,9 @@ export const Practice = () => {
                             multiline={true}
                             fullWidth={true}
                             minRows={5}
-                            value={practice.answer ?? ''}
+                            value={answer ?? ''}
                             onChange={(e) => {
-                                setPractice({answer: e.target.value})
+                                setAnswer(e.target.value)
                             }}
                         />
                         <C.Description>
@@ -210,11 +211,11 @@ export const Practice = () => {
                             <div>
                                 <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
                                 <Button size={'S'} view={'outlined'} onClick={handlePrevStep} disabled={true}>Назад</Button>
-                                <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!isNext}>Далее</Button>
+                                <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!practice.nextElementId}>Далее</Button>
                             </div>
                             {
-                                !isNext
-                                && <Button size={'S'} onClick={() => {handleExecution();navigate("/react/my-profile")}}>
+                                !practice.nextElementId
+                                && <Button size={'S'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
                                     Завершить
                                 </Button>
                             }
@@ -224,7 +225,8 @@ export const Practice = () => {
                         <TableToChoose tableData={givenTables} setTable={setChosenTable}/>
                     </C.RightBlock>
                 </C.Task>
-                {chosenTable &&
+                {
+                    chosenTable &&
                     <C.TableWrapper>
                         <TextM>{chosenTable}</TextM>
                         <ExampleTable header={setHeader()} tableData={givenTablesData[chosenTable]}/>
@@ -232,9 +234,9 @@ export const Practice = () => {
                 }
                 {
                     null !== sqlResponse &&
-                    <div style="margin-top: 1rem">
+                    <C.Block>
                         <ResultBlock data={sqlResponse}/>
-                    </div>
+                    </C.Block>
                 }
             </C.Main>
         </C.Wrapper>

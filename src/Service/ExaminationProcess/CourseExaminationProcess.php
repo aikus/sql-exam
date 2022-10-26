@@ -113,15 +113,19 @@ class CourseExaminationProcess implements ExaminationProcess
 
         $currentElement = $sheet->getActualElement();
 
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
+
         $this->creator->addNewAnswer($sheet, $currentElement, $sqlText);
 
         return new Response($sheet, $sheet->getActualElement(), $this->getNext($course, $currentElement));
     }
 
-    private function getNext(Course $course, CourseElement $currentElement): CourseElement
+    private function getNext(Course $course, CourseElement $currentElement): ?CourseElement
     {
         return $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
-        })->first();
+        })->first() ?: null;
     }
 }
