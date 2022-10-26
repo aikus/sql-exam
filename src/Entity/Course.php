@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 #[ORM\EntityListeners([CourseListener::class])]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['read']],
 )]
 class Course
 {

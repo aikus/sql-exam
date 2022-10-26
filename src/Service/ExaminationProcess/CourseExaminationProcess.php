@@ -3,9 +3,7 @@
 namespace App\Service\ExaminationProcess;
 
 use App\Entity\Course;
-use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
-use App\Entity\CourseSheet;
 use App\Entity\User;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,7 +13,7 @@ class CourseExaminationProcess implements ExaminationProcess
 {
     public const ERROR_MESSAGE_EMPTY_SHEET = 'Не найден список с ответами для данного ученика';
 
-    public const ERROR_MESSAGE_EMPTY_ELEMENT = 'Не найден следующий шаг';
+    public const ERROR_MESSAGE_EMPTY_ELEMENT = 'Курс уже пройден';
 
     public function __construct(
         private readonly EntityCreator $creator,
@@ -26,7 +24,7 @@ class CourseExaminationProcess implements ExaminationProcess
      * @throws ExaminationProcessException
      * @throws Exception
      */
-    public function start(User $user, Course $course, DateTimeInterface $now): CourseElement
+    public function start(User $user, Course $course, DateTimeInterface $now): Response
     {
         $typeCollection = $course->getType();
 
@@ -54,7 +52,7 @@ class CourseExaminationProcess implements ExaminationProcess
             $sheet = $this->creator->updateSheet($sheet);
         }
 
-        return $sheet->getActualElement();
+        return new Response($sheet, $sheet->getActualElement(), $this->getNext($course, $actualElement));
     }
 
     /**
@@ -65,7 +63,7 @@ class CourseExaminationProcess implements ExaminationProcess
         Course $course,
         ?string $sqlText,
         DateTimeInterface $now
-    ): CourseSheet {
+    ): Response {
 
         $sheet = $this->creator->findSheet([
             'student' => $user,
@@ -91,7 +89,7 @@ class CourseExaminationProcess implements ExaminationProcess
         $sheet->setActualElement($nextElement ?: null);
         $this->creator->updateSheet($sheet);
 
-        return $sheet;
+        return new Response($sheet, $sheet->getActualElement(), $this->getNext($course, $nextElement));
     }
 
     /**
@@ -102,7 +100,7 @@ class CourseExaminationProcess implements ExaminationProcess
         Course $course,
         ?string $sqlText,
         DateTimeInterface $now
-    ): CourseSheet {
+    ): Response {
 
         $sheet = $this->creator->findSheet([
             'student' => $user,
@@ -117,6 +115,13 @@ class CourseExaminationProcess implements ExaminationProcess
 
         $this->creator->addNewAnswer($sheet, $currentElement, $sqlText);
 
-        return $sheet;
+        return new Response($sheet, $sheet->getActualElement(), $this->getNext($course, $currentElement));
+    }
+
+    private function getNext(Course $course, CourseElement $currentElement): CourseElement
+    {
+        return $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
+            return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
+        })->first();
     }
 }

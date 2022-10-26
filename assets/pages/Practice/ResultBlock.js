@@ -8,14 +8,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import {Alert, AlertTitle} from "@mui/material";
 
 export const ResultBlock = tableData => {
 
     if ('' !== tableData.data.error) {
         return (
             <>
-                <div>Результат</div>
-                <div>{tableData.data.error}</div>
+                <Alert severity={"warning"}>
+                    <AlertTitle>Результат запроса</AlertTitle>
+                    <div>{tableData.data.error}</div>
+                </Alert>
             </>
         );
     }
@@ -33,6 +36,7 @@ export const ResultBlock = tableData => {
         <>
             <C.TableWrapper>
                 <div>Результат</div>
+                <br/>
                 <TableContainer component={Paper}>
                     <Table size='small'>
                         <TableHead>

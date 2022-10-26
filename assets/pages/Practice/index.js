@@ -33,7 +33,7 @@ export const Practice = () => {
     const [givenTables, setGivenTables] = useState([])
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
-    const [isNext, setIsNext] = useState(true)
+    const [isNext, setIsNext] = useState(false)
     const [error, setError] = useState(false)
 
     const urlContainer = (key, id) => {
@@ -124,7 +124,10 @@ export const Practice = () => {
             },
             data => {
                 let nextElementId = data.elementId;
-                if (nextElementId > 0) setIsNext(true);
+
+                if (nextElementId > 0) setIsNext(true)
+                else setIsNext(false)
+
                 setPractice({
                     elementId: nextElementId,
                     elementCount: data.elementCount,
@@ -211,8 +214,8 @@ export const Practice = () => {
                             </div>
                             {
                                 !isNext
-                                && <Button size={'S'} onClick={() => navigate("/react/my-profile")}>
-                                    Завершить практику
+                                && <Button size={'S'} onClick={() => {handleExecution();navigate("/react/my-profile")}}>
+                                    Завершить
                                 </Button>
                             }
                         </C.ButtonBox>
@@ -229,7 +232,9 @@ export const Practice = () => {
                 }
                 {
                     null !== sqlResponse &&
-                    <ResultBlock data={sqlResponse}/>
+                    <div style="margin-top: 1rem">
+                        <ResultBlock data={sqlResponse}/>
+                    </div>
                 }
             </C.Main>
         </C.Wrapper>

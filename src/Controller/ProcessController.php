@@ -30,10 +30,14 @@ class ProcessController extends AbstractController
 
         /** @var Student $user */
         $user = $security->getUser();
+
+        $response = $process->start($user, $course, new DateTime());
+
         try {
             return new JsonResponse([
-                'elementId' => $process->start($user, $course, new DateTime())->getId(),
+                'elementId' => $response->currentElement?->getId(),
                 'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
             ]);
         }
         catch (ExaminationProcessException $e) {
@@ -54,13 +58,13 @@ class ProcessController extends AbstractController
         $user = $security->getUser();
         try {
 
-            $sheet = $process->answer($user, $course, $answerText, new DateTime());
+            $response = $process->answer($user, $course, $answerText, new DateTime());
 
             return new JsonResponse([
-                'elementId' => $sheet->getActualElement()->getId(),
+                'elementId' => $response->currentElement?->getId(),
                 'elementCount' => $course->getType()->count(),
-                'sqlRequest' => $sheet->getCourseAnswers()?->last()?->getAnswer(),
-                'response' => $sheet->getCourseAnswers()?->last()?->getResult(),
+                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
             ]);
         }
         catch (ExaminationProcessException $e) {
@@ -81,13 +85,13 @@ class ProcessController extends AbstractController
         $user = $security->getUser();
         try {
 
-            $sheet = $process->execution($user, $course, $answerText, new DateTime());
+            $response = $process->execution($user, $course, $answerText, new DateTime());
 
             return new JsonResponse([
-                'elementId' => $sheet->getActualElement()?->getId(),
+                'elementId' => $response->sheet->getActualElement()?->getId(),
                 'elementCount' => $course->getType()->count(),
-                'sqlRequest' => $sheet->getCourseAnswers()?->last()?->getAnswer(),
-                'response' => $sheet->getCourseAnswers()?->last()?->getResult(),
+                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
             ]);
         }
         catch (ExaminationProcessException $e) {
