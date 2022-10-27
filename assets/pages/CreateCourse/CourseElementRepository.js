@@ -22,6 +22,19 @@ class CourseElementRepositoryClass {
         );
     }
 
+    async delete(courseElement) {
+        if (!courseElement.id) {
+            return new Promise(resolve => resolve());
+        }
+        return new Promise(
+          (resolve, reject) =>
+            this.request.delete(
+              "/api-platform/course_elements/" + courseElement.id,
+              resolve,
+              reject)
+        );
+    }
+
     async getByCourse(course) {
         return new Promise((resolve, reject) => {
             if (!course.type || course.type.length < 1) {

@@ -47,40 +47,47 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
 
   return (
     <>
-      {!items.length &&
+      {items === null &&
         <C.LoadingBlock>
           <LoaderInBLock show={true}/>
         </C.LoadingBlock>
       }
-      <C.AccordionBlock>
-        {items.map((item, i) => {
-          return (
-            <Accordion key={i}>
-              <AccordionSummary
+      {items !== null && !items.length &&
+        <C.LoadingBlock>
+          <TextL>Пока не создано ни одного курса</TextL>
+        </C.LoadingBlock>
+      }
+      {items !== null &&
+        <C.AccordionBlock>
+          {items.map((item, i) => {
+            return (
+              <Accordion key={i}>
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
-              >
-                <C.Title><TextL>{item.name}</TextL></C.Title>
-              </AccordionSummary>
-              <AccordionDetails>
-                <C.Description>
-                  <TextL>{item.description}</TextL>
-                  <C.ButtonWrapper>
-                    <Button
-                      size={'S'}
-                      onClick={() => editCourse(item.id)}
-                    >Редактирование</Button>
-                    <Button
-                      size={'S'}
-                      view={'outlined'}
-                      onClick={() => setDelCourseInf({id: item.id, isOpen: true})}
-                    >Удалить</Button>
-                  </C.ButtonWrapper>
-                </C.Description>
-              </AccordionDetails>
-            </Accordion>
-          )
-        })}
-      </C.AccordionBlock>
+                >
+                  <C.Title><TextL>{item.name}</TextL></C.Title>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <C.Description>
+                    <TextL>{item.description}</TextL>
+                    <C.ButtonWrapper>
+                      <Button
+                        size={'S'}
+                        onClick={() => editCourse(item.id)}
+                      >Редактирование</Button>
+                      <Button
+                        size={'S'}
+                        view={'outlined'}
+                        onClick={() => setDelCourseInf({id: item.id, isOpen: true})}
+                      >Удалить</Button>
+                    </C.ButtonWrapper>
+                  </C.Description>
+                </AccordionDetails>
+              </Accordion>
+            )
+          })}
+        </C.AccordionBlock>
+      }
 
       <DialogWinDelete
         isOpen={delCourseInf.isOpen}

@@ -7,8 +7,10 @@ import {Loader} from "../../components/Loader";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
 import {DialogWinDelete} from "../../components/DialogWinDelete";
+import {useNavigate} from "react-router-dom";
 
 export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent, courseId}) => {
+  const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const isPractice = type => ['mysql', 'postgre', 'oracle'].includes(type);
@@ -92,9 +94,16 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   const handleCreateCourse = () => {
     setLoader(true)
 
-    setTimeout(() => {
-      setLoader(false)
-    }, 5000)
+    if(!courseContent[step - 1].ord) {
+      courseContent[step - 1].ord = step;
+    }
+    CourseElementRepository.save(courseContent[step - 1], courseId).then(
+      data => {
+        courseContent[step - 1] = data
+        setLoader(false)
+        navigate("/react/my-profile/course-management");
+      }
+    );
   }
 
   const handleVariantDelete = (i) => {
@@ -116,7 +125,18 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
   }
 
   const deleteCourse = () => {
-    console.log('Удаление курса')
+    setLoader(true)
+
+    CourseElementRepository.delete(courseContent[step - 1]).then(
+      data => {
+        console.log('courseContent: ', courseContent)
+        
+        // courseContent[step - 1] = data
+        setLoader(false)
+      }
+    ).catch(() => {
+      setLoader(false)
+    });
 
     handleClose()
   }
