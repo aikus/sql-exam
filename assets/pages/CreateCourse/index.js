@@ -12,7 +12,6 @@ import { hostName } from '../../config'
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
   const [stepsTotal, setStepsTotal] = useState(step)
-  const [disableButton, setDisableButton] = useState(true)
   const [loader, setLoader] = useState(false)
   const [courseMainInfo, setCourseMainInfo] = useState({
     courseId: '',
@@ -124,14 +123,6 @@ export const CreateCourse = () => {
   const handleInputChange = (value, field) => {
     setCourseMainInfo((prevState) => ({...prevState, [field]: value}))
   };
-
-  useEffect(() => {
-    if (courseMainInfo.name && courseMainInfo.description && courseMainInfo.minForTrie) {
-      setDisableButton(false)
-    } else {
-      setDisableButton(true)
-    }
-  }, [courseMainInfo.name, courseMainInfo.description, courseMainInfo.minForTrie])
 
   useEffect(() => {
     const courseId = new URL(window.location.href).searchParams.get('course')
@@ -265,7 +256,6 @@ export const CreateCourse = () => {
                     createCourseReq()
                   }
                 }}
-                disabled={disableButton}
               >Далее</Button>
             </C.FirstStep>
           }

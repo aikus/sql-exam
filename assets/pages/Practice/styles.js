@@ -51,6 +51,10 @@ export const Task = styled.div`
 
 export const LeftBlock = styled.div`
     width: 70%;
+  @media (min-width: 1024px)  {
+    box-shadow: .70rem 0 0 0 #f8f9f9,
+                .75rem 0 0 0 #999;
+  }
 `
 
 export const Question = styled.div`

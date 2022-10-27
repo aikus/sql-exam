@@ -91,7 +91,7 @@ export const Practice = () => {
         )
     }
 
-    const handleExecution = (callBack) => {
+    const handleExecution = callBack => {
         setLoader(true)
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
@@ -108,7 +108,7 @@ export const Practice = () => {
                 setAnswer(data.sqlRequest)
                 setSqlResponse(data.response)
                 setError(false)
-                callBack()
+                if (typeof callBack === 'function') callBack()
                 getElement(id)
             },
             error => {

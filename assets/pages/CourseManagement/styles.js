@@ -55,6 +55,7 @@ export const Description = styled.div`
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
+  align-items: end;
   margin-left: 48px;
   gap: 8px;
   
