@@ -10,7 +10,7 @@ import { hostName } from '../../config'
 
 export const CourseManagement = () => {
   const navigate = useNavigate();
-  const [courseList, setCourseList] = useState([])
+  const [courseList, setCourseList] = useState(null)
 
   useEffect(() => {
     getCourseInf()
@@ -41,7 +41,7 @@ export const CourseManagement = () => {
             <CourseBlock
               items={courseList}
               getNewCourseList={getCourseInf}
-              updateCourseList={() => setCourseList([])}
+              updateCourseList={() => setCourseList(null)}
             />
         </C.CourseList>
       </C.Wrapper>
