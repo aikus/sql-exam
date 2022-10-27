@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Course;
-use App\Entity\CourseElement;
 use App\Service\ExaminationProcess\ExaminationProcess;
+use App\Service\ExaminationProcess\ExaminationProcessException;
 use DateTime;
 use Exception;
 use RusakovNikita\MysqlExam\Exam\Student;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -28,20 +30,74 @@ class ProcessController extends AbstractController
 
         /** @var Student $user */
         $user = $security->getUser();
-        $now = new DateTime();
-        return new JsonResponse($process->start($user, $course, $now));
+
+        $response = $process->start($user, $course, new DateTime());
+
+        try {
+            return new JsonResponse([
+                'elementId' => $response->currentElement?->getId(),
+                'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
+            ]);
+        }
+        catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    #[Route('/{course}/next', name: 'app_exam_next', methods: ['GET'])]
-    public function next(
+    #[Route('/{course}/answer', name: 'app_exam_answer', methods: ['POST'])]
+    public function answer(
         Course $course,
+        Request $request,
         Security $security,
         ExaminationProcess $process
     ): JsonResponse {
 
+        $answerText = $request->get('answerText');
         /** @var Student $user */
         $user = $security->getUser();
-        $now = new DateTime();
-        return new JsonResponse($process->next($user, $course, $now));
+        try {
+
+            $response = $process->answer($user, $course, $answerText, new DateTime());
+
+            return new JsonResponse([
+                'elementId' => $response->currentElement?->getId(),
+                'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
+                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
+            ]);
+        }
+        catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route('/{course}/execution', name: 'app_exam_execution', methods: ['POST'])]
+    public function execution(
+        Course $course,
+        Request $request,
+        Security $security,
+        ExaminationProcess $process
+    ): JsonResponse {
+
+        $answerText = $request->get('answerText');
+        /** @var Student $user */
+        $user = $security->getUser();
+        try {
+
+            $response = $process->execution($user, $course, $answerText, new DateTime());
+
+            return new JsonResponse([
+                'elementId' => $response->sheet->getActualElement()?->getId(),
+                'elementCount' => $course->getType()->count(),
+                'nextElement' => $response->nextElement?->getId(),
+                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
+                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
+            ]);
+        }
+        catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

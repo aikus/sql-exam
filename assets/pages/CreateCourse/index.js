@@ -4,18 +4,100 @@ import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, For
 import {Button} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {TaskSheet} from './TaskSheet'
-import {useNavigate} from "react-router-dom";
+import {Loader} from "../../components/Loader";
+import {HttpRequest} from '../../Service/HttpRequest'
+import {CourseElementRepository} from "./CourseElementRepository";
+import { hostName } from '../../config'
 
 export const CreateCourse = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
+  const [stepsTotal, setStepsTotal] = useState(step)
+  const [disableButton, setDisableButton] = useState(true)
+  const [loader, setLoader] = useState(false)
   const [courseMainInfo, setCourseMainInfo] = useState({
+    courseId: '',
     name: '',
     description: '',
     intendedFor: [],
     exam: false,
     numOfTries: '',
     minForTrie: ''
-  })
+  });
+  const defaultElement = {
+    'type': 'article',
+    'description': '',
+    'name': '',
+  };
+  const [courseContent, setCourseContent] = useState([defaultElement]);
+
+  const createCourseReq = () => {
+    const body = {
+      name: courseMainInfo.name,
+      description: courseMainInfo.description,
+      timeLimit: +courseMainInfo.minForTrie,
+      status: "enable"
+    }
+
+    const handleSuccess = (data) => {
+      setCourseMainInfo(prevState => ({...prevState, courseId: data.id}))
+      setLoader(false)
+      handleNextStep()
+    }
+
+    const handleError = () => {
+      setLoader(false)
+    }
+
+    HttpRequest.post(`${hostName}/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
+  }
+
+  const changeCourseReq = () => {
+    const body = {
+      name: courseMainInfo.name,
+      description: courseMainInfo.description,
+      timeLimit: +courseMainInfo.minForTrie,
+      status: "enable"
+    }
+
+    const handleSuccess = (data) => {
+      setLoader(false)
+      handleNextStep()
+    }
+
+    const handleError = () => {
+      setLoader(false)
+    }
+
+    HttpRequest.put(`${hostName}/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
+  }
+
+  const getCourseInfo = (id) => {
+    const handleSuccess = (data) => {
+      setCourseMainInfo(prevState => ({
+        ...prevState,
+        courseId: id,
+        name: data.name,
+        description: data.description,
+        minForTrie: data.timeLimit,
+        exam: data.timeLimit || data.timeLimit === 0 ? true : false
+      }));
+
+      CourseElementRepository.getByCourse(data).then(elements => {
+        setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
+        if (elements && elements.length > 0) {
+          setStepsTotal(elements.length - 1)
+        }
+      });
+
+      setLoader(false)
+    }
+
+    const handleError = () => {
+      setLoader(false)
+    }
+
+    HttpRequest.get(`${hostName}/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+  }
 
   const handleIntendedForChange = (event) => {
     const {
@@ -29,6 +111,9 @@ export const CreateCourse = () => {
   };
 
   const handleNextStep = () => {
+    if (step + 1 > stepsTotal) {
+      setStepsTotal((prevState) => prevState + 1)
+    }
     setStep(prevState => prevState + 1);
   };
 
@@ -36,11 +121,38 @@ export const CreateCourse = () => {
     setStep(prevState => prevState - 1);
   };
 
+  const handleInputChange = (value, field) => {
+    setCourseMainInfo((prevState) => ({...prevState, [field]: value}))
+  };
+
+  useEffect(() => {
+    if (courseMainInfo.name && courseMainInfo.description && courseMainInfo.minForTrie) {
+      setDisableButton(false)
+    } else {
+      setDisableButton(true)
+    }
+  }, [courseMainInfo.name, courseMainInfo.description, courseMainInfo.minForTrie])
+
+  useEffect(() => {
+    const courseId = new URL(window.location.href).searchParams.get('course')
+    if (courseId) {
+      setLoader(true)
+      getCourseInfo(courseId)
+    }
+
+    // HttpRequest.get
+  }, [])
+
   return (
       <C.Wrapper>
-        <H2>Создание нового курса</H2>
+        <C.Header>
+          <H2>Создание нового курса</H2>
+          {step !== 0 &&
+            <TextL>Шаг {step} из {stepsTotal}</TextL>
+          }
+        </C.Header>
         <C.Main>
-          {step === 1 &&
+          {step === 0 &&
             <C.FirstStep>
               <C.FieldBox>
                 <H5>Название курса</H5>
@@ -50,9 +162,7 @@ export const CreateCourse = () => {
                   multiline={true}
                   fullWidth={true}
                   value={courseMainInfo.name}
-                  onChange={(e) => {
-                    setCourseMainInfo((prevState) => ({...prevState, name: e.target.value}))
-                  }}
+                  onChange={(e) => handleInputChange(e.target.value, 'name')}
                 />
               </C.FieldBox>
               <C.FieldBox>
@@ -65,79 +175,113 @@ export const CreateCourse = () => {
                   fullWidth={true}
                   minRows={5}
                   value={courseMainInfo.description}
+                  onChange={(e) => handleInputChange(e.target.value, 'description')}
+                />
+              </C.FieldBox>
+              {/*<C.FieldBox>*/}
+              {/*  <H5>Принадлежность</H5>*/}
+              {/*  <Select*/}
+              {/*    multiple*/}
+              {/*    displayEmpty*/}
+              {/*    value={courseMainInfo.intendedFor}*/}
+              {/*    onChange={handleIntendedForChange}*/}
+              {/*    input={<OutlinedInput />}*/}
+              {/*    renderValue={(selected) => {*/}
+              {/*      if (selected.length === 0) {*/}
+              {/*        return <TextL>Для всех (общий)</TextL>;*/}
+              {/*      }*/}
+
+              {/*      return selected.join(', ');*/}
+              {/*    }}*/}
+              {/*    MenuProps={MenuProps}*/}
+              {/*    sx={{minWidth: '300px', maxWidth: '100%'}}*/}
+              {/*  >*/}
+              {/*    {names.map((name) => (*/}
+              {/*      <MenuItem key={name} value={name}>*/}
+              {/*        <Checkbox checked={courseMainInfo.intendedFor.indexOf(name) > -1} />*/}
+              {/*        <ListItemText primary={name} />*/}
+              {/*      </MenuItem>*/}
+              {/*    ))}*/}
+              {/*  </Select>*/}
+              {/*</C.FieldBox>*/}
+              <C.FieldBox>
+                <H5>Время на одну попытку в минутах</H5>
+                <TextField
+                  required
+                  type="number"
+                  value={courseMainInfo.minForTrie}
                   onChange={(e) => {
-                    setCourseMainInfo((prevState) => ({...prevState, description: e.target.value}))
+                    if (e.target.value >= 0 && e.target.value <= 480) {
+                      handleInputChange(e.target.value, 'minForTrie')
+                    }
                   }}
                 />
               </C.FieldBox>
-              <C.FieldBox>
-                <H5>Принадлежность</H5>
-                <Select
-                  multiple
-                  displayEmpty
-                  value={courseMainInfo.intendedFor}
-                  onChange={handleIntendedForChange}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return <TextL>Для всех (общий)</TextL>;
-                    }
-
-                    return selected.join(', ');
-                  }}
-                  MenuProps={MenuProps}
-                  sx={{minWidth: '300px', maxWidth: '100%'}}
-                >
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      <Checkbox checked={courseMainInfo.intendedFor.indexOf(name) > -1} />
-                      <ListItemText primary={name} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </C.FieldBox>
-              <C.CheckBoxWrapper>
-                <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />
-                <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>
-              </C.CheckBoxWrapper>
-              {courseMainInfo.exam &&
-                <C.CheckBoxControled>
-                  <C.FieldBox>
-                    <H5>Количество попыток</H5>
-                    <TextField
-                      required
-                      type="number"
-                      value={courseMainInfo.numOfTries}
-                      onChange={(e) => {
-                        setCourseMainInfo((prevState) => ({...prevState, numOfTries: e.target.value}))
-                      }}
-                    />
-                  </C.FieldBox>
-                  <C.FieldBox>
-                    <H5>Время на одну попытку в минутах</H5>
-                    <TextField
-                      required
-                      type="number"
-                      value={courseMainInfo.minForTrie}
-                      onChange={(e) => {
-                        setCourseMainInfo((prevState) => ({...prevState, minForTrie: e.target.value}))
-                      }}
-                    />
-                  </C.FieldBox>
-                </C.CheckBoxControled>
-              }
-              <Button onClick={handleNextStep}>Далее</Button>
-              <Button>Создать</Button>
+              {/*<C.CheckBoxWrapper>*/}
+              {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
+              {/*  <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>*/}
+              {/*</C.CheckBoxWrapper>*/}
+              {/*{courseMainInfo.exam &&*/}
+              {/*  <C.CheckBoxControled>*/}
+              {/*    <C.FieldBox>*/}
+              {/*      <H5>Количество попыток</H5>*/}
+              {/*      <TextField*/}
+              {/*        type="number"*/}
+              {/*        value={courseMainInfo.numOfTries}*/}
+              {/*        onChange={(e) => {*/}
+              {/*          if (e.target.value >= 0 && e.target.value <= 100) {*/}
+              {/*            handleInputChange(e.target.value, 'numOfTries')*/}
+              {/*          }*/}
+              {/*        }}*/}
+              {/*      />*/}
+              {/*      <C.Hint>*/}
+              {/*        <TextM>Количество попыток может быть от 0 до 100, где 0 - неограниченное количество</TextM>*/}
+              {/*      </C.Hint>*/}
+              {/*    </C.FieldBox>*/}
+              {/*    <C.FieldBox>*/}
+              {/*      <H5>Время на одну попытку в минутах</H5>*/}
+              {/*      <TextField*/}
+              {/*        required*/}
+              {/*        type="number"*/}
+              {/*        value={courseMainInfo.minForTrie}*/}
+              {/*        onChange={(e) => {*/}
+              {/*          if (e.target.value >= 0 && e.target.value <= 480) {*/}
+              {/*            handleInputChange(e.target.value, 'minForTrie')*/}
+              {/*          }*/}
+              {/*        }}*/}
+              {/*      />*/}
+              {/*      <C.Hint>*/}
+              {/*        <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>*/}
+              {/*      </C.Hint>*/}
+              {/*    </C.FieldBox>*/}
+              {/*  </C.CheckBoxControled>*/}
+              {/*}*/}
+              <Button
+                onClick={() => {
+                  setLoader(true)
+                  if (courseMainInfo.courseId) {
+                    changeCourseReq()
+                  } else {
+                    createCourseReq()
+                  }
+                }}
+                disabled={disableButton}
+              >Далее</Button>
             </C.FirstStep>
           }
-          {step >= 2 &&
+          {step >= 1 &&
             <TaskSheet
               step={step}
               nextStep={handleNextStep}
               prevStep={handlePrevStep}
+              courseContent={courseContent}
+              setCourseContent={setCourseContent}
+              courseId={courseMainInfo.courseId}
             />
           }
         </C.Main>
+
+        <Loader show={loader}/>
       </C.Wrapper>
   )
 }

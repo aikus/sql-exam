@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\CourseAnswerListener;
 use App\Repository\CourseAnswerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\EntityListeners([CourseAnswerListener::class])]
 #[ORM\Entity(repositoryClass: CourseAnswerRepository::class)]
 #[ApiResource]
 class CourseAnswer
@@ -16,7 +18,7 @@ class CourseAnswer
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'courseAnswers')]
+    #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'courseAnswers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?CourseSheet $courceSheet = null;
 
@@ -31,7 +33,7 @@ class CourseAnswer
     private ?bool $isRight = null;
 
     #[ORM\Column(nullable: true)]
-    private array $result = [];
+    private ?array $result = [];
 
     public function getId(): ?int
     {
@@ -86,7 +88,7 @@ class CourseAnswer
         return $this;
     }
 
-    public function getResult(): array
+    public function getResult(): ?array
     {
         return $this->result;
     }

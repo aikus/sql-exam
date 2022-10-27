@@ -14,6 +14,12 @@ export const Wrapper = styled.div`
   }
 `
 
+export const Header = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+`
+
 export const Main = styled.div`
   background-color: var(--authorization-background-color);
   box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
@@ -41,6 +47,10 @@ export const FieldBox = styled.div`
   }
 `
 
+export const Hint = styled.div`
+  margin-top: 8px;
+`
+
 export const CheckBoxWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,7 +61,79 @@ export const CheckBoxControled = styled.div`
 `
 
 export const Type = styled.div`
+  margin-bottom: 24px;
+  
+  & > *:first-child {
+    margin-bottom: 8px;
+  }
+`
+
+export const HeaderBlock = styled(Type)`
 `
 
 export const QuestionBlock = styled.div`
+  & > *:first-child {
+    margin-bottom: 8px;
+  }
+`
+
+export const AnswerBlock = styled(QuestionBlock)`
+  margin-top: 24px;
+`
+
+export const VariantsBlock = styled.div`
+  max-width: 800px;
+  
+  & > button {
+    width: unset;
+    margin-top: 24px;
+  }
+`
+
+export const VariantsRow = styled.div`
+  margin-top: 24px;
+`
+
+export const Row = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  & > *:first-child, *:last-child {
+    flex-shrink: 0;
+  }
+`
+
+export const ButtonsBlock = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+  gap: 16px;
+  justify-content: space-between;
+  
+  & > div:first-child {
+    display: flex;
+    gap: 24px;
+  }
+  
+  & * button, & > button {
+    width: unset;
+  }
+  
+  & > button {
+    align-self: flex-start;
+  }
+`
+
+export const MovementButtons = styled.div`
+  display: flex;
+  gap: 8px;
+`
+
+export const DeleteButton = styled.div`
 `

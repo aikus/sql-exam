@@ -97,8 +97,6 @@ export const TableWrapper = styled.div`
   }
 `
 
-
-
-
-
-
+export const Block = styled.div`
+  margin-top: 1.5rem;
+`

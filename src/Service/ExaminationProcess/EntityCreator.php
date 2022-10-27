@@ -37,24 +37,23 @@ class EntityCreator
         return $sheet;
     }
 
-    public function createAnswer(
+    public function addNewAnswer(
         CourseSheet $sheet,
         CourseElement $element,
-        string $textAnswer
+        ?string $textAnswer
     ): CourseAnswer {
 
         $answer = new CourseAnswer();
         $answer->setCourceSheet($sheet);
         $answer->setQuestion($element);
-        $answer->setAnswer($textAnswer);
+        $answer->setAnswer($textAnswer ?? '');
 
         $this->answerRepository->add($answer);
         return $answer;
     }
 
-    public function updateSheet(CourseSheet $sheet, CourseElement $element): CourseSheet
+    public function updateSheet(CourseSheet $sheet): CourseSheet
     {
-        $sheet->setActualElement($element);
         $this->sheetRepository->add($sheet);
         return $sheet;
     }

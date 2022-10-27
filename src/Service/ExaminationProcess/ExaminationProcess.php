@@ -8,7 +8,9 @@ use DateTimeInterface;
 
 interface ExaminationProcess
 {
-    public function start(User $user, Course $course, DateTimeInterface $now): array;
+    /** @throws ExaminationProcessException */
+    public function start(User $user, Course $course, DateTimeInterface $now): Response;
 
-    public function next(User $user, Course $course, DateTimeInterface $now): array;
+    /** @throws ExaminationProcessException */
+    public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): Response;
 }

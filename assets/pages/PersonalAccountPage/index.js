@@ -6,6 +6,9 @@ import { Logo } from "../../components/Logo";
 import { MyProfile } from '../MyProfile'
 import { CourseBlock } from '../MyProfile/CourseBlock/CourseBlock'
 import {Outlet, Link, useNavigate} from "react-router-dom";
+import {HttpRequest} from "../../Service/HttpRequest";
+import { hostName } from '../../config'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
@@ -13,21 +16,12 @@ export const PersonalAccountPage = () => {
     const [inProgress, setInProgress] = useState([])
 
     useEffect(() => {
-        if (Object.keys(inProgress).length === 0) {
-            fetch('http://localhost/api-platform/courses', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('data: ', data)
-                    if (data.code === 401) {
-                        return
-                    }
-                    setInProgress(data['hydra:member'])
-                })
+        if (inProgress.length === 0) {
+            const handleSuccess = (data) => {
+                setInProgress(data)
+            }
+
+            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data),)
         }
     }, [])
 
@@ -46,10 +40,10 @@ export const PersonalAccountPage = () => {
                     <Link to="questionnaire"><TextL>Форма опросника PR</TextL></Link>
                     <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                 </C.NavBarItemsBox>
-                {/*<C.ProfileInfo>*/}
-                {/*    <TextL>slumz@yandex.ru</TextL>*/}
-                {/*    <C.Logout><TextL>Выйти</TextL></C.Logout>*/}
-                {/*</C.ProfileInfo>*/}
+                {/*<C.MenuBlock>*/}
+                {/*    <C.Avatar><TextM>T</TextM></C.Avatar>*/}
+                {/*    <ArrowDropDownIcon/>*/}
+                {/*</C.MenuBlock>*/}
             </C.NavBar>
             <Outlet context={inProgress}/>
         </C.Wrapper>

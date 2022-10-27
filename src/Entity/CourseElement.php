@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class CourseElement
 {
+    const TYPE_ARTICLE = 'article';
+    const TYPE_MYSQL = 'mysql';
+    const TYPE_POSTGRES = 'postgres';
+    const TYPE_ORACLE = 'oracle';
+    const TYPE_POLL = 'poll';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -31,6 +37,9 @@ class CourseElement
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $answer = null;
 
     public function getId(): ?int
     {
@@ -90,9 +99,27 @@ class CourseElement
         return $this->type;
     }
 
+    /**
+     * @throws CourseElementTypeNotFound
+     */
     public function setType(string $type): self
     {
+        if(!in_array($type, [self::TYPE_MYSQL, self::TYPE_ORACLE, self::TYPE_POLL, self::TYPE_POSTGRES, self::TYPE_ARTICLE])) {
+            throw new CourseElementTypeNotFound($type);
+        }
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getAnswer(): ?string
+    {
+        return $this->answer;
+    }
+
+    public function setAnswer(?string $answer): self
+    {
+        $this->answer = $answer;
 
         return $this;
     }

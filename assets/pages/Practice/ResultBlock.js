@@ -8,34 +8,58 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import {Alert, AlertTitle} from "@mui/material";
 
-export const ResultBlock = () => {
+export const ResultBlock = tableData => {
+
+    if ('' !== tableData.data.error) {
+        return (
+            <>
+                <Alert severity={"warning"}>
+                    <AlertTitle>Результат запроса</AlertTitle>
+                    <div>{tableData.data.error}</div>
+                </Alert>
+            </>
+        );
+    }
+
+    if (0 === tableData.data.result.length) {
+        return (
+            <>
+                <div>Результат</div>
+                <div>Пустой ответ</div>
+            </>
+        );
+    }
 
     return (
         <>
-            <div>Результирующий блок</div>
-            {/*<TableContainer component={Paper}>*/}
-            {/*    <Table size='small'>*/}
-            {/*        <TableHead>*/}
-            {/*            <TableRow sx={{backgroundColor: '#CCCCCC', '& > th': { fontWeight: '600' }}}>*/}
-            {/*                {tableData.header.map((column) => (*/}
-            {/*                    <TableCell><div>{column.attribute}</div><div>{column.type}</div></TableCell>*/}
-            {/*                ))}*/}
-            {/*            </TableRow>*/}
-            {/*        </TableHead>*/}
-            {/*        <TableBody>*/}
-            {/*            {tableData.body.map((row) => (*/}
-            {/*                <TableRow*/}
-            {/*                    key={row[0]}*/}
-            {/*                >*/}
-            {/*                    {row.map((cell) => (*/}
-            {/*                        <TableCell>{cell}</TableCell>*/}
-            {/*                    ))}*/}
-            {/*                </TableRow>*/}
-            {/*            ))}*/}
-            {/*        </TableBody>*/}
-            {/*    </Table>*/}
-            {/*</TableContainer>*/}
+            <C.TableWrapper>
+                <div>Результат</div>
+                <br/>
+                <TableContainer component={Paper}>
+                    <Table size='small'>
+                        <TableHead>
+                            <TableRow sx={{backgroundColor: '#CCCCCC', '& > th': { fontWeight: '600' }}}>
+                                {tableData.data?.header.map((column) => (
+                                    <TableCell>
+                                        <div>{column.name}</div>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {tableData.data?.result.map((row, key) => (
+                                <TableRow key={key+1}>
+                                    {row.map((cell) => (
+                                        <TableCell>{cell}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </C.TableWrapper>
         </>
     )
 }

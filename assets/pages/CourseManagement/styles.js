@@ -29,6 +29,16 @@ export const AccordionBlock = styled.div`
     margin-top: 24px;
 `
 
+export const LoadingBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: var(--authorization-background-color);
+  box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
+  padding: 32px;
+  border-radius: 16px;
+  margin-top: 24px;
+`
+
 export const Description = styled.div`
     display: flex;
     justify-content: space-between;
