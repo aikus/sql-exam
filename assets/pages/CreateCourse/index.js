@@ -84,11 +84,11 @@ export const CreateCourse = () => {
       CourseElementRepository.getByCourse(data).then(elements => {
         setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
         if (elements && elements.length > 0) {
-          setStepsTotal(elements.length - 1)
+          setStepsTotal(elements.length)
         }
-      });
 
-      setLoader(false)
+        setLoader(false)
+      });
     }
 
     const handleError = () => {
@@ -122,6 +122,24 @@ export const CreateCourse = () => {
 
   const handleInputChange = (value, field) => {
     setCourseMainInfo((prevState) => ({...prevState, [field]: value}))
+  };
+
+  const deleteStep = () => {
+    if (step === stepsTotal && step === 1) {
+      setCourseContent([defaultElement])
+    } else {
+      setCourseContent((prevState) => {
+        let newState = [...prevState]
+        newState.splice(step - 1, 1)
+        return newState
+      })
+    }
+
+    if (step === stepsTotal) {
+      setStep(prevState => prevState - 1);
+    }
+
+    setStepsTotal((prevState) => prevState - 1)
   };
 
   useEffect(() => {
@@ -264,6 +282,7 @@ export const CreateCourse = () => {
               step={step}
               nextStep={handleNextStep}
               prevStep={handlePrevStep}
+              deleteStep={deleteStep}
               courseContent={courseContent}
               setCourseContent={setCourseContent}
               courseId={courseMainInfo.courseId}
