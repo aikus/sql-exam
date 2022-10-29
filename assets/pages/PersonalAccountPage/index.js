@@ -14,6 +14,13 @@ export const PersonalAccountPage = () => {
     const navigate = useNavigate();
 
     const [inProgress, setInProgress] = useState([])
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    const handleProfileMenuClick = (e) => {
+        setAnchorEl(e.currentTarget);
+        setProfileMenuOpen((prevState) => (!prevState))
+    }
 
     useEffect(() => {
         if (inProgress.length === 0) {
@@ -40,10 +47,19 @@ export const PersonalAccountPage = () => {
                     <Link to="questionnaire"><TextL>Форма опросника PR</TextL></Link>
                     <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                 </C.NavBarItemsBox>
-                {/*<C.MenuBlock>*/}
-                {/*    <C.Avatar><TextM>T</TextM></C.Avatar>*/}
-                {/*    <ArrowDropDownIcon/>*/}
-                {/*</C.MenuBlock>*/}
+                <C.MenuBlock
+                  onClick={handleProfileMenuClick}
+                >
+                    <C.Avatar><TextM>T</TextM></C.Avatar>
+                    <ArrowDropDownIcon/>
+                </C.MenuBlock>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={profileMenuOpen}
+                  onClose={() => setProfileMenuOpen(false)}
+                >
+                    <MenuItem>Выход</MenuItem>
+                </Menu>
             </C.NavBar>
             <Outlet context={inProgress}/>
         </C.Wrapper>

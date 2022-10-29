@@ -8,6 +8,7 @@ export const H1 = styled.h1`
   line-height: 130%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
   
   @media(min-width: 768px) {
     font-size: 42px;
@@ -22,6 +23,7 @@ export const H2 = styled.h2`
   line-height: 130%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
   
   @media (min-width: 768px){
     font-size: 34px;
@@ -36,6 +38,7 @@ export const H3 = styled.h3`
   line-height: 140%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
   
   @media (min-width: 768px){
     font-size: 24px;
@@ -49,6 +52,7 @@ export const H4 = styled.h4`
   line-height: 140%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
   
   @media (min-width: 768px){
     font-size: 20px;
@@ -62,6 +66,7 @@ export const H5 = styled.h5`
   line-height: 140%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
   
   @media (min-width: 768px){
     font-size: 16px;
@@ -75,6 +80,7 @@ export const TextL = styled.span`
   line-height: 170%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
 
   @media (min-width: 768px){
     letter-spacing: 0.4px;
@@ -89,6 +95,7 @@ export const TextM = styled.span`
   line-height: 170%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
 
   @media (min-width: 768px){
     font-size: 14px;
@@ -102,6 +109,7 @@ export const TextS = styled.span`
   line-height: 170%;
   letter-spacing: 0.3px;
   color: var(--text-color-primary);
+  word-break: break-word;
 
   @media (min-width: 768px){
     font-size: 12px;
