@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import * as C from './styles'
 import {Button} from "../../components/Button";
-import { H2, TextL } from '../../components/Typography'
+import { H2, TextL, TextM } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
+import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 
 export const MyProfile = () => {
     const inProgress = useOutletContext()
@@ -20,10 +21,14 @@ export const MyProfile = () => {
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
                         <C.ButtonBox>
-                            <Button>Посмотреть другие курсы</Button>
-                            <Button>Посмотреть свою подробную статистику</Button>
+                            <Button size={'S'}>Посмотреть другие курсы</Button>
+                            <Button size={'S'}>Посмотреть свою подробную статистику</Button>
                         </C.ButtonBox>
                     </C.MyProfile>
+                    <C.Rating>
+                        <TextL>Рейтинг и курсы в разработке</TextL>
+                        <SettingsSuggestOutlinedIcon fontSize={'large'}/>
+                    </C.Rating>
                 </C.MyProfileBox>
             </section>
             <section>
