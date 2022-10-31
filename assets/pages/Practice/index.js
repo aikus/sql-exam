@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import {TextField} from "@mui/material";
 import {Button} from "../../components/Button";
-import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
+import {TextM, TextL, H2, H5} from '../../components/Typography'
 import {TableToChoose} from "./TableToChoose";
 import {ExampleTable} from "./ExampleTable";
 import {ResultBlock} from "./ResultBlock";
@@ -25,7 +25,7 @@ export const Practice = () => {
         courseId: null,
         sheetId: null,
         elementId: null,
-        nextElementId: null,
+        nextElementId: 0,
         elementCount: 0
     })
     const [answer, setAnswer] = useState(null)
@@ -147,14 +147,6 @@ export const Practice = () => {
 
     }
 
-    const setHeader = () => {
-        let accumArr = []
-        for (let key in givenTablesData[chosenTable][0]) {
-            accumArr.push(key)
-        }
-        return accumArr
-    }
-
     useEffect(() => {
         getStart()
         StudentTableData(data => {
@@ -162,7 +154,7 @@ export const Practice = () => {
             for (let key in data) {
                 dataTableArr.push({
                     tableName: [key],
-                    linesNum: data[key].length
+                    linesNum: data[key].count
                 })
             }
             setGivenTables(dataTableArr)
@@ -208,13 +200,15 @@ export const Practice = () => {
                             </TextM>
                         </C.Description>
                         <C.ButtonBox>
+                            <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
+                        </C.ButtonBox>
+                        <C.ButtonBox>
                             <div>
-                                <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
                                 <Button size={'S'} view={'outlined'} onClick={handlePrevStep} disabled={true}>Назад</Button>
                                 <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!practice.nextElementId}>Далее</Button>
                             </div>
                             {
-                                !practice.nextElementId
+                                (!practice.nextElementId && 0 !== practice.nextElementId)
                                 && <Button size={'S'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
                                     Завершить
                                 </Button>
@@ -229,7 +223,7 @@ export const Practice = () => {
                     chosenTable &&
                     <C.TableWrapper>
                         <TextM>{chosenTable}</TextM>
-                        <ExampleTable header={setHeader()} tableData={givenTablesData[chosenTable]}/>
+                        <ExampleTable tableData={givenTablesData[chosenTable]}/>
                     </C.TableWrapper>
                 }
                 {

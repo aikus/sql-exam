@@ -225,6 +225,9 @@ export const CreateCourse = () => {
                     }
                   }}
                 />
+		<C.Hint>
+		    <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
+		</C.Hint>
               </C.FieldBox>
               {/*<C.CheckBoxWrapper>*/}
               {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}

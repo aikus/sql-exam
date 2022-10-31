@@ -9,27 +9,35 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 
-export const ExampleTable = ({header, tableData}) => {
+export const ExampleTable = ({tableData}) => {
+
+    const header = () => {
+        let accumArr = []
+        for (let key in tableData.table[0]) {
+            accumArr.push(key)
+        }
+        console.log('accumArr', accumArr)
+        return accumArr ?? []
+    }
 
     return (
         <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>
                     <TableRow sx={{backgroundColor: '#CCCCCC', '& > th': { fontWeight: '600' }}}>
-                        {header.map((column) => (
+                        {header().map((column) => (
                             <TableCell key={column}>
                                 <div>{column}</div>
-                                {/*<div>{column.type}</div>*/}
                             </TableCell>
                         ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableData.map((row, i) => (
+                    {tableData.table.map((row, i) => (
                         <TableRow
                             key={i}
                         >
-                            {header.map((cell) => (
+                            {header().map((cell) => (
                               <TableCell key={cell}>{row[cell]}</TableCell>
                             ))}
                         </TableRow>

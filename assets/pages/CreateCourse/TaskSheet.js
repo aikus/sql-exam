@@ -156,8 +156,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
         >
           <MenuItem value={'article'}>Текст</MenuItem>
           <MenuItem value={'mysql'}>Практика Mysql</MenuItem>
-          <MenuItem value={'postgre'}>Практика PostgreSQL</MenuItem>
-          <MenuItem value={'poll'}>Тест</MenuItem>
         </Select>
       </C.Type>
       <C.HeaderBlock>
