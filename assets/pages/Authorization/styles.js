@@ -89,3 +89,22 @@ export const Backspace = styled(ForgotPassword)`
     text-align: center;
     margin-top: 24px;
 `
+
+export const EmailSentBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 160px;
+  border: 1px solid green;
+  border-radius: 16px;
+  padding: 0 16px;
+  text-align: center;
+  margin-top: 40px;
+  
+  & > *:first-child {
+    width: 60px;
+    height: 60px;
+  }
+`

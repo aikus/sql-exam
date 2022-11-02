@@ -1,1 +1,1 @@
-export const hostName = 'http://scirpus.ru'
+export const hostName = 'http://localhost'
