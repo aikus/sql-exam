@@ -8,6 +8,7 @@ import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
 import {CourseElementRepository} from "./CourseElementRepository";
 import { hostName } from '../../config'
+import {searchParam} from "../../Service/SearchParamActions";
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
@@ -143,7 +144,7 @@ export const CreateCourse = () => {
   };
 
   useEffect(() => {
-    const courseId = new URL(window.location.href).searchParams.get('course')
+    const courseId = searchParam.get('course')
     if (courseId) {
       setLoader(true)
       getCourseInfo(courseId)
@@ -155,7 +156,7 @@ export const CreateCourse = () => {
   return (
       <C.Wrapper>
         <C.Header>
-          <H2>Создание нового курса</H2>
+          <H2>{searchParam.get('course') ? 'Редактирование курса' : 'Создание нового курса'}</H2>
           {step !== 0 &&
             <TextL>Шаг {step} из {stepsTotal}</TextL>
           }
