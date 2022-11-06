@@ -8,11 +8,11 @@ import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
 import {CourseElementRepository} from "./CourseElementRepository";
 import { hostName } from '../../config'
+import {searchParam} from "../../Service/SearchParamActions";
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
   const [stepsTotal, setStepsTotal] = useState(step)
-  const [disableButton, setDisableButton] = useState(true)
   const [loader, setLoader] = useState(false)
   const [courseMainInfo, setCourseMainInfo] = useState({
     courseId: '',
@@ -85,11 +85,11 @@ export const CreateCourse = () => {
       CourseElementRepository.getByCourse(data).then(elements => {
         setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
         if (elements && elements.length > 0) {
-          setStepsTotal(elements.length - 1)
+          setStepsTotal(elements.length)
         }
-      });
 
-      setLoader(false)
+        setLoader(false)
+      });
     }
 
     const handleError = () => {
@@ -125,16 +125,26 @@ export const CreateCourse = () => {
     setCourseMainInfo((prevState) => ({...prevState, [field]: value}))
   };
 
-  useEffect(() => {
-    if (courseMainInfo.name && courseMainInfo.description && courseMainInfo.minForTrie) {
-      setDisableButton(false)
+  const deleteStep = () => {
+    if (step === stepsTotal && step === 1) {
+      setCourseContent([defaultElement])
     } else {
-      setDisableButton(true)
+      setCourseContent((prevState) => {
+        let newState = [...prevState]
+        newState.splice(step - 1, 1)
+        return newState
+      })
     }
-  }, [courseMainInfo.name, courseMainInfo.description, courseMainInfo.minForTrie])
+
+    if (step === stepsTotal) {
+      setStep(prevState => prevState - 1);
+    }
+
+    setStepsTotal((prevState) => prevState - 1)
+  };
 
   useEffect(() => {
-    const courseId = new URL(window.location.href).searchParams.get('course')
+    const courseId = searchParam.get('course')
     if (courseId) {
       setLoader(true)
       getCourseInfo(courseId)
@@ -146,7 +156,7 @@ export const CreateCourse = () => {
   return (
       <C.Wrapper>
         <C.Header>
-          <H2>Создание нового курса</H2>
+          <H2>{searchParam.get('course') ? 'Редактирование курса' : 'Создание нового курса'}</H2>
           {step !== 0 &&
             <TextL>Шаг {step} из {stepsTotal}</TextL>
           }
@@ -216,6 +226,9 @@ export const CreateCourse = () => {
                     }
                   }}
                 />
+		<C.Hint>
+		    <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
+		</C.Hint>
               </C.FieldBox>
               {/*<C.CheckBoxWrapper>*/}
               {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
@@ -265,7 +278,6 @@ export const CreateCourse = () => {
                     createCourseReq()
                   }
                 }}
-                disabled={disableButton}
               >Далее</Button>
             </C.FirstStep>
           }
@@ -274,6 +286,7 @@ export const CreateCourse = () => {
               step={step}
               nextStep={handleNextStep}
               prevStep={handlePrevStep}
+              deleteStep={deleteStep}
               courseContent={courseContent}
               setCourseContent={setCourseContent}
               courseId={courseMainInfo.courseId}

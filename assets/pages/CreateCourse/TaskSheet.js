@@ -9,7 +9,7 @@ import {CourseElementRepository} from "./CourseElementRepository";
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
 
-export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseContent, courseId}) => {
+export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -57,11 +57,13 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
       );
       let newState = [...prevState]
 
-      newState.push({
-        'type': 'article',
-        'name': '',
-        'description': '',
-      })
+      if (step === courseContent.length) {
+        newState.push({
+          'type': 'article',
+          'name': '',
+          'description': '',
+        })
+      }
 
       return newState
     })
@@ -124,14 +126,12 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
     })
   }
 
-  const deleteCourse = () => {
+  const handleDeleteStep = () => {
     setLoader(true)
 
     CourseElementRepository.delete(courseContent[step - 1]).then(
       data => {
-        console.log('courseContent: ', courseContent)
-        
-        // courseContent[step - 1] = data
+        deleteStep()
         setLoader(false)
       }
     ).catch(() => {
@@ -156,8 +156,6 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
         >
           <MenuItem value={'article'}>Текст</MenuItem>
           <MenuItem value={'mysql'}>Практика Mysql</MenuItem>
-          <MenuItem value={'postgre'}>Практика PostgreSQL</MenuItem>
-          <MenuItem value={'poll'}>Тест</MenuItem>
         </Select>
       </C.Type>
       <C.HeaderBlock>
@@ -275,7 +273,7 @@ export const TaskSheet = ({step, nextStep, prevStep, courseContent, setCourseCon
       <Loader show={loader}/>
       <DialogWinDelete
         isOpen={dialogOpen}
-        handleDelete={deleteCourse}
+        handleDelete={handleDeleteStep}
         handleClose={handleClose}
         whatToDelete={'шаг'}
       />

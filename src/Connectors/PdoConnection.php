@@ -27,7 +27,8 @@ class PdoConnection
             'person',
             'product',
         ] as $item) {
-            $result[$item] = $this->exec("SELECT * FROM `$item` LIMIT ".($limit ?? self::VIEW_LIMIT).";", true);
+            $result[$item]['table'] = $this->exec("SELECT * FROM `$item` LIMIT ".($limit ?? self::VIEW_LIMIT).";", true);
+            $result[$item]['count'] = $this->countRow($item);
         }
 
         return $result;
@@ -36,6 +37,12 @@ class PdoConnection
     public function getColumnMeta(): array
     {
         return $this->columnMeta;
+    }
+
+    private function countRow(string $tableName): ?int
+    {
+        $result = $this->exec("SELECT COUNT(0) as `count` FROM `$tableName`;", true);
+        return ($result[0] ?? null)['count'] ?? null;
     }
 
     private function exec(string $sql, bool $isAssoc = false): array

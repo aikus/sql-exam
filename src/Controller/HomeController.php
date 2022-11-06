@@ -12,6 +12,6 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        return $this->redirectToRoute('app_login', [], Response::HTTP_MOVED_PERMANENTLY);
+        return $this->redirectToRoute('app_react_dev_page', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 }

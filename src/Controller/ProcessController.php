@@ -3,44 +3,38 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Entity\User;
 use App\Service\ExaminationProcess\ExaminationProcess;
-use App\Service\ExaminationProcess\ExaminationProcessException;
+use App\Service\ExaminationProcess\Layer\Action\AnswerAction;
+use App\Service\ExaminationProcess\Layer\Action\ExecutionAction;
+use App\Service\ExaminationProcess\Layer\Action\StartAction;
+use App\Service\ExaminationProcess\Layer\Domain\ExaminationProcessException;
+use App\Service\ExaminationProcess\Layer\Domain\Process;
 use DateTime;
-use Exception;
-use RusakovNikita\MysqlExam\Exam\Student;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/api-process')]
 class ProcessController extends AbstractController
 {
-    /**
-     * @throws Exception
-     */
     #[Route('/{id}/start', name: 'app_exam_start', methods: ['GET'])]
     public function start(
         Course $course,
         Security $security,
-        ExaminationProcess $process
+        Process $process
     ): JsonResponse {
-
-        /** @var Student $user */
+        /** @var User $user */
         $user = $security->getUser();
-
-        $response = $process->start($user, $course, new DateTime());
+        $action = new StartAction($process, $user, $course, new DateTime());
 
         try {
-            return new JsonResponse([
-                'elementId' => $response->currentElement?->getId(),
-                'elementCount' => $course->getType()->count(),
-                'nextElement' => $response->nextElement?->getId(),
-            ]);
-        }
-        catch (ExaminationProcessException $e) {
+            return new JsonResponse($action->run());
+        } catch (ExaminationProcessException $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -50,25 +44,18 @@ class ProcessController extends AbstractController
         Course $course,
         Request $request,
         Security $security,
-        ExaminationProcess $process
+        Process $process
     ): JsonResponse {
 
         $answerText = $request->get('answerText');
-        /** @var Student $user */
+
+        /** @var User $user */
         $user = $security->getUser();
+        $action = new AnswerAction($process, $user, $answerText, $course, new DateTime());
+
         try {
-
-            $response = $process->answer($user, $course, $answerText, new DateTime());
-
-            return new JsonResponse([
-                'elementId' => $response->currentElement?->getId(),
-                'elementCount' => $course->getType()->count(),
-                'nextElement' => $response->nextElement?->getId(),
-                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
-                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
-            ]);
-        }
-        catch (ExaminationProcessException $e) {
+            return new JsonResponse($action->run());
+        } catch (ExaminationProcessException $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -78,25 +65,18 @@ class ProcessController extends AbstractController
         Course $course,
         Request $request,
         Security $security,
-        ExaminationProcess $process
+        Process $process
     ): JsonResponse {
 
         $answerText = $request->get('answerText');
-        /** @var Student $user */
+
+        /** @var User $user */
         $user = $security->getUser();
+        $action = new ExecutionAction($process, $user, $answerText, $course, new DateTime());
+
         try {
-
-            $response = $process->execution($user, $course, $answerText, new DateTime());
-
-            return new JsonResponse([
-                'elementId' => $response->sheet->getActualElement()?->getId(),
-                'elementCount' => $course->getType()->count(),
-                'nextElement' => $response->nextElement?->getId(),
-                'sqlRequest' => $response->sheet->getCourseAnswers()?->last()?->getAnswer(),
-                'response' => $response->sheet->getCourseAnswers()?->last()?->getResult(),
-            ]);
-        }
-        catch (ExaminationProcessException $e) {
+            return new JsonResponse($action->run());
+        } catch (ExaminationProcessException $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
