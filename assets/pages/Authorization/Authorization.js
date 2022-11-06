@@ -4,13 +4,14 @@ import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import {Button} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
-import { H3 } from '../../components/Typography'
+import { H3, H5, TextL } from '../../components/Typography'
 import { hostName } from '../../config'
+import {Loader} from "../../components/Loader";
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 
 export const Authorization = () => {
     const navigate = useNavigate();
-
-    const [disableButton, setDisableButton] = useState(false)
+    const [loader, setLoader] = useState(false)
     const [state, setState] = useState({
         emailValue: '',
         emailError: false,
@@ -36,14 +37,15 @@ export const Authorization = () => {
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
+        restoreSuccessfully: false,
+        emailSentMessage: '',
     })
 
     const handleAuthorizationSubmit = (e) => {
         e.preventDefault()
 
         if (state.emailValue && state.passwordValue) {
-            document.body.style.cursor = 'wait';
-            setDisableButton(true)
+            setLoader(true)
             fetch(`${hostName}/api/login`, {
                 method: 'POST',
                 headers: {
@@ -57,8 +59,7 @@ export const Authorization = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    document.body.style.cursor = 'default';
-                    setDisableButton(false)
+                    setLoader(false)
                     if (data.code === 401) {
                         setState((prevState) => {
                             return {
@@ -82,8 +83,7 @@ export const Authorization = () => {
         e.preventDefault()
 
         if (state.fio && state.emailRegistrationValue && state.passwordRegistration1Value && checkPasswordMatch()) {
-            document.body.style.cursor = 'wait';
-            setDisableButton(true)
+            setLoader(true)
 
             fetch(`${hostName}/api/register`, {
                 method: 'POST',
@@ -100,8 +100,7 @@ export const Authorization = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    document.body.style.cursor = 'default';
-                    setDisableButton(false)
+                    setLoader(false)
                     if (data.status === 'success') {
                         navigate("/react/my-profile");
                     }
@@ -111,14 +110,40 @@ export const Authorization = () => {
 
     const handleRestorePasswordSubmit = (e) => {
         e.preventDefault()
+        setLoader(true)
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", `${hostName}/confirm/password`, false);
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        let emailObject = {
-            "email": state.emailRestoreValue
-        }
-        xhr.send(JSON.stringify(emailObject));
+        fetch(`${hostName}/confirm/password`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({
+                "email": state.emailRestoreValue
+            })
+        })
+          .then(response => response.json())
+          .then(data => {
+              setLoader(false)
+              if (data?.status === 'error') {
+                  setState((prevState) => {
+                      return {
+                          ...prevState,
+                          emailRestoreError: true,
+                          emailRestoreErrorText: data.errors[0]
+                      }
+                  })
+              } else if (data?.status === 'ok') {
+                  setState((prevState) => {
+                      return {
+                          ...prevState,
+                          emailSentMessage: data.message,
+                          restoreSuccessfully: true,
+                          headerText: ''
+                      }
+                  })
+              }
+          })
     }
 
     const handleFieldChange = (e, fieldName) => {
@@ -132,7 +157,7 @@ export const Authorization = () => {
             return {
                 ...prevState,
                 restorePassword: !prevState.restorePassword,
-                headerText: 'Введите ваш Email что бы сбросить пароль'
+                headerText: state.restoreSuccessfully ? '' : 'Введите ваш Email что бы сбросить пароль'
             }
         })
     }
@@ -169,7 +194,8 @@ export const Authorization = () => {
                 ...prevState,
                 restorePassword: false,
                 registrationBlock: false,
-                headerText: 'Авторизация'
+                headerText: 'Авторизация',
+                emailRestoreError: false
             }
         })
     }
@@ -211,7 +237,7 @@ export const Authorization = () => {
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
                     <C.ButtonBox>
-                        <Button type="submit" disabled={disableButton}>Войти</Button>
+                        <Button type="submit">Войти</Button>
                     </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
@@ -277,7 +303,7 @@ export const Authorization = () => {
                         onBlur={checkPasswordMatch}
                     />
                     <C.ButtonReg>
-                        <Button type="submit" disabled={disableButton}>Зарегистрироваться</Button>
+                        <Button type="submit">Зарегистрироваться</Button>
                     </C.ButtonReg>
                 </form>
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
@@ -289,8 +315,14 @@ export const Authorization = () => {
     const renderRestorePasswordForm = () => {
         return (
                 <>
-                    <form noValidate onSubmit={handleRestorePasswordSubmit}>
-                        <TextField
+                    {state.restoreSuccessfully ?
+                      <C.EmailSentBlock>
+                          <TaskAltOutlinedIcon fontSize={'large'} sx={{color: 'green'}}/>
+                          <H5>{state.emailSentMessage}</H5>
+                      </C.EmailSentBlock>
+                      :
+                      <form noValidate onSubmit={handleRestorePasswordSubmit}>
+                          <TextField
                             autoFocus
                             margin="normal"
                             id="restorePassword"
@@ -302,11 +334,12 @@ export const Authorization = () => {
                             helperText={state.emailRestoreError ? state.emailRestoreErrorText : ''}
                             value={state.emailRestoreValue}
                             onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
-                        />
-                        <C.ButtonBox>
-                            <Button type="submit">Сбросить пароль</Button>
-                        </C.ButtonBox>
-                    </form>
+                          />
+                          <C.ButtonBox>
+                              <Button type="submit">Сбросить пароль</Button>
+                          </C.ButtonBox>
+                      </form>
+                    }
                     <C.Backspace onClick={handleBack}>Назад</C.Backspace>
                 </>
             )
@@ -315,12 +348,13 @@ export const Authorization = () => {
     return (
         <C.Wrapper>
             <C.TopBlock>
-                <Logo/>
+                <Logo style={{cursor: 'default'}}/>
                 <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}
             {!state.restorePassword && !state.registrationBlock && renderAuthorizationForm()}
             {state.registrationBlock && renderRegistrationForm()}
+            <Loader show={loader}/>
         </C.Wrapper>
     )
 }
