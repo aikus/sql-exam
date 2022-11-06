@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\ExaminationProcess;
+namespace App\Service\ExaminationProcess\Layer\Domain;
 
 use Exception;
 

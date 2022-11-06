@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as C from './styles'
-import {TextField} from "@mui/material";
-import {Button} from "../../components/Button";
-import {TextM, TextL, H2, H5} from '../../components/Typography'
-import {TableToChoose} from "./TableToChoose";
-import {ExampleTable} from "./ExampleTable";
-import {ResultBlock} from "./ResultBlock";
-import {useNavigate} from "react-router-dom";
-import {HttpRequest} from "../../Service/HttpRequest";
-import {Loader} from "../../components/Loader";
-import {UrlService} from "../../Service/UrlService";
-import {StudentTableData} from "../../Service/StudentTableData";
-import {Notice} from "../../components/Notice";
+import { TextField } from "@mui/material";
+import { Button } from "../../components/Button";
+import { H2, H5, TextL, TextM } from '../../components/Typography'
+import { TableToChoose } from "./TableToChoose";
+import { ExampleTable } from "./ExampleTable";
+import { ResultBlock } from "./ResultBlock";
+import { useNavigate } from "react-router-dom";
+import { HttpRequest } from "../../Service/HttpRequest";
+import { Loader } from "../../components/Loader";
+import { UrlService } from "../../Service/UrlService";
+import { StudentTableData } from "../../Service/StudentTableData";
+import { Notice } from "../../components/Notice";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import MuiButton from '@mui/material/Button';
+import useStyles from './useStyles'
 
 export const Practice = () => {
+    const classes = useStyles();
     const navigate = useNavigate();
     const [element, setElement] = useState({
         name: null,
@@ -21,13 +26,16 @@ export const Practice = () => {
         ord: null,
         type: null
     })
-    const [practice, setPractice] = useState({
-        courseId: null,
-        sheetId: null,
-        elementId: null,
-        nextElementId: 0,
-        elementCount: 0
+    const [processState, setProcessState] = useState({
+        state: '',
+        elementCount: 0,
+        elements: [],
+        currentElement: '',
+        sqlRequest: null,
+        sqlResponse: null
     })
+    const [isExistNextStep, setIsExistNextStep] = useState(false)
+    const [isExistPrevStep, setIsExistPrevStep] = useState(false)
     const [answer, setAnswer] = useState(null)
     const [chosenTable, setChosenTable] = useState(null)
     const [sqlResponse, setSqlResponse] = useState(null)
@@ -45,24 +53,19 @@ export const Practice = () => {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
-            courseElement: `/api-platform/course_elements/${id}`,
         };
         return container[key];
     }
 
-    const getStart = () => {
+    const start = () => {
         let course = UrlService.param('course');
         HttpRequest.get(
             urlContainer('processStart', course),
             data => {
-                setPractice({
-                    courseId: course,
-                    elementId: data.elementId,
-                    elementCount: data.elementCount,
-                    nextElementId: data.nextElement
-                })
+                console.info('start data', data);
+                setProcessState(data)
                 setError(false)
-                getElement(data.elementId)
+                getElement(data)
             },
             error => {
                 setError(error)
@@ -71,9 +74,9 @@ export const Practice = () => {
         );
     }
 
-    const getElement = id => {
+    const getElement = process => {
         HttpRequest.get(
-            urlContainer('courseElement', id),
+            process.currentElement,
             data => {
                 setElement({
                     name: data.name,
@@ -81,10 +84,12 @@ export const Practice = () => {
                     ord: data.ord,
                     type: data.type
                 })
+                checkNavState(process)
                 setError(false)
                 setLoader(false)
             },
             error => {
+                checkNavState(process)
                 setError(error)
                 setLoader(false)
             }
@@ -99,17 +104,33 @@ export const Practice = () => {
                 answerText: answer,
             },
             data => {
-                let id = data.elementId;
-                setPractice({
-                    elementId: id,
-                    elementCount: data.elementCount,
-                    nextElementId: data.nextElement
-                })
+                setProcessState(data)
                 setAnswer(data.sqlRequest)
-                setSqlResponse(data.response)
+                setSqlResponse(data.sqlResponse)
                 setError(false)
                 if (typeof callBack === 'function') callBack()
-                getElement(id)
+                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
+    }
+
+    const handleAnswer = () => {
+        setLoader(true)
+        HttpRequest.post(
+            urlContainer('processAnswer', UrlService.param('course')),
+            {
+                answerText: answer,
+            },
+            data => {
+                setProcessState(data)
+                setError(false)
+                setAnswer('')
+                setSqlResponse(null)
+                getElement(data)
             },
             error => {
                 setError(error)
@@ -120,35 +141,50 @@ export const Practice = () => {
 
     const handleNextStep = () => {
         setLoader(true)
-        HttpRequest.post(
-            urlContainer('processAnswer', UrlService.param('course')),
-            {
-                answerText: answer,
-            },
-            data => {
-                let nextElementId = data.elementId;
-
-                setPractice({
-                    elementId: nextElementId,
-                    elementCount: data.elementCount,
-                    nextElementId: data.nextElement
-                })
-                setError(false)
-                getElement(nextElementId)
-            },
-            error => {
-                setError(error)
-                setLoader(false)
-            }
-        )
+        setAnswer('')
+        setSqlResponse(null)
+        let index = nextStepIndex(processState);
+        if (index === -1) {
+            throw new Error();
+        }
+        else {
+            processState.currentElement = processState.elements[index]
+            getElement(processState)
+        }
     }
 
     const handlePrevStep = () => {
+        setLoader(true)
+        let index = prevStepIndex(processState);
+        if (index === -1) {
+            throw new Error();
+        }
+        else {
+            processState.currentElement = processState.elements[index]
+            getElement(processState)
+        }
+    }
 
+    const checkNavState = process => {
+        setIsExistNextStep(process.elements[nextStepIndex(process)] !== undefined)
+        setIsExistPrevStep(process.elements[prevStepIndex(process)] !== undefined)
+    }
+
+    const prevStepIndex = process => {
+        return currentStepIndex(process) - 1;
+    }
+
+    const nextStepIndex = process => {
+        return currentStepIndex(process) + 1;
+    }
+
+    const currentStepIndex = process => {
+        console.info('process', process)
+        return process?.elements.indexOf(process.currentElement);
     }
 
     useEffect(() => {
-        getStart()
+        start()
         StudentTableData(data => {
             let dataTableArr = []
             for (let key in data) {
@@ -170,9 +206,25 @@ export const Practice = () => {
             <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
             <C.Header>
                 <H2>{element.name}</H2>
-                <TextL>Задание {element.ord} из {practice.elementCount}</TextL>
+                <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
             </C.Header>
             <C.Main>
+                <C.ButtonBox>
+                    <div>
+                        <MuiButton size='S' variant={'outlined'} onClick={handlePrevStep} color="primary"
+                            disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
+                            className={classes.button}
+                        >
+                            Назад
+                        </MuiButton>
+                        <MuiButton size='S' variant={'outlined'} onClick={handleNextStep} color="primary"
+                            disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
+                            className={classes.button}
+                        >
+                            Далее
+                        </MuiButton>
+                    </div>
+                </C.ButtonBox>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
@@ -200,16 +252,12 @@ export const Practice = () => {
                             </TextM>
                         </C.Description>
                         <C.ButtonBox>
-                            <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
-                        </C.ButtonBox>
-                        <C.ButtonBox>
                             <div>
-                                <Button size={'S'} view={'outlined'} onClick={handlePrevStep} disabled={true}>Назад</Button>
-                                <Button size={'S'} view={'outlined'} onClick={handleNextStep} disabled={!practice.nextElementId}>Далее</Button>
+                                <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
                             </div>
                             {
-                                (!practice.nextElementId && 0 !== practice.nextElementId)
-                                && <Button size={'S'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
+                                !isExistNextStep
+                                && <Button size={'S'} view={'outlined'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
                                     Завершить
                                 </Button>
                             }
