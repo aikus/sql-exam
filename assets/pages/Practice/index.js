@@ -231,26 +231,32 @@ export const Practice = () => {
                         <C.Question>
                             <TextM>{element.description}</TextM>
                         </C.Question>
-                        <TextField
-                            margin="normal"
-                            id="practice-1"
-                            label="Введите текст запроса"
-                            type="text"
-                            variant="outlined"
-                            multiline={true}
-                            fullWidth={true}
-                            minRows={5}
-                            value={answer ?? ''}
-                            onChange={(e) => {
-                                setAnswer(e.target.value)
-                            }}
-                        />
-                        <C.Description>
-                            <TextM>
-                                Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
-                                Чтобы перейти к следующему заданию нажмите "Далее"
-                            </TextM>
-                        </C.Description>
+                        {
+                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            && <TextField
+                                margin="normal"
+                                id="practice-1"
+                                label="Введите текст запроса"
+                                type="text"
+                                variant="outlined"
+                                multiline={true}
+                                fullWidth={true}
+                                minRows={5}
+                                value={answer ?? ''}
+                                onChange={(e) => {
+                                    setAnswer(e.target.value)
+                                }}
+                            />
+                        }
+                        {
+                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            && <C.Description>
+                                <TextM>
+                                    Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
+                                    Чтобы перейти к следующему заданию нажмите "Далее"
+                                </TextM>
+                            </C.Description>
+                        }
                         <C.ButtonBox>
                             <div>
                                 <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
