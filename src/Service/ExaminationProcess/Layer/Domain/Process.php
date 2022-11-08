@@ -120,7 +120,7 @@ class Process
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
         })->first();
 
-        $this->saver->saveSheet($user, $course, $nextElement, $now, $sheet);
+        $this->saver->saveSheet($user, $course, $nextElement ?: null, $now, $sheet);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,

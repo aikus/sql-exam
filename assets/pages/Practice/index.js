@@ -75,6 +75,19 @@ export const Practice = () => {
     }
 
     const getElement = process => {
+        console.log(process.currentElement);
+        if (
+            null === process.currentElement
+            || undefined === process.currentElement
+        ) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Курс завершён'},
+            })
+            setLoader(false)
+            return;
+        }
         HttpRequest.get(
             process.currentElement,
             data => {
@@ -118,8 +131,7 @@ export const Practice = () => {
         )
     }
 
-    const handleAnswer = () => {
-        setLoader(true)
+    const sendAnswer = () => {
         HttpRequest.post(
             urlContainer('processAnswer', UrlService.param('course')),
             {
@@ -148,8 +160,7 @@ export const Practice = () => {
             throw new Error();
         }
         else {
-            processState.currentElement = processState.elements[index]
-            getElement(processState)
+            sendAnswer()
         }
     }
 

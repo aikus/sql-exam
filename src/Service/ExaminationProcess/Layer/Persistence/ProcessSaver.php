@@ -42,7 +42,7 @@ class ProcessSaver
     public function saveSheet(
         User $user,
         Course $course,
-        CourseElement $actualElement,
+        ?CourseElement $actualElement,
         DateTimeInterface $now,
         CourseSheet $sheet = null
     ): CourseSheet {

@@ -15,7 +15,7 @@ class AnswerAction extends Action
     public function __construct(
         readonly private Process $process,
         readonly private User $user,
-        readonly string $answerText,
+        readonly ?string $answerText,
         private readonly Course $course,
         readonly private DateTimeInterface $now
     ) {
