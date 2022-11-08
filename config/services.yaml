@@ -24,8 +24,17 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Connectors\PdoConnectorFactory: ~
     App\Connectors\PdoConnection:
-        factory: ['@App\Connectors\PdoConnectorFactory', createConnect]
-        arguments: ['%env(STUDENT_DB_DSN)%', '%env(STUDENT_DB_USER)%', '%env(STUDENT_DB_PASSWORD)%']
+        factory: [ '@App\Connectors\PdoConnectorFactory', createConnect ]
+        arguments: [ '%env(STUDENT_DB_DSN)%', '%env(STUDENT_DB_USER)%', '%env(STUDENT_DB_PASSWORD)%' ]
+    App\Connectors\AnswerHandler\Factory:
+        arguments:
+            $mysqlDSN: '%env(STUDENT_DB_DSN)%'
+            $mysqlLogin: '%env(STUDENT_DB_USER)%'
+            $mysqlPassword: '%env(STUDENT_DB_PASSWORD)%'
+            $pgDSN: '%env(STUDENT_PG_DB_DSN)%'
+            $pgLogin: '%env(STUDENT_PG_DB_USER)%'
+            $pgPassword: '%env(STUDENT_PG_DB_PASSWORD)%'
+
 
     App\Service\StudentResultTable\StudentResultTable: ~
     App\Service\CheckRight\CheckRight: ~
