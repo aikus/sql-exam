@@ -16,7 +16,7 @@ export const CourseBlock = ({id, items}) => {
     return (
         <>
             <C.HeaderBlock>
-                <H2>В процессе</H2>
+                <H2>Доступные курсы</H2>
                 <C.SeeAll>
                     <a href={'#'}>
                         <div>Посмотреть всё</div>

@@ -58,7 +58,11 @@ export const LeftBlock = styled.div`
 `
 
 export const Question = styled.div`
-    margin: 16px 0;
+  margin: 16px 0;
+  
+  & > span {
+    white-space: break-spaces;
+  }
 `
 
 export const Description = styled.div`

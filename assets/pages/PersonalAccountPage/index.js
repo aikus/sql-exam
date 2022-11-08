@@ -9,10 +9,11 @@ import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
 import { hostName } from '../../config'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import {Loader} from "../../components/Loader";
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
-
+    const [loader, setLoader] = useState(false);
     const [inProgress, setInProgress] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -20,6 +21,23 @@ export const PersonalAccountPage = () => {
     const handleProfileMenuClick = (e) => {
         setAnchorEl(e.currentTarget);
         setProfileMenuOpen((prevState) => (!prevState))
+    }
+
+    const handleLogout = () => {
+        handleProfileMenuClose()
+        setLoader(true)
+
+        const handleResponse = (data) => {
+            console.log(111)
+            console.log('data: ', data)
+            setLoader(false)
+        }
+
+        HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
+    }
+
+    const handleProfileMenuClose = () => {
+        setProfileMenuOpen(false)
     }
 
     useEffect(() => {
@@ -56,12 +74,13 @@ export const PersonalAccountPage = () => {
                 <Menu
                   anchorEl={anchorEl}
                   open={profileMenuOpen}
-                  onClose={() => setProfileMenuOpen(false)}
+                  onClose={handleProfileMenuClose}
                 >
-                    <MenuItem>Выход</MenuItem>
+                    <MenuItem onClick={handleLogout}>Выход</MenuItem>
                 </Menu>
             </C.NavBar>
             <Outlet context={inProgress}/>
+            <Loader show={loader}/>
         </C.Wrapper>
     )
 }
