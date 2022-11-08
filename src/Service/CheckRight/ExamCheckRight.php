@@ -6,7 +6,7 @@ use App\Entity\Answer;
 use App\Entity\RightAnswer;
 use DateTimeInterface;
 
-class CheckRight
+class ExamCheckRight
 {
     private function compare(RightAnswer $rightAnswer, Answer $answer): string
     {
