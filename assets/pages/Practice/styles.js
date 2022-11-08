@@ -38,20 +38,23 @@ export const Main = styled.div`
   box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
   padding: 24px;
   border-radius: 16px;
+  & > div:first-child {
+    margin-bottom: 1rem;
+  }
 `
 
 export const Task = styled.div`
   display: flex;
   gap: 16px;
   
-  @media (min-width: 1024px)  {
+  @media (min-width: 768px)  {
     gap: 24px;
   }
 `
 
 export const LeftBlock = styled.div`
     width: 70%;
-  @media (min-width: 1024px)  {
+  @media (min-width: 768px)  {
     box-shadow: .70rem 0 0 0 #f8f9f9,
                 .75rem 0 0 0 #999;
   }
@@ -66,12 +69,12 @@ export const Question = styled.div`
 `
 
 export const Description = styled.div`
+    margin-bottom: 1rem;
 `
 
 export const ButtonBox = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 16px;
   gap: 16px;
   justify-content: space-between;
   
@@ -88,7 +91,7 @@ export const ButtonBox = styled.div`
     align-self: flex-start;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     flex-direction: row;
   }
 `
