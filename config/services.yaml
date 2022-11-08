@@ -37,7 +37,7 @@ services:
 
 
     App\Service\StudentResultTable\StudentResultTable: ~
-    App\Service\CheckRight\CheckRight: ~
+    App\Service\CheckRight\ExamCheckRight: ~
     App\Connectors\Student\ExaminationRepository: ~
     RandomLib\Factory: ~
     App\Service\RandomGeneratorFactory: ~
