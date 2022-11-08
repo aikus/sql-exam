@@ -31,6 +31,9 @@ security:
             pattern: ^/api
             stateless: true
             jwt: ~
+            logout:
+                path: app_api_logout
+                target: app_home
 
         main:
             lazy: true

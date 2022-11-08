@@ -2,8 +2,12 @@ app_api_login:
     path: /api/login
     methods: ['POST']
 
-app_logout:
+app_api_logout:
     path: /api/logout
+    methods: ['GET']
+
+app_logout:
+    path: /logout
     methods: ['GET']
 
 controllers:
