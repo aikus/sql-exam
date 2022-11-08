@@ -82,12 +82,18 @@ export const MenuBlock = styled.div`
 `
 
 export const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
-  background-color: red;
-  border-radius: 50%;
-  
   display: flex;
-  align-items: center;
-  justify-content: center;
+  
+  & > img {
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 1px solid var(--text-color-primary);
+    transition: 0.5s;
+    
+    &:hover {
+      transform: rotate(360deg);
+    }
+  }
 `

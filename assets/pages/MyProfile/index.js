@@ -7,7 +7,9 @@ import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 
 export const MyProfile = () => {
-    const inProgress = useOutletContext()
+    const outletContent = useOutletContext()
+    const inProgress = outletContent.inProgress
+    const useInfo = outletContent.userInfo
 
     return (
         <>
@@ -16,7 +18,11 @@ export const MyProfile = () => {
                 <C.MyProfileBox>
                     <C.MyProfile>
                         <C.Text>
-                            <TextL>Привет, username</TextL>
+                            {useInfo?.userFio ?
+                              <TextL>Привет, {useInfo?.userFio}</TextL>
+                              :
+                              <TextL>Привет!</TextL>
+                            }
                             <TextL>Добро пожаловать в твой личный кабинет в специальном образовательном ресурсе Scirpus.</TextL>
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>

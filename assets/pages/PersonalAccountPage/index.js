@@ -10,6 +10,7 @@ import {HttpRequest} from "../../Service/HttpRequest";
 import { hostName } from '../../config'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {Loader} from "../../components/Loader";
+import avatarImg from "../../img/catAvatar.png"
 
 export const PersonalAccountPage = () => {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ export const PersonalAccountPage = () => {
     const [inProgress, setInProgress] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
+    const [userInfo, setUserInfo] = useState({})
+    const [outletContent, setOutletContent] = useState({inProgress, userInfo})
 
     const handleProfileMenuClick = (e) => {
         setAnchorEl(e.currentTarget);
@@ -46,9 +49,18 @@ export const PersonalAccountPage = () => {
                 setInProgress(data)
             }
 
-            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data),)
+            const handleSetUserInfo = (data) => {
+                setUserInfo(data)
+            }
+
+            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data))
+            HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
         }
     }, [])
+
+    useEffect(() => {
+        setOutletContent({inProgress, userInfo})
+    }, [inProgress, userInfo])
 
     return (
         <C.Wrapper>
@@ -68,7 +80,7 @@ export const PersonalAccountPage = () => {
                 <C.MenuBlock
                   onClick={handleProfileMenuClick}
                 >
-                    <C.Avatar><TextM>T</TextM></C.Avatar>
+                    <C.Avatar><img src={avatarImg} alt="аватар профиля"/></C.Avatar>
                     <ArrowDropDownIcon/>
                 </C.MenuBlock>
                 <Menu
@@ -76,10 +88,11 @@ export const PersonalAccountPage = () => {
                   open={profileMenuOpen}
                   onClose={handleProfileMenuClose}
                 >
+                    <TextL>{userInfo?.userIdentifier}</TextL>
                     <MenuItem onClick={handleLogout}>Выход</MenuItem>
                 </Menu>
             </C.NavBar>
-            <Outlet context={inProgress}/>
+            <Outlet context={outletContent}/>
             <Loader show={loader}/>
         </C.Wrapper>
     )
