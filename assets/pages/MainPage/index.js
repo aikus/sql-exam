@@ -97,9 +97,7 @@ export const MainPage = () => {
                           <Paper>
                               <ClickAwayListener onClickAway={handleProfileMenuClose}>
                                   <MenuList>
-                                      <C.EmailWrapper>
-                                          <TextL>{userInfo?.userIdentifier}</TextL>
-                                      </C.EmailWrapper>
+                                      <MenuItem>{userInfo?.userIdentifier}</MenuItem>
                                       <Divider sx={{margin: '8px 0'}}/>
                                       <MenuItem onClick={handleLogout}>Выход</MenuItem>
                                   </MenuList>

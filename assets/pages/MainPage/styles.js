@@ -97,7 +97,3 @@ export const Avatar = styled.div`
     }
   }
 `
-
-export const EmailWrapper = styled.div`
-  padding: 0 16px;
-`
