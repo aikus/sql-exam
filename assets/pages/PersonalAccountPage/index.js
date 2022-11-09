@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import { Menu, MenuItem } from "@mui/material";
+import { Popper, MenuItem, Divider, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
 import { TextM, TextL, H5 } from '../../components/Typography'
 import { Logo } from "../../components/Logo";
 import { MyProfile } from '../MyProfile'
@@ -81,16 +81,33 @@ export const PersonalAccountPage = () => {
                   onClick={handleProfileMenuClick}
                 >
                     <C.Avatar><img src={avatarImg} alt="аватар профиля"/></C.Avatar>
-                    <ArrowDropDownIcon/>
+                    <ArrowDropDownIcon sx={{transition: '0.25s'}} className={profileMenuOpen ? 'profile-arrow-up' : ''}/>
                 </C.MenuBlock>
-                <Menu
-                  anchorEl={anchorEl}
+                <Popper
                   open={profileMenuOpen}
-                  onClose={handleProfileMenuClose}
+                  anchorEl={anchorEl}
+                  placement="bottom-end"
+                  transition
+                  disablePortal
                 >
-                    <TextL>{userInfo?.userIdentifier}</TextL>
-                    <MenuItem onClick={handleLogout}>Выход</MenuItem>
-                </Menu>
+                    {({ TransitionProps, placement }) => (
+                      <Grow
+                        {...TransitionProps}
+                      >
+                          <Paper>
+                              <ClickAwayListener onClickAway={handleProfileMenuClose}>
+                                  <MenuList>
+                                      <C.EmailWrapper>
+                                          <TextL>{userInfo?.userIdentifier}</TextL>
+                                      </C.EmailWrapper>
+                                      <Divider sx={{margin: '8px 0'}}/>
+                                      <MenuItem onClick={handleLogout}>Выход</MenuItem>
+                                  </MenuList>
+                              </ClickAwayListener>
+                          </Paper>
+                      </Grow>
+                    )}
+                </Popper>
             </C.NavBar>
             <Outlet context={outletContent}/>
             <Loader show={loader}/>

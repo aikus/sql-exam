@@ -19,7 +19,7 @@ export const MyProfile = () => {
                     <C.MyProfile>
                         <C.Text>
                             {useInfo?.userFio ?
-                              <TextL>Привет, {useInfo?.userFio}</TextL>
+                              <TextL>Здравствуйте, {useInfo?.userFio}</TextL>
                               :
                               <TextL>Привет!</TextL>
                             }
