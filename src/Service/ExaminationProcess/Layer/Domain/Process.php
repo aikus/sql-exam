@@ -114,6 +114,15 @@ class Process
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
         }
 
+        if (empty($sqlText)) {
+            return new ProcessState(
+                ProcessState::STATE_IN_PROGRESS,
+                $course->getType()->count(),
+                $course->getType()->toArray(),
+                $sheet->getActualElement(),
+            );
+        }
+
         $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
