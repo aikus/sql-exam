@@ -12,7 +12,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 
-export const PersonalAccountPage = () => {
+export const MainPage = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
     const [inProgress, setInProgress] = useState([])
