@@ -72,4 +72,12 @@ class ProcessSaver
             'student' => $user,
         ]);
     }
+
+    public function getAnswer(CourseSheet $sheet, CourseElement $currentElement): ?CourseAnswer
+    {
+        return $this->answerRepository->findOneBy([
+            'courceSheet' => $sheet,
+            'question' => $currentElement,
+        ]);
+    }
 }

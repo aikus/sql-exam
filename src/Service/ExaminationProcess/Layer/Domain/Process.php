@@ -114,15 +114,6 @@ class Process
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
         }
 
-        if (empty($sqlText)) {
-            return new ProcessState(
-                ProcessState::STATE_IN_PROGRESS,
-                $course->getType()->count(),
-                $course->getType()->toArray(),
-                $sheet->getActualElement(),
-            );
-        }
-
         $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
@@ -130,6 +121,49 @@ class Process
         })->first();
 
         $this->saver->saveSheet($user, $course, $nextElement ?: null, $now, $sheet);
+
+        return new ProcessState(
+            ProcessState::STATE_IN_PROGRESS,
+            $course->getType()->count(),
+            $course->getType()->toArray(),
+            $sheet->getActualElement(),
+            $answer->getAnswer(),
+            $answer->getResult()
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @param DateTimeInterface $now
+     * @return ProcessState
+     * @throws ExaminationProcessException
+     */
+    public function previousStep(
+        User $user,
+        Course $course,
+        DateTimeInterface $now
+    ): ProcessState {
+
+        $sheet = $this->saver->getSheet($user, $course);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
+        }
+
+        $currentElement = $sheet->getActualElement();
+
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
+
+        $prevElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
+            return (int) ($currentElement->getOrd() - 1) === (int) $element->getOrd();
+        })->first();
+
+        $answer = $this->saver->getAnswer($sheet, $currentElement);
+
+        $this->saver->saveSheet($user, $course, $prevElement ?: null, $now, $sheet);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,

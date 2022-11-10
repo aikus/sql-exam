@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Service\ExaminationProcess\ExaminationProcess;
 use App\Service\ExaminationProcess\Layer\Action\AnswerAction;
 use App\Service\ExaminationProcess\Layer\Action\ExecutionAction;
+use App\Service\ExaminationProcess\Layer\Action\PreviousStepAction;
 use App\Service\ExaminationProcess\Layer\Action\StartAction;
 use App\Service\ExaminationProcess\Layer\Domain\ExaminationProcessException;
 use App\Service\ExaminationProcess\Layer\Domain\Process;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/api-process')]
 class ProcessController extends AbstractController
 {
-    #[Route('/{id}/start', name: 'app_exam_start', methods: ['GET'])]
+    #[Route('/{id}/start', name: 'app_process_start', methods: ['GET'])]
     public function start(
         Course $course,
         Security $security,
@@ -39,7 +40,7 @@ class ProcessController extends AbstractController
         }
     }
 
-    #[Route('/{course}/answer', name: 'app_exam_answer', methods: ['POST'])]
+    #[Route('/{course}/answer', name: 'app_process_answer', methods: ['POST'])]
     public function answer(
         Course $course,
         Request $request,
@@ -60,7 +61,25 @@ class ProcessController extends AbstractController
         }
     }
 
-    #[Route('/{course}/execution', name: 'app_exam_execution', methods: ['POST'])]
+    #[Route('/{course}/previous-step', name: 'app_process_previous_step', methods: ['GET'])]
+    public function previousStep(
+        Course $course,
+        Security $security,
+        Process $process
+    ): JsonResponse {
+
+        /** @var User $user */
+        $user = $security->getUser();
+        $action = new PreviousStepAction($process, $user, $course, new DateTime());
+
+        try {
+            return new JsonResponse($action->run());
+        } catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route('/{course}/execution', name: 'app_process_execution', methods: ['POST'])]
     public function execution(
         Course $course,
         Request $request,

@@ -53,6 +53,7 @@ export const Practice = () => {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
+            processPreviousStep: `/api-process/${id}/previous-step`,
         };
         return container[key];
     }
@@ -75,7 +76,6 @@ export const Practice = () => {
     }
 
     const getElement = process => {
-        console.log(process.currentElement);
         if (
             null === process.currentElement
             || undefined === process.currentElement
@@ -142,7 +142,22 @@ export const Practice = () => {
                 setError(false)
                 setAnswer('')
                 setSqlResponse(null)
-                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
+    }
+
+    const sendPrevStep = () => {
+        HttpRequest.get(
+            urlContainer('processPreviousStep', UrlService.param('course')),
+            data => {
+                setProcessState(data)
+                setError(false)
+                setAnswer(data.sqlRequest ?? '')
+                setSqlResponse(data.sqlResponse.length > 0 ? data.sqlResponse : null)
             },
             error => {
                 setError(error)
@@ -155,23 +170,34 @@ export const Practice = () => {
         setLoader(true)
         setAnswer('')
         setSqlResponse(null)
-        let index = nextStepIndex(processState);
-        if (index === -1) {
-            throw new Error();
+        let nextIndex = nextStepIndex(processState);
+        if (nextIndex === -1) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Не найден шаг следующий за ' + element.name},
+            })
         }
         else {
             sendAnswer()
+            processState.currentElement = processState.elements[nextIndex]
+            getElement(processState)
         }
     }
 
     const handlePrevStep = () => {
         setLoader(true)
-        let index = prevStepIndex(processState);
-        if (index === -1) {
-            throw new Error();
+        let prevIndex = prevStepIndex(processState);
+        if (prevIndex === -1) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Не найден шаг перед ' + element.name},
+            })
         }
         else {
-            processState.currentElement = processState.elements[index]
+            sendPrevStep()
+            processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
         }
     }
@@ -190,7 +216,7 @@ export const Practice = () => {
     }
 
     const currentStepIndex = process => {
-        console.info('process', process)
+        console.info('currentStepIndex process:', JSON.parse(JSON.stringify(process)))
         return process?.elements.indexOf(process.currentElement);
     }
 
@@ -274,7 +300,9 @@ export const Practice = () => {
                             </div>
                             {
                                 !isExistNextStep
-                                && <Button size={'S'} view={'outlined'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
+                                && <Button size={'S'} view={'outlined'} onClick={() => {
+                                    handleExecution(() => navigate("/react/my-profile"));
+                                }}>
                                     Завершить
                                 </Button>
                             }
