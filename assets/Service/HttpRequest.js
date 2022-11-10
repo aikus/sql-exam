@@ -29,7 +29,7 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
             return Promise.resolve(response)
         })
         .then(response => {
-            if (init.method !== 'DELETE') {
+            if (init.method !== 'DELETE' && !response.redirected) {
                 return response.json()
             }
 

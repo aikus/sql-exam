@@ -40,9 +40,8 @@ export const MainPage = () => {
         setLoader(true)
 
         const handleResponse = (data) => {
-            console.log(111)
-            console.log('data: ', data)
-            setLoader(false)
+            window.location.href = location.origin + '/react';
+            localStorage.removeItem('jwtToken')
         }
 
         HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
