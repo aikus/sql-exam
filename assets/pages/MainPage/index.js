@@ -134,9 +134,13 @@ export const MainPage = () => {
                           <Paper>
                               <ClickAwayListener onClickAway={handleProfileMenuClose}>
                                   <MenuList>
-                                      <MenuItem>{userInfo?.userIdentifier}</MenuItem>
+                                      <MenuItem disabled={true}>
+                                          {userInfo?.userIdentifier}
+                                      </MenuItem>
                                       <Divider sx={{margin: '8px 0'}}/>
-                                      <MenuItem onClick={handleLogout}><LogoutOutlinedIcon sx={{marginRight: '8px'}}/>Выход</MenuItem>
+                                      <MenuItem onClick={handleLogout}>
+                                          <LogoutOutlinedIcon sx={{marginRight: '8px'}}/>Выход
+                                      </MenuItem>
                                   </MenuList>
                               </ClickAwayListener>
                           </Paper>
