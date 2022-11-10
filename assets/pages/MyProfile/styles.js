@@ -3,6 +3,7 @@ import '../../styles/app.css';
 
 export const MyProfileBox = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: 24px;
   background-color: #FFFFFF;
@@ -10,6 +11,10 @@ export const MyProfileBox = styled.div`
   border-radius: 8px;
   padding: 16px;
   margin-top: 24px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 
   @media (min-width: 1024px) {
     padding: 24px;
@@ -30,12 +35,15 @@ export const Rating = styled.div`
   align-items: center;
   justify-content: center;
   gap: 24px;
-  width: 200px;
   flex-shrink: 0;
   background-color: #F5F5F5;
   border-radius: 8px;
   text-align: center;
   padding: 16px;
+
+  @media (min-width: 768px) {
+    width: 200px;
+  }
 `
 
 export const Text = styled.div`
@@ -48,14 +56,18 @@ export const Text = styled.div`
 `
 
 export const ButtonBox = styled.div`
-    margin-top: 48px;
-    display: flex;
+  margin-top: 24px;
+  display: flex;
   flex-direction: column;
-    gap: 16px;
-    
-    & > button {
-        width: unset;
-    }
+  gap: 16px;
+  
+  & > button {
+      width: unset;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 48px;
+  }
 
   @media (min-width: 1024px) {
     flex-direction: row;

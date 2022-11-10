@@ -10,6 +10,7 @@ import {HttpRequest} from "../../Service/HttpRequest";
 import {Loader} from "../../components/Loader";
 import { hostName } from '../../config'
 import {DialogWinDelete} from "../../components/DialogWinDelete";
+import Skeleton from '@mui/material/Skeleton';
 
 export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const navigate = useNavigate();
@@ -48,9 +49,7 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   return (
     <>
       {items === null &&
-        <C.LoadingBlock>
-          <LoaderInBLock show={true}/>
-        </C.LoadingBlock>
+        <Skeleton variant="rectangular" height={80} sx={{marginTop: '24px', borderRadius: '4px'}}/>
       }
       {items !== null && !items.length &&
         <C.LoadingBlock>

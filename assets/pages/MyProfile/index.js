@@ -32,7 +32,7 @@ export const MyProfile = () => {
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>
-                        <TextL>Рейтинг и курсы в разработке</TextL>
+                        <TextL>Рейтинг и курсы в&nbsp;разработке</TextL>
                         <SettingsSuggestOutlinedIcon fontSize={'large'}/>
                     </C.Rating>
                 </C.MyProfileBox>

@@ -9,6 +9,8 @@ import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
 import { hostName } from '../../config'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 
@@ -18,12 +20,19 @@ export const MainPage = () => {
     const [inProgress, setInProgress] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
+    const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [userInfo, setUserInfo] = useState({})
     const [outletContent, setOutletContent] = useState({inProgress, userInfo})
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const handleProfileMenuClick = (e) => {
         setAnchorEl(e.currentTarget);
         setProfileMenuOpen((prevState) => (!prevState))
+    }
+
+    const handleMenuClick = (e) => {
+        setAnchorElMenu(e.currentTarget);
+        setMenuOpen((prevState) => (!prevState))
     }
 
     const handleLogout = () => {
@@ -41,6 +50,10 @@ export const MainPage = () => {
 
     const handleProfileMenuClose = () => {
         setProfileMenuOpen(false)
+    }
+
+    const handleMenuClose = () => {
+        setMenuOpen(false)
     }
 
     useEffect(() => {
@@ -65,6 +78,31 @@ export const MainPage = () => {
     return (
         <C.Wrapper>
             <C.NavBar>
+                <C.MobileMenu>
+                    <MenuOutlinedIcon sx={{marginLeft: '8px'}} fontSize={'large'} onClick={handleMenuClick}/>
+                    <Popper
+                      open={menuOpen}
+                      anchorEl={anchorElMenu}
+                      placement="bottom-start"
+                      transition
+                      disablePortal
+                    >
+                        {({ TransitionProps, placement }) => (
+                          <Grow
+                            {...TransitionProps}
+                          >
+                              <Paper>
+                                  <ClickAwayListener onClickAway={handleMenuClose}>
+                                      <MenuList>
+                                          <MenuItem onClick={handleMenuClose}><Link to="">Личный кабинет</Link></MenuItem>
+                                          <MenuItem onClick={handleMenuClose}><Link to="course-management">Администрирование курсов</Link></MenuItem>
+                                      </MenuList>
+                                  </ClickAwayListener>
+                              </Paper>
+                          </Grow>
+                        )}
+                    </Popper>
+                </C.MobileMenu>
                 <C.LogoBlock
                     onClick={() => {
                         navigate("/react/my-profile")
@@ -77,12 +115,12 @@ export const MainPage = () => {
                     <Link to=""><TextL>Личный кабинет</TextL></Link>
                     <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                 </C.NavBarItemsBox>
-                <C.MenuBlock
+                <C.ProfileBlock
                   onClick={handleProfileMenuClick}
                 >
                     <C.Avatar><img src={avatarImg} alt="аватар профиля"/></C.Avatar>
                     <ArrowDropDownIcon sx={{transition: '0.25s'}} className={profileMenuOpen ? 'profile-arrow-up' : ''}/>
-                </C.MenuBlock>
+                </C.ProfileBlock>
                 <Popper
                   open={profileMenuOpen}
                   anchorEl={anchorEl}
@@ -99,7 +137,7 @@ export const MainPage = () => {
                                   <MenuList>
                                       <MenuItem>{userInfo?.userIdentifier}</MenuItem>
                                       <Divider sx={{margin: '8px 0'}}/>
-                                      <MenuItem onClick={handleLogout}>Выход</MenuItem>
+                                      <MenuItem onClick={handleLogout}><LogoutOutlinedIcon sx={{marginRight: '8px'}}/>Выход</MenuItem>
                                   </MenuList>
                               </ClickAwayListener>
                           </Paper>

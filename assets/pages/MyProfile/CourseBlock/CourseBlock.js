@@ -39,7 +39,7 @@ export const CourseBlock = ({id, items}) => {
                                 <C.Description>
                                     <TextL>{item.description}</TextL>
                                     <C.ButtonWrapper>
-                                        <Button onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
+                                        <Button size={'S'} onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
                                     </C.ButtonWrapper>
                                 </C.Description>
                             </AccordionDetails>
