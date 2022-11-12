@@ -131,3 +131,7 @@ export const MobileMenu = styled.div`
     display: none;
   }
 `
+
+export const EmailWrapper = styled.div`
+  padding: 0 16px;
+`

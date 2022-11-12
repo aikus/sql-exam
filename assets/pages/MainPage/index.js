@@ -13,6 +13,7 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
+import {Auth, GetPermission} from '../../Service/Auth'
 
 export const MainPage = () => {
     const navigate = useNavigate();
@@ -56,18 +57,17 @@ export const MainPage = () => {
     }
 
     useEffect(() => {
-        if (inProgress.length === 0) {
-            const handleSuccess = (data) => {
-                setInProgress(data)
-            }
-
-            const handleSetUserInfo = (data) => {
-                setUserInfo(data)
-            }
-
-            HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data))
-            HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        const handleSuccess = (data) => {
+            setInProgress(data)
         }
+
+        const handleSetUserInfo = (data) => {
+            setUserInfo(data)
+            Auth.role = data.roles;
+        }
+
+        HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data))
+        HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
     }, [])
 
     useEffect(() => {
@@ -94,7 +94,11 @@ export const MainPage = () => {
                                   <ClickAwayListener onClickAway={handleMenuClose}>
                                       <MenuList>
                                           <MenuItem onClick={handleMenuClose}><Link to="">Личный кабинет</Link></MenuItem>
-                                          <MenuItem onClick={handleMenuClose}><Link to="course-management">Администрирование курсов</Link></MenuItem>
+                                          {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                                            <MenuItem onClick={handleMenuClose}>
+                                                <Link to="course-management">Администрирование курсов</Link>
+                                            </MenuItem>
+                                          }
                                       </MenuList>
                                   </ClickAwayListener>
                               </Paper>
@@ -112,7 +116,9 @@ export const MainPage = () => {
                 </C.LogoBlock>
                 <C.NavBarItemsBox>
                     <Link to=""><TextL>Личный кабинет</TextL></Link>
-                    <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
+                    {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                      <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
+                    }
                 </C.NavBarItemsBox>
                 <C.ProfileBlock
                   onClick={handleProfileMenuClick}
@@ -134,9 +140,9 @@ export const MainPage = () => {
                           <Paper>
                               <ClickAwayListener onClickAway={handleProfileMenuClose}>
                                   <MenuList>
-                                      <MenuItem disabled={true}>
-                                          {userInfo?.userIdentifier}
-                                      </MenuItem>
+                                      <C.EmailWrapper>
+                                          <TextL>{userInfo?.userIdentifier}</TextL>
+                                      </C.EmailWrapper>
                                       <Divider sx={{margin: '8px 0'}}/>
                                       <MenuItem onClick={handleLogout}>
                                           <LogoutOutlinedIcon sx={{marginRight: '8px'}}/>Выход

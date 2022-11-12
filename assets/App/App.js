@@ -9,6 +9,7 @@ import { CourseManagement } from "../pages/CourseManagement";
 import { CreateCourse } from "../pages/CreateCourse";
 import { ThemeProvider } from "@mui/material";
 import { theme } from './theme';
+import {ProtectedRoutes} from '../Service/Auth'
 
 export const App = () => {
   return (
@@ -21,8 +22,8 @@ export const App = () => {
               <Route index element={<MyProfile/>}/>
               <Route path="practice" element={<Practice/>}/>
               <Route path="questionnaire" element={<Questionnaire/>}/>
-              <Route path="course-management" element={<CourseManagement/>}/>
-              <Route path="create-course" element={<CreateCourse/>}/>
+              <Route path="course-management" element={ProtectedRoutes(<CourseManagement/>, ['ROLE_TEACHER', 'ROLE_ADMIN'])}/>
+              <Route path="create-course" element={ProtectedRoutes(<CreateCourse/>, ['ROLE_TEACHER', 'ROLE_ADMIN'])}/>
             </Route>
           </Routes>
         </BrowserRouter>

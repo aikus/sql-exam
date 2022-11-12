@@ -49,7 +49,7 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   return (
     <>
       {items === null &&
-        <Skeleton variant="rectangular" height={80} sx={{marginTop: '24px', borderRadius: '4px'}}/>
+        <Skeleton variant="rectangular" animation="wave" height={80} sx={{marginTop: '24px', borderRadius: '4px'}}/>
       }
       {items !== null && !items.length &&
         <C.LoadingBlock>
