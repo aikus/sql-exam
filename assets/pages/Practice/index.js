@@ -61,6 +61,7 @@ export const Practice = () => {
             data => {
                 console.info('start data', data);
                 setProcessState(data)
+                setAnswer(data.sqlRequest)
                 setError(false)
                 getElement(data)
             },
@@ -175,7 +176,7 @@ export const Practice = () => {
             })
         }
         else {
-            sendAnswer()
+            isAnswerable() && sendAnswer()
             processState.currentElement = processState.elements[nextIndex]
             getElement(processState)
         }
@@ -192,7 +193,7 @@ export const Practice = () => {
             })
         }
         else {
-            sendPrevStep()
+            isAnswerable() && sendPrevStep()
             processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
         }
@@ -214,6 +215,10 @@ export const Practice = () => {
     const currentStepIndex = process => {
         console.info('currentStepIndex process:', JSON.parse(JSON.stringify(process)))
         return process?.elements.indexOf(process.currentElement);
+    }
+
+    const isAnswerable = () => {
+        return element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
     }
 
     useEffect(() => {
@@ -266,7 +271,7 @@ export const Practice = () => {
                             <TextM>{element.description}</TextM>
                         </C.Question>
                         {
-                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            isAnswerable()
                             && <TextField
                                 margin="normal"
                                 id="practice-1"
@@ -283,7 +288,7 @@ export const Practice = () => {
                             />
                         }
                         {
-                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            isAnswerable()
                             && <C.Description>
                                 <TextM>
                                     Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
@@ -293,7 +298,7 @@ export const Practice = () => {
                         }
                         <C.ButtonBox>
                             {
-                                (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                                isAnswerable()
                                 && <div>
                                     <Button variant={'contained'} color="primary"
                                             onClick={handleExecution}>

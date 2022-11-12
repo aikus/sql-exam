@@ -38,13 +38,19 @@ class Process
             return new ProcessState(ProcessState::STATE_NOT_READY, 0, [], null);
         }
 
-        $sheet = $this->saver->saveSheet($user, $course, $this->actualElement($typeCollection), $now);
+        $actualElement = $this->actualElement($typeCollection);
+
+        $sheet = $this->saver->saveSheet($user, $course, $actualElement, $now);
+
+        $answer = $this->saver->getAnswer($sheet, $actualElement);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
-            $sheet->getActualElement()
+            $sheet->getActualElement(),
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 
@@ -75,15 +81,17 @@ class Process
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
         }
 
-        $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        if (!empty($sqlText)) {
+            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        }
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            $answer->getAnswer(),
-            $answer->getResult()
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 
@@ -114,7 +122,9 @@ class Process
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
         }
 
-        $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        if (!empty($sqlText)) {
+            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        }
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
@@ -127,8 +137,8 @@ class Process
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            $answer->getAnswer(),
-            $answer->getResult()
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 
@@ -170,8 +180,8 @@ class Process
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            $answer->getAnswer(),
-            $answer->getResult()
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 
