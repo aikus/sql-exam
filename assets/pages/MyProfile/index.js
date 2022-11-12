@@ -38,12 +38,10 @@ export const MyProfile = () => {
                 </C.MyProfileBox>
             </section>
             <section>
-                {Object.keys(inProgress).length !== 0 &&
-                    <CourseBlock
-                        id={'in-progress'}
-                        items={inProgress}
-                    />
-                }
+                <CourseBlock
+                  id={'in-progress'}
+                  items={inProgress}
+                />
             </section>
             {/*<section>*/}
             {/*    <CourseBlock*/}

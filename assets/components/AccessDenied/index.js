@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Alert from '@mui/material/Alert';
 import '../../styles/app.css';
 
-export const DeniedPage = () => {
+export const AccessDenied = () => {
     return (
       <Wrapper>
           <Alert severity="error">У вас недостаточно прав, что бы просматривать эту страницу!</Alert>

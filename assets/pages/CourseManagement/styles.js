@@ -40,27 +40,37 @@ export const LoadingBlock = styled.div`
 `
 
 export const Description = styled.div`
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
     
-    @media (min-width: 1024px) {
-        padding: 0 8px 8px;
-    }
-    
-    @media (min-width: 1440px) {
-        padding: 0 16px 16px;
-    }
+  @media (min-width: 1024px) {
+      padding: 0 8px 8px;
+  }
+  
+  @media (min-width: 1440px) {
+      padding: 0 16px 16px;
+  }
 `
 
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   align-items: start;
-  margin-left: 48px;
   gap: 8px;
+  margin-top: 16px;
   
   & > button {
     width: unset;
+  }
+
+  @media (min-width: 768px) {
+    margin-left: 48px;
+    margin-top: 0;
   }
 `
 

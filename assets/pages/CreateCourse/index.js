@@ -158,7 +158,7 @@ export const CreateCourse = () => {
         <C.Header>
           <H2>{searchParam.get('course') ? 'Редактирование курса' : 'Создание нового курса'}</H2>
           {step !== 0 &&
-            <TextL>Шаг {step} из {stepsTotal}</TextL>
+            <TextL style={{textAlign: 'center'}}>Шаг {step}&nbsp;из&nbsp;{stepsTotal}</TextL>
           }
         </C.Header>
         <C.Main>
