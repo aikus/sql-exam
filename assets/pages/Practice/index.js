@@ -176,7 +176,7 @@ export const Practice = () => {
             })
         }
         else {
-            isAnswerable() && sendAnswer()
+            sendAnswer()
             processState.currentElement = processState.elements[nextIndex]
             getElement(processState)
         }
@@ -193,7 +193,7 @@ export const Practice = () => {
             })
         }
         else {
-            isAnswerable() && sendPrevStep()
+            sendPrevStep()
             processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
         }
@@ -281,6 +281,7 @@ export const Practice = () => {
                                 multiline={true}
                                 fullWidth={true}
                                 minRows={5}
+                                color={'info'}
                                 value={answer ?? ''}
                                 onChange={(e) => {
                                     setAnswer(e.target.value)
