@@ -75,9 +75,12 @@ class ProcessSaver
 
     public function getAnswer(CourseSheet $sheet, CourseElement $currentElement): ?CourseAnswer
     {
-        return $this->answerRepository->findOneBy([
-            'courceSheet' => $sheet,
-            'question' => $currentElement,
-        ]);
+        return $this->answerRepository->findOneBy(
+            [
+                'courceSheet' => $sheet,
+                'question' => $currentElement,
+            ],
+            ['id' => 'DESC']
+        );
     }
 }

@@ -161,7 +161,7 @@ class Process
             return (int) ($currentElement->getOrd() - 1) === (int) $element->getOrd();
         })->first();
 
-        $answer = $this->saver->getAnswer($sheet, $currentElement);
+        $answer = $this->saver->getAnswer($sheet, $prevElement);
 
         $this->saver->saveSheet($user, $course, $prevElement ?: null, $now, $sheet);
 

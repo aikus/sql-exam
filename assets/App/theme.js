@@ -18,9 +18,9 @@ export const theme = createTheme({
         MuiButton: {
             outlinedPrimary: {
                 color: "var(--text-color-primary)",
-                borderColor: "var(--button-color) !important",
+                borderColor: "var(--button-color)",
                 '&:hover': {
-                    borderColor: "var(--hover-button-color) !important",
+                    borderColor: "var(--hover-button-color)",
                 },
             },
         },
