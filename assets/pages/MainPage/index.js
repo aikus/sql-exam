@@ -119,7 +119,6 @@ export const MainPage = () => {
                     {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
                       <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                     }
-                    <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
                 </C.NavBarItemsBox>
                 <C.ProfileBlock
                   onClick={handleProfileMenuClick}
