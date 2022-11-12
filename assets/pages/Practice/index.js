@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as C from './styles'
-import { TextField } from "@mui/material";
-import { Button } from "../../components/Button";
+import { Button, ButtonGroup, Link, TextField } from "@mui/material";
 import { H2, H5, TextL, TextM } from '../../components/Typography'
 import { TableToChoose } from "./TableToChoose";
 import { ExampleTable } from "./ExampleTable";
@@ -14,11 +13,8 @@ import { StudentTableData } from "../../Service/StudentTableData";
 import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import MuiButton from '@mui/material/Button';
-import useStyles from './useStyles'
 
 export const Practice = () => {
-    const classes = useStyles();
     const navigate = useNavigate();
     const [element, setElement] = useState({
         name: null,
@@ -240,28 +236,29 @@ export const Practice = () => {
             <Notice message={error}/>
             <Loader show={loader}/>
 
-            <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
+            <Button onClick={() => navigate("/react/my-profile")} variant={'text'} color='info' size='S'
+                    startIcon={<KeyboardArrowLeftIcon />}>
+                Вернуться к опроснику
+            </Button>
             <C.Header>
                 <H2>{element.name}</H2>
                 <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
             </C.Header>
             <C.Main>
-                <C.ButtonBox>
+                <ButtonGroup>
                     <div>
-                        <MuiButton size='S' variant={'outlined'} onClick={handlePrevStep} color="primary"
+                        <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
                             disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
-                            className={classes.button}
                         >
                             Назад
-                        </MuiButton>
-                        <MuiButton size='S' variant={'outlined'} onClick={handleNextStep} color="primary"
+                        </Button>
+                        <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
                             disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
-                            className={classes.button}
                         >
                             Далее
-                        </MuiButton>
+                        </Button>
                     </div>
-                </C.ButtonBox>
+                </ButtonGroup>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
@@ -295,12 +292,18 @@ export const Practice = () => {
                             </C.Description>
                         }
                         <C.ButtonBox>
-                            <div>
-                                <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
-                            </div>
+                            {
+                                (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                                && <div>
+                                    <Button variant={'contained'} color="primary"
+                                            onClick={handleExecution}>
+                                        Выполнить запрос
+                                    </Button>
+                                </div>
+                            }
                             {
                                 !isExistNextStep
-                                && <Button size={'S'} view={'outlined'} onClick={() => {
+                                && <Button size='S' variant={'contained'} onClick={() => {
                                     handleExecution(() => navigate("/react/my-profile"));
                                 }}>
                                     Завершить

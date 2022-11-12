@@ -1,10 +1,28 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material";
+import { yellow, grey, brown } from '@mui/material/colors';
 
 export const theme = createTheme({
-    components: {
-        appButton: {
-            borderColor: "var(--button-color)",
-            color: "var(--text-color-primary)",
+    palette: {
+        type: "maim",
+        primary: {
+            main: yellow["600"],
+        },
+        secondary: {
+            main: brown["600"],
+        },
+        text: {
+            primary: grey["900"],
+        }
+    },
+    overrides: {
+        MuiButton: {
+            outlinedPrimary: {
+                color: "var(--text-color-primary)",
+                borderColor: "var(--button-color) !important",
+                '&:hover': {
+                    borderColor: "var(--hover-button-color) !important",
+                },
+            },
         },
     }
 });

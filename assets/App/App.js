@@ -7,7 +7,7 @@ import { Questionnaire } from "../pages/Questionnaire";
 import { MyProfile } from "../pages/MyProfile";
 import { CourseManagement } from "../pages/CourseManagement";
 import { CreateCourse } from "../pages/CreateCourse";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material";
 import { theme } from './theme';
 
 export const App = () => {
