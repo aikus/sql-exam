@@ -3,7 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import { H1 } from "../Typography";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import RemoveIcon from '@mui/icons-material/Remove';
 import * as C from '/assets/styles/styles'
 
 export const CourseResult = (data) => {
@@ -54,7 +54,7 @@ export const CourseResult = (data) => {
                                                     ? <TableCell key={ii}>
                                                         {
                                                             null === row[cell]
-                                                            ? <QuestionMarkIcon color={"warning"}/>
+                                                            ? <RemoveIcon color={"secondary"}/>
                                                             : row[cell]
                                                                 ? <CheckIcon color={"success"}/>
                                                                 : <CloseIcon color={"error"}/>
