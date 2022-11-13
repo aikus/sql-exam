@@ -43,23 +43,6 @@ export const MyProfile = () => {
                   items={inProgress}
                 />
             </section>
-            {/*<section>*/}
-            {/*    <CourseBlock*/}
-            {/*        id={'waiting'}*/}
-            {/*        header={courseWaiting.header}*/}
-            {/*        link={courseWaiting.link}*/}
-            {/*        items={courseWaiting.items}*/}
-            {/*    />*/}
-            {/*</section>*/}
-            {/*<section>*/}
-            {/*    <CourseBlock*/}
-            {/*        id={'finished'}*/}
-            {/*        header={courseFinished.header}*/}
-            {/*        link={courseFinished.link}*/}
-            {/*        items={courseFinished.items}*/}
-            {/*    />*/}
-            {/*</section>*/}
-
         </>
     )
 }

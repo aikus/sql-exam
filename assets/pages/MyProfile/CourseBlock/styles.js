@@ -57,16 +57,6 @@ export const Description = styled.div`
   }
 `
 
-export const ButtonWrapper = styled.div`
-  flex-shrink: 0;
-  margin-top: 16px;
-  
-  @media (min-width: 768px) {
-    margin-left: 48px;
-    margin-top: 0;
-  }
-`
-
 export const Title = styled.div`
     padding: 4px 0;
     

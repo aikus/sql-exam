@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as C from './styles'
-import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {Accordion, AccordionSummary, AccordionDetails, ButtonGroup, Button} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
-import {Button} from "../../../components/Button";
 import { H2, TextL } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
@@ -45,12 +44,18 @@ export const CourseBlock = ({id, items}) => {
                       <C.Title><TextL>{item.name}</TextL></C.Title>
                     </AccordionSummary>
                     <AccordionDetails>
+                      <ButtonGroup sx={{marginBottom: "2rem"}}>
+                        <Button size='S' variant={"contained"} sx={{color: '#262626'}}
+                                onClick={() => goToPractice(item.id)}>
+                            Начать прохождение
+                        </Button>
+                        <Button size='S' variant={"outlined"} sx={{color: '#262626'}}
+                                onClick={() => goToCourse(item.id)}>
+                            Результаты
+                        </Button>
+                      </ButtonGroup>
                       <C.Description>
                         <TextL>{item.description}</TextL>
-                        <C.ButtonWrapper>
-                          <Button size={'S'} onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
-                          <Button size={'S'} onClick={() => goToCourse(item.id)}>Результаты</Button>
-                        </C.ButtonWrapper>
                       </C.Description>
                     </AccordionDetails>
                   </Accordion>
