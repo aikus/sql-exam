@@ -1,6 +1,8 @@
 import React from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { H1 } from "../Typography";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import * as C from '/assets/styles/styles'
 
 export const CourseResult = (data) => {
@@ -47,7 +49,13 @@ export const CourseResult = (data) => {
                                     >
                                         {
                                             Object.keys(row).map((cell, ii) => (
-                                                <TableCell key={ii}>{row[cell]}</TableCell>
+                                                ii === 2
+                                                    ? <TableCell key={ii}>
+                                                        {row[cell]
+                                                        ? <CheckIcon color={"success"}/>
+                                                        : <CloseIcon color={"error"}/> }
+                                                    </TableCell>
+                                                    : <TableCell key={ii}>{row[cell]}</TableCell>
                                             ))
                                         }
                                     </TableRow>
