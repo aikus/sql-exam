@@ -14,6 +14,10 @@ export const CourseBlock = ({id, items}) => {
         navigate(`/react/my-profile/practice?course=${id}`)
     }
 
+    const goToCourse = id => {
+        navigate(`/react/my-profile/course-result?course=${id}`)
+    }
+
     return (
         <>
           <C.HeaderBlock>
@@ -45,6 +49,7 @@ export const CourseBlock = ({id, items}) => {
                         <TextL>{item.description}</TextL>
                         <C.ButtonWrapper>
                           <Button size={'S'} onClick={() => goToPractice(item.id)}>Начать прохождение</Button>
+                          <Button size={'S'} onClick={() => goToCourse(item.id)}>Результаты</Button>
                         </C.ButtonWrapper>
                       </C.Description>
                     </AccordionDetails>

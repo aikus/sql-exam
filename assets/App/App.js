@@ -10,6 +10,7 @@ import { CreateCourse } from "../pages/CreateCourse";
 import { ThemeProvider } from "@mui/material";
 import { theme } from './theme';
 import {ProtectedRoute} from "../components/ProtectedRoute";
+import { PersonalCourseResult } from "../pages/PersonalCourseResult";
 
 export const App = () => {
   return (
@@ -28,6 +29,7 @@ export const App = () => {
               <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
                 <Route path="create-course" element={<CreateCourse/>}/>
               </Route>
+              <Route path="course-result" element={<PersonalCourseResult/>}/>
             </Route>
           </Routes>
         </BrowserRouter>
