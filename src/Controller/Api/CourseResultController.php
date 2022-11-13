@@ -39,6 +39,7 @@ class CourseResultController extends AbstractController
         foreach ($course->getType() as $element) {
             $answer = $this->lastAnswer($element, $sheet);
             $table[] = [
+                '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
                 'Ответ' => $answer?->getAnswer(),
                 'Статус' => $answer?->isIsRight(),

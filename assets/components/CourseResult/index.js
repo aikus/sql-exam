@@ -3,6 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import { H1 } from "../Typography";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import * as C from '/assets/styles/styles'
 
 export const CourseResult = (data) => {
@@ -49,13 +50,17 @@ export const CourseResult = (data) => {
                                     >
                                         {
                                             Object.keys(row).map((cell, ii) => (
-                                                ii === 2
+                                                ii === (header().length-1)
                                                     ? <TableCell key={ii}>
-                                                        {row[cell]
-                                                        ? <CheckIcon color={"success"}/>
-                                                        : <CloseIcon color={"error"}/> }
+                                                        {
+                                                            null === row[cell]
+                                                            ? <QuestionMarkIcon color={"warning"}/>
+                                                            : row[cell]
+                                                                ? <CheckIcon color={"success"}/>
+                                                                : <CloseIcon color={"error"}/>
+                                                        }
                                                     </TableCell>
-                                                    : <TableCell key={ii}>{row[cell]}</TableCell>
+                                                    : <TableCell key={ii}>{ row[cell] ?? 'Пока нет ответа' }</TableCell>
                                             ))
                                         }
                                     </TableRow>
