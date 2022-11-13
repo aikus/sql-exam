@@ -45,12 +45,10 @@ export const CourseBlock = ({id, items}) => {
                     </AccordionSummary>
                     <AccordionDetails>
                       <ButtonGroup sx={{marginBottom: "2rem"}}>
-                        <Button size='S' variant={"contained"} sx={{color: '#262626'}}
-                                onClick={() => goToPractice(item.id)}>
+                        <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
                             Начать прохождение
                         </Button>
-                        <Button size='S' variant={"outlined"} sx={{color: '#262626'}}
-                                onClick={() => goToCourse(item.id)}>
+                        <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourse(item.id)}>
                             Результаты
                         </Button>
                       </ButtonGroup>
