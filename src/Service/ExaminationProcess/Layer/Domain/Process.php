@@ -62,12 +62,7 @@ class Process
      * @return ProcessState
      * @throws ExaminationProcessException
      */
-    public function execution(
-        User $user,
-        Course $course,
-        ?string $sqlText,
-        DateTimeInterface $now
-    ): ProcessState {
+    public function execution(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
         $sheet = $this->saver->getSheet($user, $course);
 
@@ -103,12 +98,7 @@ class Process
      * @return ProcessState
      * @throws ExaminationProcessException
      */
-    public function answer(
-        User $user,
-        Course $course,
-        ?string $sqlText,
-        DateTimeInterface $now
-    ): ProcessState {
+    public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
         $sheet = $this->saver->getSheet($user, $course);
 
@@ -149,11 +139,7 @@ class Process
      * @return ProcessState
      * @throws ExaminationProcessException
      */
-    public function previousStep(
-        User $user,
-        Course $course,
-        DateTimeInterface $now
-    ): ProcessState {
+    public function previousStep(User $user, Course $course, DateTimeInterface $now): ProcessState {
 
         $sheet = $this->saver->getSheet($user, $course);
 
