@@ -2,41 +2,32 @@
 
 namespace App\Service\CheckRight;
 
+use App\Connectors\PdoConnection;
+use App\Entity\CourseAnswer;
 use App\Entity\CourseSheet;
-use App\Repository\CourseAnswerRepository;
-use App\Repository\CourseSheetRepository;
+use App\Service\CheckRight\Domain\CheckRight;
 use App\Service\CheckRight\Domain\Question;
 use App\Service\CheckRight\Domain\StudentAnswer;
 use App\Service\CheckRight\UseCase\AnswerChecker;
 use App\Service\CheckRight\UseCase\Sql\SqlAnswer;
+use App\Service\CheckRight\UseCase\Sql\SqlExecutor;
 
-class SqlCheckRight
+class SqlCheckRight implements CheckRight
 {
+    private AnswerChecker $answerChecker;
+
     public function __construct(
-        readonly private AnswerChecker $answerChecker,
-        readonly private CourseAnswerRepository $answerRepository,
-        readonly private CourseSheetRepository $sheetRepository
+        private readonly PdoConnection $connection,
     ) {
+        $this->answerChecker = new AnswerChecker(new SqlExecutor($this->connection));
     }
 
-    public function check(
-        CourseSheet $sheet,
-        \DateTimeInterface $now = null
-    ): void {
-
-        foreach ($sheet->getCourseAnswers()->toArray() as $answer) {
-
-            $question = $answer->getQuestion();
-            $result = $this->answerChecker->calculate(
-                new Question($question->getType(), new SqlAnswer($question->getAnswer())),
-                new StudentAnswer(new SqlAnswer($answer->getAnswer()))
-            );
-
-            $answer->setIsRight($result === AnswerChecker::IS_RIGHT);
-
-            $this->answerRepository->add($answer);
-        }
-        $sheet->setUpdatedAt($now);
-        $this->sheetRepository->add($sheet);
+    public function checkAnswer(CourseAnswer $answer, \DateTimeInterface $now = null): int
+    {
+        $question = $answer->getQuestion();
+        return $this->answerChecker->calculate(
+            new Question($question->getType(), new SqlAnswer($question->getAnswer())),
+            new StudentAnswer(new SqlAnswer($answer->getAnswer()))
+        );
     }
 }
