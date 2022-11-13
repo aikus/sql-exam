@@ -310,7 +310,7 @@ export const Practice = () => {
                             {
                                 !isExistNextStep
                                 && <Button size='S' variant={'contained'} onClick={() => {
-                                    handleExecution(() => navigate("/react/my-profile"));
+                                    handleExecution(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
                                 }}>
                                     Завершить
                                 </Button>
