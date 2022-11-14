@@ -33,6 +33,7 @@ class Sql implements Handler
                 'header' => [],
                 'trace' => $exception->getTrace()
             ]);
+            $answer->setIsRight(false);
         }
     }
 }
