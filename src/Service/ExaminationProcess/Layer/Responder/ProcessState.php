@@ -3,6 +3,7 @@
 namespace App\Service\ExaminationProcess\Layer\Responder;
 
 use App\Entity\Course;
+use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
 use Doctrine\Common\Util\ClassUtils;
@@ -42,6 +43,7 @@ class ProcessState extends Responder
     {
         $classAlias = [
             Course::class => 'courses',
+            CourseAnswer::class => 'course_answers',
             CourseElement::class => 'course_elements',
             CourseSheet::class => 'course_sheets',
         ];
@@ -52,7 +54,10 @@ class ProcessState extends Responder
                 $datum = $this->normalize($datum);
             }
             elseif (is_object($datum)) {
-                $datum = '/api-platform/'.$classAlias[ClassUtils::getClass($datum)].'/'.$datum->getId();
+                $className = ClassUtils::getClass($datum);
+                if (isset($classAlias[$className])) {
+                    $datum = '/api-platform/'.$classAlias[$className].'/'.$datum->getId();
+                }
             }
 
             $result[$key] = $datum;
