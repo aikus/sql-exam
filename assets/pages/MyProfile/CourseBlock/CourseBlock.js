@@ -1,6 +1,6 @@
 import React from 'react';
 import * as C from './styles'
-import {Accordion, AccordionSummary, AccordionDetails, ButtonGroup, Button} from "@mui/material";
+import {Accordion, AccordionSummary, AccordionDetails, ButtonGroup, Button, Grid, Stack} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import { H2, TextL } from '../../../components/Typography'
@@ -44,14 +44,14 @@ export const CourseBlock = ({id, items}) => {
                       <C.Title><TextL>{item.name}</TextL></C.Title>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <ButtonGroup sx={{marginBottom: "2rem"}}>
+                      <Stack direction="row" justifyContent={"flex-start"} spacing={2} sx={{marginBottom: "2rem"}}>
                         <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
-                            Начать прохождение
+                          Начать прохождение
                         </Button>
                         <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourse(item.id)}>
                             Результаты
                         </Button>
-                      </ButtonGroup>
+                      </Stack>
                       <C.Description>
                         <TextL>{item.description}</TextL>
                       </C.Description>
