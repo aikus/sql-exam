@@ -99,7 +99,7 @@ class Process
      * @param string|null $sqlText
      * @param DateTimeInterface $now
      * @return ProcessState
-     * @throws ExaminationProcessException
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
      */
     public function finish(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
@@ -137,7 +137,7 @@ class Process
      * @param string|null $sqlText
      * @param DateTimeInterface $now
      * @return ProcessState
-     * @throws ExaminationProcessException
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
      */
     public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
@@ -178,7 +178,7 @@ class Process
      * @param Course $course
      * @param DateTimeInterface $now
      * @return ProcessState
-     * @throws ExaminationProcessException
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
      */
     public function previousStep(User $user, Course $course, DateTimeInterface $now): ProcessState {
 
