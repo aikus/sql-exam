@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
+use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Repository\CourseAnswerRepository;
 use App\Repository\CourseSheetRepository;
@@ -39,6 +40,9 @@ class ProcessSaver
         return $answer;
     }
 
+    /**
+     * @throws CourseSheetStatusNotFound
+     */
     public function saveSheet(
         User $user,
         Course $course,
@@ -56,6 +60,7 @@ class ProcessSaver
             $sheet->setStudent($user);
             $sheet->setCourse($course);
             $sheet->setCreatedAt($now);
+            $sheet->setStatus(CourseSheet::STATUS_STARTED);
         }
 
         $sheet->setActualElement($actualElement);

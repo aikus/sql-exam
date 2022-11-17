@@ -13,7 +13,7 @@ class CourseElement
 {
     const TYPE_ARTICLE = 'article';
     const TYPE_MYSQL = 'mysql';
-    const TYPE_POSTGRES = 'postgre';
+    const TYPE_POSTGRES = 'postgres';
     const TYPE_ORACLE = 'oracle';
     const TYPE_POLL = 'poll';
 

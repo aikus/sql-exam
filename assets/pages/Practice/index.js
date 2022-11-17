@@ -49,6 +49,7 @@ export const Practice = () => {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
+            processFinish: `/api-process/${id}/finish`,
             processPreviousStep: `/api-process/${id}/previous-step`,
         };
         return container[key];
@@ -110,6 +111,28 @@ export const Practice = () => {
         setLoader(true)
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
+            {
+                answerText: answer,
+            },
+            data => {
+                setProcessState(data)
+                setAnswer(data.sqlRequest)
+                setSqlResponse(data.sqlResponse)
+                setError(false)
+                if (typeof callBack === 'function') callBack()
+                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
+    };
+
+    const handleFinish = callBack => {
+        setLoader(true)
+        HttpRequest.post(
+            urlContainer('processFinish', UrlService.param('course')),
             {
                 answerText: answer,
             },
@@ -310,7 +333,7 @@ export const Practice = () => {
                             {
                                 !isExistNextStep
                                 && <Button size='S' variant={'contained'} onClick={() => {
-                                    handleExecution(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
+                                    handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
                                 }}>
                                     Завершить
                                 </Button>
