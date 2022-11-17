@@ -3,10 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Course;
-use App\Entity\CourseSheet;
 use App\Entity\User;
-use App\Repository\CourseSheetRepository;
-use App\Service\ExaminationProcess\ExaminationProcess;
 use App\Service\ExaminationProcess\Layer\Action\AnswerAction;
 use App\Service\ExaminationProcess\Layer\Action\ExecutionAction;
 use App\Service\ExaminationProcess\Layer\Action\FinishAction;
@@ -19,7 +16,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -104,7 +100,7 @@ class ProcessController extends AbstractController
         }
     }
 
-    #[Route('/{course}/finish', name: 'app_process_execution', methods: ['POST'])]
+    #[Route('/{course}/finish', name: 'app_process_finish', methods: ['POST'])]
     public function finish(
         Course $course,
         Request $request,
