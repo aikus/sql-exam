@@ -13,6 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 class CourseSheet
 {
+    const STATUS_NEW = 'new';
+    const STATUS_STARTED = 'started';
+    const STATUS_COMPLETED = 'completed';
+    const STATUSES = [self::STATUS_NEW, self::STATUS_STARTED, self::STATUS_COMPLETED];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -38,6 +42,9 @@ class CourseSheet
 
     #[ORM\OneToMany(mappedBy: 'courceSheet', targetEntity: CourseAnswer::class, cascade: ["persist"], orphanRemoval: true)]
     private Collection $courseAnswers;
+
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
     public function __construct()
     {
@@ -135,6 +142,24 @@ class CourseSheet
                 $courseAnswer->setCourceSheet(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @throws CourseSheetStatusNotFound
+     */
+    public function setStatus(?string $status): self
+    {
+        if(!in_array($status, self::STATUSES)) {
+            throw new CourseSheetStatusNotFound($status);
+        }
+        $this->status = $status;
 
         return $this;
     }

@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Entity\CourseSheet;
 use App\Entity\User;
+use App\Repository\CourseSheetRepository;
 use App\Service\ExaminationProcess\ExaminationProcess;
 use App\Service\ExaminationProcess\Layer\Action\AnswerAction;
 use App\Service\ExaminationProcess\Layer\Action\ExecutionAction;
+use App\Service\ExaminationProcess\Layer\Action\FinishAction;
 use App\Service\ExaminationProcess\Layer\Action\PreviousStepAction;
 use App\Service\ExaminationProcess\Layer\Action\StartAction;
 use App\Service\ExaminationProcess\Layer\Domain\ExaminationProcessException;
@@ -16,11 +19,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/api-process')]
+//#[AsController]
 class ProcessController extends AbstractController
 {
     #[Route('/{id}/start', name: 'app_process_start', methods: ['GET'])]
@@ -99,4 +103,38 @@ class ProcessController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    #[Route('/{course}/finish', name: 'app_process_execution', methods: ['POST'])]
+    public function finish(
+        Course $course,
+        Request $request,
+        Security $security,
+        Process $process
+    ): JsonResponse {
+        $answerText = $request->get('answerText');
+
+        /** @var User $user */
+        $user = $security->getUser();
+        $action = new FinishAction($process, $user, $answerText, $course, new DateTime());
+
+        try {
+            return new JsonResponse($action->run());
+        } catch (ExaminationProcessException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+//    #[Route(
+//        path: "courses",
+//        defaults: [
+//            '_api_resource_class' => CourseSheet::class,
+//            '_api_operation_name' => '_api_/course_sheets',
+//        ],
+//        methods: ["GET"],
+//    )]
+//    public function getCourses(Security $security, CourseSheetRepository $repository): array
+//    {
+//        $user = $security->getUser();
+//        return $repository->findBy(['student' => $user]);
+//    }
 }
