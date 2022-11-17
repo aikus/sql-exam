@@ -8,13 +8,14 @@ use App\Service\ExaminationProcess\Layer\Domain\ExaminationProcessException;
 use App\Service\ExaminationProcess\Layer\Domain\Process;
 use App\Service\ExaminationProcess\Layer\Responder\Responder;
 use DateTimeInterface;
+use Exception;
 
 class FinishAction extends Action
 {
     public function __construct(
         readonly private Process $process,
         readonly private User $user,
-        readonly string $answerText,
+        readonly ?string $answerText,
         private readonly Course $course,
         readonly private DateTimeInterface $now
     ) {
