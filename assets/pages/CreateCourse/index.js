@@ -110,11 +110,15 @@ export const CreateCourse = () => {
     setCourseMainInfo(prevState => ({...prevState, exam: event.target.checked}));
   };
 
-  const handleNextStep = () => {
-    if (step + 1 > stepsTotal) {
+  const handleNextStep = (lastStep) => {
+    if (step + 1 > stepsTotal || lastStep) {
       setStepsTotal((prevState) => prevState + 1)
     }
-    setStep(prevState => prevState + 1);
+    if (lastStep) {
+      setStep(lastStep + 1);
+    } else {
+      setStep(prevState => prevState + 1);
+    }
   };
 
   const handlePrevStep = () => {

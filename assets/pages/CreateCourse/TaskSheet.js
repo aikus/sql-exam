@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import * as C from './styles'
-import { TextField, MenuItem, Select, FormControlLabel, RadioGroup, Radio, InputAdornment, IconButton } from "@mui/material";
+import {
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField
+} from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import {Button} from "../../components/Button";
 import {Loader} from "../../components/Loader";
-import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
+import {H5, TextM} from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
+import {searchParam} from "../../Service/SearchParamActions";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -46,33 +56,52 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleCreateStep = () => {
-    setCourseContent((prevState) => {
+  const handleSaveStep = (stepToSave, exitAfterSave) => {
+    const _step = stepToSave || step;
+    setLoader(true);
+    let newState = [...courseContent];
 
-      if(!prevState[step - 1].ord) {
-        prevState[step - 1].ord = step;
+    if(!newState[_step - 1].ord) {
+      newState[_step - 1].ord = _step;
+    }
+
+    CourseElementRepository.save(newState[_step - 1], courseId).then(
+      data => {
+        newState[_step - 1] = data;
+        setCourseContent(newState);
+        setLoader(false);
+        if (exitAfterSave) {
+          handleExitCourse();
+        }
       }
-      CourseElementRepository.save(prevState[step - 1], courseId).then(
-        data => prevState[step - 1] = data
-      );
-      let newState = [...prevState]
+    );
+  }
 
-      if (step === courseContent.length) {
+  const handleCreateStep = () => {
+    setLoader(true);
+    let newState = [...courseContent];
+
+    if(!newState[courseContent.length - 1].ord) {
+      newState[courseContent.length - 1].ord = courseContent.length;
+    }
+
+    CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
+      data => {
+        newState[courseContent.length - 1] = data;
         newState.push({
           'type': 'article',
           'name': '',
           'description': '',
         })
+        setCourseContent(newState);
+        setLoader(false);
+        handleNextStep(courseContent.length);
       }
-
-      return newState
-    })
-
-    handleNextStep();
+    );
   }
 
-  const handleNextStep = () => {
-    nextStep()
+  const handleNextStep = (lastStep) => {
+    nextStep(lastStep)
   }
 
   const handlePrevStep = () => {
@@ -97,19 +126,8 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleCreateCourse = () => {
-    setLoader(true)
-
-    if(!courseContent[step - 1].ord) {
-      courseContent[step - 1].ord = step;
-    }
-    CourseElementRepository.save(courseContent[step - 1], courseId).then(
-      data => {
-        courseContent[step - 1] = data
-        setLoader(false)
-        navigate("/react/my-profile/course-management");
-      }
-    );
+  const handleExitCourse = () => {
+    navigate("/react/my-profile/course-management");
   }
 
   const handleVariantDelete = (i) => {
@@ -276,26 +294,26 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
         <div>
           <C.StepActions>
             <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
+            <Button onClick={() => handleSaveStep()} size={'S'} view='outlined'>Сохранить шаг</Button>
             <Button onClick={handleCreateStep} size={'S'}>Добавить шаг</Button>
           </C.StepActions>
-          <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
+          {searchParam.get('course') ?
+            <Button size={'S'} onClick={handleExitCourse}>Завершить редактирование курса</Button>
+            :
+            <Button size={'S'} onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
+          }
+
         </div>
         <C.MovementButtons>
           <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
           <Button
-            onClick={handleNextStep}
+            onClick={() => handleNextStep()}
             view='outlined'
             size={'S'}
             disabled={courseContent.length === step}
           >Далее</Button>
         </C.MovementButtons>
       </C.ButtonsBlock>
-      <div onClick={() => {
-        console.log('courseContent.length: ', courseContent.length)
-        console.log('step: ', step)
-        console.log(courseContent.length === step)
-        console.log(courseContent)
-      }}>MMM</div>
 
       <Loader show={loader}/>
       <DialogWinDelete
