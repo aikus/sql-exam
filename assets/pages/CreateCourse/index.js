@@ -149,8 +149,6 @@ export const CreateCourse = () => {
       setLoader(true)
       getCourseInfo(courseId)
     }
-
-    // HttpRequest.get
   }, [])
 
   return (
@@ -226,9 +224,9 @@ export const CreateCourse = () => {
                     }
                   }}
                 />
-		<C.Hint>
-		    <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
-		</C.Hint>
+              <C.Hint>
+                  <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
+              </C.Hint>
               </C.FieldBox>
               {/*<C.CheckBoxWrapper>*/}
               {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
@@ -278,7 +276,7 @@ export const CreateCourse = () => {
                     createCourseReq()
                   }
                 }}
-              >Далее</Button>
+              >{searchParam.get('course') ? 'Далее' : 'Создать шаг'}</Button>
             </C.FirstStep>
           }
           {step >= 1 &&

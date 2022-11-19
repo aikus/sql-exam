@@ -46,14 +46,14 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleNextStep = () => {
+  const handleCreateStep = () => {
     setCourseContent((prevState) => {
 
       if(!prevState[step - 1].ord) {
         prevState[step - 1].ord = step;
       }
       CourseElementRepository.save(prevState[step - 1], courseId).then(
-          data => prevState[step - 1] = data
+        data => prevState[step - 1] = data
       );
       let newState = [...prevState]
 
@@ -68,6 +68,10 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       return newState
     })
 
+    handleNextStep();
+  }
+
+  const handleNextStep = () => {
     nextStep()
   }
 
@@ -163,8 +167,8 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           sx={{minWidth: '150px'}}
         >
           {
-            typeList().map((item) =>
-              <MenuItem value={item.type}>{item.name}</MenuItem>
+            typeList().map((item, i) =>
+              <MenuItem key={i} value={item.type}>{item.name}</MenuItem>
             )
           }
         </Select>
@@ -270,16 +274,28 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       <C.ButtonsBlock>
         <div>
-          <C.MovementButtons>
-            <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
-            <Button onClick={handleNextStep} size={'S'}>Далее</Button>
-          </C.MovementButtons>
-          <C.DeleteButton>
+          <C.StepActions>
             <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
-          </C.DeleteButton>
+            <Button onClick={handleCreateStep} size={'S'}>Добавить шаг</Button>
+          </C.StepActions>
+          <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
         </div>
-        <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
+        <C.MovementButtons>
+          <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
+          <Button
+            onClick={handleNextStep}
+            view='outlined'
+            size={'S'}
+            disabled={courseContent.length === step}
+          >Далее</Button>
+        </C.MovementButtons>
       </C.ButtonsBlock>
+      <div onClick={() => {
+        console.log('courseContent.length: ', courseContent.length)
+        console.log('step: ', step)
+        console.log(courseContent.length === step)
+        console.log(courseContent)
+      }}>MMM</div>
 
       <Loader show={loader}/>
       <DialogWinDelete
