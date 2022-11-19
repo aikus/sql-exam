@@ -10,7 +10,7 @@ use App\Service\ExaminationProcess\Layer\Responder\Responder;
 use DateTimeInterface;
 use Exception;
 
-class ExecutionAction extends Action
+class FinishAction extends Action
 {
     public function __construct(
         readonly private Process $process,
@@ -25,7 +25,7 @@ class ExecutionAction extends Action
     protected function do(): Responder
     {
         try {
-            return $this->process->execution($this->user, $this->course, $this->answerText, $this->now);
+            return $this->process->finish($this->user, $this->course, $this->answerText, $this->now);
         }
         catch (Exception $e) {
             throw new ExaminationProcessException($e->getMessage());

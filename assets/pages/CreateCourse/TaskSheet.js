@@ -13,7 +13,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const isPractice = type => ['mysql', 'postgre', 'oracle'].includes(type);
+  const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
     console.log("handleSelectChange", "start", e);

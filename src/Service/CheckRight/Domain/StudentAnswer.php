@@ -8,7 +8,7 @@ class StudentAnswer implements Answer
     {
     }
 
-    public function toString(): string
+    public function toString(): ?string
     {
         return $this->answer->toString();
     }
