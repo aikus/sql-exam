@@ -6,7 +6,7 @@ class PdoConnection
 {
     public const VIEW_LIMIT = 10;
 
-    private array $columnMeta;
+    private array $columnMeta = [];
 
     public function __construct(private \PDO $pdo)
     {
@@ -47,6 +47,8 @@ class PdoConnection
 
     private function exec(string $sql, bool $isAssoc = false): array
     {
+        if ('' === $sql) return [];
+
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
 

@@ -13,3 +13,7 @@ body {
     padding: 0;
     background-color: var(--primary-background-color);
 }
+
+.profile-arrow-up {
+    transform: rotate(180deg);
+}

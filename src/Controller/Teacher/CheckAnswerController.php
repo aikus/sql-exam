@@ -6,7 +6,7 @@ use App\Connectors\PdoConnection;
 use App\Entity\Exam;
 use App\Repository\AnswerRepository;
 use App\Repository\ExamRepository;
-use App\Service\CheckRight\CheckRight;
+use App\Service\CheckRight\ExamCheckRight;
 use App\Service\StudentResultTable\StudentResultTable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +41,7 @@ class CheckAnswerController extends AbstractController
     public function run(
         Exam $exam,
         AnswerRepository $answerRepository,
-        CheckRight $checkRight
+        ExamCheckRight $checkRight
     ): Response {
 
         foreach ($exam->getExaminationSheets() as $sheet) {
@@ -93,7 +93,7 @@ class CheckAnswerController extends AbstractController
     public function resend(
         ExamRepository $examRepository,
         AnswerRepository $answerRepository,
-        CheckRight $checkRight
+        ExamCheckRight $checkRight
     ): Response {
         $idAnswers = [
             'fff9b7ae-2a05-41c5-baf4-72aa6dd7daa1',

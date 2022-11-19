@@ -6,9 +6,9 @@ use App\Entity\Answer;
 use App\Entity\RightAnswer;
 use DateTimeInterface;
 
-class CheckRight
+class ExamCheckRight
 {
-    public function run(RightAnswer $rightAnswer, Answer $answer): string
+    private function compare(RightAnswer $rightAnswer, Answer $answer): string
     {
         $result = 0;
         $answer = $answer->getResultTable();
@@ -41,7 +41,7 @@ class CheckRight
     ): Answer {
 
         $answer->setCheckRight(
-            $this->run(
+            $this->compare(
                 // TODO: написать поиск в соответствии с драйвером БД
                 $answer->getQuestion()->getRightAnswers()->last(),
                 $answer

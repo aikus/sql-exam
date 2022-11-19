@@ -7,7 +7,9 @@ import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 
 export const MyProfile = () => {
-    const inProgress = useOutletContext()
+    const outletContent = useOutletContext()
+    const inProgress = outletContent.inProgress
+    const useInfo = outletContent.userInfo
 
     return (
         <>
@@ -16,7 +18,11 @@ export const MyProfile = () => {
                 <C.MyProfileBox>
                     <C.MyProfile>
                         <C.Text>
-                            <TextL>Привет, username</TextL>
+                            {useInfo?.userFio ?
+                              <TextL>Здравствуйте, {useInfo?.userFio}</TextL>
+                              :
+                              <TextL>Привет!</TextL>
+                            }
                             <TextL>Добро пожаловать в твой личный кабинет в специальном образовательном ресурсе Scirpus.</TextL>
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
@@ -26,36 +32,17 @@ export const MyProfile = () => {
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>
-                        <TextL>Рейтинг и курсы в разработке</TextL>
+                        <TextL>Рейтинг и курсы в&nbsp;разработке</TextL>
                         <SettingsSuggestOutlinedIcon fontSize={'large'}/>
                     </C.Rating>
                 </C.MyProfileBox>
             </section>
             <section>
-                {Object.keys(inProgress).length !== 0 &&
-                    <CourseBlock
-                        id={'in-progress'}
-                        items={inProgress}
-                    />
-                }
+                <CourseBlock
+                  id={'in-progress'}
+                  items={inProgress}
+                />
             </section>
-            {/*<section>*/}
-            {/*    <CourseBlock*/}
-            {/*        id={'waiting'}*/}
-            {/*        header={courseWaiting.header}*/}
-            {/*        link={courseWaiting.link}*/}
-            {/*        items={courseWaiting.items}*/}
-            {/*    />*/}
-            {/*</section>*/}
-            {/*<section>*/}
-            {/*    <CourseBlock*/}
-            {/*        id={'finished'}*/}
-            {/*        header={courseFinished.header}*/}
-            {/*        link={courseFinished.link}*/}
-            {/*        items={courseFinished.items}*/}
-            {/*    />*/}
-            {/*</section>*/}
-
         </>
     )
 }

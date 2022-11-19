@@ -12,23 +12,23 @@ export const HeaderBlock = styled.div`
 `
 
 export const SeeAll = styled.div`
+  display: none;
+  
+  @media (min-width: 768px) {
+    display: block;
+    
     & > a {
-        display: flex;
-        gap: 8px;
-        text-decoration: none;
-        color: var(--link-color-primary);
-    
-        &:hover {
-            color: var(--link-color-hover-primary);
-            cursor: pointer;
-        }
+      display: flex;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--link-color-primary);
+
+      &:hover {
+        color: var(--link-color-hover-primary);
+        cursor: pointer;
+      }
     }
-    
-    @media (min-width: 1024px) {
-    }
-    
-    @media (min-width: 1440px) {
-    }
+  }
 `
 
 export const AccordionBlock = styled.div`
@@ -40,21 +40,21 @@ export const AccordionBlock = styled.div`
 `
 
 export const Description = styled.div`
-    display: flex;
-    justify-content: space-between;
-    
-    @media (min-width: 1024px) {
-        padding: 0 8px 8px;
-    }
-    
-    @media (min-width: 1440px) {
-        padding: 0 16px 16px;
-    }
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-export const ButtonWrapper = styled.div`
-    flex-shrink: 0;
-    margin-left: 48px;
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+  
+  @media (min-width: 1024px) {
+      padding: 0 8px 8px;
+  }
+  
+  @media (min-width: 1440px) {
+      padding: 0 16px 16px;
+  }
 `
 
 export const Title = styled.div`

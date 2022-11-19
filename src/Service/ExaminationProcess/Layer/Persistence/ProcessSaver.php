@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
+use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Repository\CourseAnswerRepository;
 use App\Repository\CourseSheetRepository;
@@ -39,10 +40,13 @@ class ProcessSaver
         return $answer;
     }
 
+    /**
+     * @throws CourseSheetStatusNotFound
+     */
     public function saveSheet(
         User $user,
         Course $course,
-        CourseElement $actualElement,
+        ?CourseElement $actualElement,
         DateTimeInterface $now,
         CourseSheet $sheet = null
     ): CourseSheet {
@@ -56,6 +60,7 @@ class ProcessSaver
             $sheet->setStudent($user);
             $sheet->setCourse($course);
             $sheet->setCreatedAt($now);
+            $sheet->setStatus(CourseSheet::STATUS_STARTED);
         }
 
         $sheet->setActualElement($actualElement);
@@ -71,5 +76,16 @@ class ProcessSaver
             'course' => $course,
             'student' => $user,
         ]);
+    }
+
+    public function getAnswer(CourseSheet $sheet, CourseElement $currentElement): ?CourseAnswer
+    {
+        return $this->answerRepository->findOneBy(
+            [
+                'courceSheet' => $sheet,
+                'question' => $currentElement,
+            ],
+            ['id' => 'DESC']
+        );
     }
 }

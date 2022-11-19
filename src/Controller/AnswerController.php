@@ -16,7 +16,7 @@ use App\Repository\AnswerRepository;
 use App\Repository\ExaminationSheetRepository;
 use App\Repository\ExamRepository;
 use App\Repository\QuestionRepository;
-use App\Service\CheckRight\CheckRight;
+use App\Service\CheckRight\ExamCheckRight;
 use DateTime;
 use DateTimeInterface;
 use Exception;
@@ -132,7 +132,7 @@ class AnswerController extends AbstractController
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Answer $answer, AnswerRepository $answerRepository): Response
     {
-        $checkRight = new CheckRight();
+        $checkRight = new ExamCheckRight();
 
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
@@ -166,7 +166,7 @@ class AnswerController extends AbstractController
         AnswerRepository $answerRepository
     ): Response {
         $now = new DateTime();
-        $checkRight = new CheckRight();
+        $checkRight = new ExamCheckRight();
 
         $limit = $this->getLimit($answer, $now);
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as C from './styles'
-import { TextField } from "@mui/material";
-import { Button } from "../../components/Button";
+import { Button, ButtonGroup, Link, TextField } from "@mui/material";
 import { H2, H5, TextL, TextM } from '../../components/Typography'
 import { TableToChoose } from "./TableToChoose";
 import { ExampleTable } from "./ExampleTable";
@@ -14,11 +13,8 @@ import { StudentTableData } from "../../Service/StudentTableData";
 import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import MuiButton from '@mui/material/Button';
-import useStyles from './useStyles'
 
 export const Practice = () => {
-    const classes = useStyles();
     const navigate = useNavigate();
     const [element, setElement] = useState({
         name: null,
@@ -53,6 +49,8 @@ export const Practice = () => {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
+            processFinish: `/api-process/${id}/finish`,
+            processPreviousStep: `/api-process/${id}/previous-step`,
         };
         return container[key];
     }
@@ -64,6 +62,7 @@ export const Practice = () => {
             data => {
                 console.info('start data', data);
                 setProcessState(data)
+                setAnswer(data.sqlRequest)
                 setError(false)
                 getElement(data)
             },
@@ -75,6 +74,18 @@ export const Practice = () => {
     }
 
     const getElement = process => {
+        if (
+            null === process.currentElement
+            || undefined === process.currentElement
+        ) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Курс завершён'},
+            })
+            setLoader(false)
+            return;
+        }
         HttpRequest.get(
             process.currentElement,
             data => {
@@ -116,10 +127,31 @@ export const Practice = () => {
                 setLoader(false)
             }
         )
+    };
+
+    const handleFinish = callBack => {
+        setLoader(true)
+        HttpRequest.post(
+            urlContainer('processFinish', UrlService.param('course')),
+            {
+                answerText: answer,
+            },
+            data => {
+                setProcessState(data)
+                setAnswer(data.sqlRequest)
+                setSqlResponse(data.sqlResponse)
+                setError(false)
+                if (typeof callBack === 'function') callBack()
+                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
     }
 
-    const handleAnswer = () => {
-        setLoader(true)
+    const sendAnswer = () => {
         HttpRequest.post(
             urlContainer('processAnswer', UrlService.param('course')),
             {
@@ -130,7 +162,22 @@ export const Practice = () => {
                 setError(false)
                 setAnswer('')
                 setSqlResponse(null)
-                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
+    }
+
+    const sendPrevStep = () => {
+        HttpRequest.get(
+            urlContainer('processPreviousStep', UrlService.param('course')),
+            data => {
+                setProcessState(data)
+                setError(false)
+                setAnswer(data.sqlRequest ?? '')
+                setSqlResponse(data.sqlResponse.length > 0 ? data.sqlResponse : null)
             },
             error => {
                 setError(error)
@@ -143,24 +190,34 @@ export const Practice = () => {
         setLoader(true)
         setAnswer('')
         setSqlResponse(null)
-        let index = nextStepIndex(processState);
-        if (index === -1) {
-            throw new Error();
+        let nextIndex = nextStepIndex(processState);
+        if (nextIndex === -1) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Не найден шаг следующий за ' + element.name},
+            })
         }
         else {
-            processState.currentElement = processState.elements[index]
+            sendAnswer()
+            processState.currentElement = processState.elements[nextIndex]
             getElement(processState)
         }
     }
 
     const handlePrevStep = () => {
         setLoader(true)
-        let index = prevStepIndex(processState);
-        if (index === -1) {
-            throw new Error();
+        let prevIndex = prevStepIndex(processState);
+        if (prevIndex === -1) {
+            setError({
+                status: 400,
+                statusText: 'Bad Request',
+                body: {message: 'Не найден шаг перед ' + element.name},
+            })
         }
         else {
-            processState.currentElement = processState.elements[index]
+            sendPrevStep()
+            processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
         }
     }
@@ -179,8 +236,12 @@ export const Practice = () => {
     }
 
     const currentStepIndex = process => {
-        console.info('process', process)
+        console.info('currentStepIndex process:', JSON.parse(JSON.stringify(process)))
         return process?.elements.indexOf(process.currentElement);
+    }
+
+    const isAnswerable = () => {
+        return element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
     }
 
     useEffect(() => {
@@ -203,28 +264,29 @@ export const Practice = () => {
             <Notice message={error}/>
             <Loader show={loader}/>
 
-            <C.Link onClick={() => navigate("/react/my-profile")}><TextM>Вернуться к опроснику</TextM></C.Link>
+            <Button onClick={() => navigate("/react/my-profile")} variant={'text'} color='info' size='S'
+                    startIcon={<KeyboardArrowLeftIcon />}>
+                Вернуться к опроснику
+            </Button>
             <C.Header>
                 <H2>{element.name}</H2>
                 <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
             </C.Header>
             <C.Main>
-                <C.ButtonBox>
+                <ButtonGroup>
                     <div>
-                        <MuiButton size='S' variant={'outlined'} onClick={handlePrevStep} color="primary"
+                        <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
                             disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
-                            className={classes.button}
                         >
                             Назад
-                        </MuiButton>
-                        <MuiButton size='S' variant={'outlined'} onClick={handleNextStep} color="primary"
+                        </Button>
+                        <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
                             disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
-                            className={classes.button}
                         >
                             Далее
-                        </MuiButton>
+                        </Button>
                     </div>
-                </C.ButtonBox>
+                </ButtonGroup>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
@@ -232,7 +294,7 @@ export const Practice = () => {
                             <TextM>{element.description}</TextM>
                         </C.Question>
                         {
-                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            isAnswerable()
                             && <TextField
                                 margin="normal"
                                 id="practice-1"
@@ -242,6 +304,7 @@ export const Practice = () => {
                                 multiline={true}
                                 fullWidth={true}
                                 minRows={5}
+                                color={'info'}
                                 value={answer ?? ''}
                                 onChange={(e) => {
                                     setAnswer(e.target.value)
@@ -249,7 +312,7 @@ export const Practice = () => {
                             />
                         }
                         {
-                            (element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle')
+                            isAnswerable()
                             && <C.Description>
                                 <TextM>
                                     Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
@@ -258,12 +321,20 @@ export const Practice = () => {
                             </C.Description>
                         }
                         <C.ButtonBox>
-                            <div>
-                                <Button size={'S'} onClick={handleExecution}>Выполнить запрос</Button>
-                            </div>
+                            {
+                                isAnswerable()
+                                && <div>
+                                    <Button variant={'contained'} color="primary"
+                                            onClick={handleExecution}>
+                                        Выполнить запрос
+                                    </Button>
+                                </div>
+                            }
                             {
                                 !isExistNextStep
-                                && <Button size={'S'} view={'outlined'} onClick={() => {handleExecution(() => navigate("/react/my-profile"));}}>
+                                && <Button size='S' variant={'contained'} onClick={() => {
+                                    handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
+                                }}>
                                     Завершить
                                 </Button>
                             }

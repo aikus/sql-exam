@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service\Layer\Domain;
+namespace App\Tests\Service\ExaminationProcess\Layer\Domain;
 
 use App\Entity\Course;
 use App\Entity\CourseAnswer;
@@ -192,6 +192,11 @@ class ProcessTest extends TestCase
             {
                 $this->result = $result;
                 parent::__construct($registry);
+            }
+
+            public function findOneBy(array $criteria, ?array $orderBy = null): ?CourseAnswer
+            {
+                return null;
             }
 
             public function add(CourseAnswer $entity, bool $flush = true): void

@@ -13,7 +13,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const isPractice = type => ['mysql', 'postgre', 'oracle'].includes(type);
+  const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
     console.log("handleSelectChange", "start", e);
@@ -145,6 +145,14 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     setDialogOpen(false)
   }
 
+  const typeList = () => {
+    return [
+      {name: 'Текст', type: 'article'},
+      {name: 'Практика Mysql', type: 'mysql'},
+      {name: 'Практика Postgres', type: 'postgres'},
+    ];
+  }
+
   return (
     <>
       <C.Type>
@@ -154,8 +162,11 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           onChange={(e) => handleSelectChange(e)}
           sx={{minWidth: '150px'}}
         >
-          <MenuItem value={'article'}>Текст</MenuItem>
-          <MenuItem value={'mysql'}>Практика Mysql</MenuItem>
+          {
+            typeList().map((item) =>
+              <MenuItem value={item.type}>{item.name}</MenuItem>
+            )
+          }
         </Select>
       </C.Type>
       <C.HeaderBlock>

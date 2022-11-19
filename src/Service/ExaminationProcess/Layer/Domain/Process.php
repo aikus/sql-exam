@@ -4,6 +4,8 @@ namespace App\Service\ExaminationProcess\Layer\Domain;
 
 use App\Entity\Course;
 use App\Entity\CourseElement;
+use App\Entity\CourseSheet;
+use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Service\ExaminationProcess\Layer\Persistence\ProcessSaver;
 use App\Service\ExaminationProcess\Layer\Responder\ProcessState;
@@ -29,6 +31,7 @@ class Process
      * @param DateTimeInterface $now
      * @return ProcessState
      * @throws Exception
+     * @throws CourseSheetStatusNotFound
      */
     public function start(User $user, Course $course, DateTimeInterface $now): ProcessState
     {
@@ -38,52 +41,19 @@ class Process
             return new ProcessState(ProcessState::STATE_NOT_READY, 0, [], null);
         }
 
-        $sheet = $this->saver->saveSheet($user, $course, $this->actualElement($typeCollection), $now);
+        $actualElement = $this->actualElement($typeCollection);
 
-        return new ProcessState(
-            ProcessState::STATE_IN_PROGRESS,
-            $course->getType()->count(),
-            $course->getType()->toArray(),
-            $sheet->getActualElement()
-        );
-    }
+        $sheet = $this->saver->saveSheet($user, $course, $actualElement, $now);
 
-    /**
-     * @param User $user
-     * @param Course $course
-     * @param string|null $sqlText
-     * @param DateTimeInterface $now
-     * @return ProcessState
-     * @throws ExaminationProcessException
-     */
-    public function execution(
-        User $user,
-        Course $course,
-        ?string $sqlText,
-        DateTimeInterface $now
-    ): ProcessState {
-
-        $sheet = $this->saver->getSheet($user, $course);
-
-        if (null === $sheet) {
-            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
-        }
-
-        $currentElement = $sheet->getActualElement();
-
-        if (null === $currentElement) {
-            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
-        }
-
-        $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        $answer = $this->saver->getAnswer($sheet, $actualElement);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            $answer->getAnswer(),
-            $answer->getResult()
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 
@@ -95,12 +65,7 @@ class Process
      * @return ProcessState
      * @throws ExaminationProcessException
      */
-    public function answer(
-        User $user,
-        Course $course,
-        ?string $sqlText,
-        DateTimeInterface $now
-    ): ProcessState {
+    public function execution(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
         $sheet = $this->saver->getSheet($user, $course);
 
@@ -114,21 +79,136 @@ class Process
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
         }
 
-        $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        if (!empty($sqlText)) {
+            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        }
+
+        return new ProcessState(
+            ProcessState::STATE_IN_PROGRESS,
+            $course->getType()->count(),
+            $course->getType()->toArray(),
+            $sheet->getActualElement(),
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @param string|null $sqlText
+     * @param DateTimeInterface $now
+     * @return ProcessState
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     */
+    public function finish(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
+
+        $sheet = $this->saver->getSheet($user, $course);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
+        }
+
+        $currentElement = $sheet->getActualElement();
+
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
+
+        if (!empty($sqlText)) {
+            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        }
+        $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
+        $this->saver->saveSheet($user, $course, $currentElement, $now, $sheet);
+
+        return new ProcessState(
+            ProcessState::STATE_IN_PROGRESS,
+            $course->getType()->count(),
+            $course->getType()->toArray(),
+            $sheet->getActualElement(),
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @param string|null $sqlText
+     * @param DateTimeInterface $now
+     * @return ProcessState
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     */
+    public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
+
+        $sheet = $this->saver->getSheet($user, $course);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
+        }
+
+        $currentElement = $sheet->getActualElement();
+
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
+
+        if (!empty($sqlText)) {
+            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+        }
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
         })->first();
 
-        $this->saver->saveSheet($user, $course, $nextElement, $now, $sheet);
+        $this->saver->saveSheet($user, $course, $nextElement ?: null, $now, $sheet);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            $answer->getAnswer(),
-            $answer->getResult()
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @param DateTimeInterface $now
+     * @return ProcessState
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     */
+    public function previousStep(User $user, Course $course, DateTimeInterface $now): ProcessState {
+
+        $sheet = $this->saver->getSheet($user, $course);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
+        }
+
+        $currentElement = $sheet->getActualElement();
+
+        if (null === $currentElement) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_ELEMENT);
+        }
+
+        $prevElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
+            return (int) ($currentElement->getOrd() - 1) === (int) $element->getOrd();
+        })->first();
+
+        $answer = $this->saver->getAnswer($sheet, $prevElement);
+
+        $this->saver->saveSheet($user, $course, $prevElement ?: null, $now, $sheet);
+
+        return new ProcessState(
+            ProcessState::STATE_IN_PROGRESS,
+            $course->getType()->count(),
+            $course->getType()->toArray(),
+            $sheet->getActualElement(),
+            ($answer ?? null)?->getAnswer(),
+            ($answer ?? null)?->getResult()
         );
     }
 

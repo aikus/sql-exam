@@ -2,8 +2,12 @@ app_api_login:
     path: /api/login
     methods: ['POST']
 
-app_logout:
+app_api_logout:
     path: /api/logout
+    methods: ['GET']
+
+app_logout:
+    path: /logout
     methods: ['GET']
 
 controllers:
@@ -36,5 +40,10 @@ app_react_course-management:
 
 app_react_create-course:
     path: react/my-profile/create-course
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_result:
+    path: react/my-profile/course-result
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]

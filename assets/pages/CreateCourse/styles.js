@@ -2,15 +2,15 @@ import styled from "styled-components";
 import '../../styles/app.css';
 
 export const Wrapper = styled.div`
-  margin: 16px 0;
-  
-  @media (min-width: 768px) {
-    margin: 40px 0;
+  margin: 56px 0;
+
+  @media (min-width: 1024px) {
+    margin: 80px 0;
   }
 
   @media (min-width: 1280px) {
     max-width: 1200px;
-    margin: 40px auto;
+    margin: 80px auto;
   }
 `
 
@@ -111,14 +111,20 @@ export const Row = styled.div`
 
 export const ButtonsBlock = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 32px;
   gap: 16px;
   justify-content: space-between;
   
   & > div:first-child {
     display: flex;
-    gap: 24px;
+    flex-direction: column;
+    gap: 8px;
+
+    @media(min-width: 768px) {
+      flex-direction: row;
+      gap: 24px;
+    }
   }
   
   & * button, & > button {
@@ -127,6 +133,10 @@ export const ButtonsBlock = styled.div`
   
   & > button {
     align-self: flex-start;
+  }
+  
+  @media(min-width: 768px) {
+    flex-direction: row;
   }
 `
 
