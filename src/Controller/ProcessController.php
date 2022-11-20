@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/api-process')]
-//#[AsController]
 class ProcessController extends AbstractController
 {
     #[Route('/{id}/start', name: 'app_process_start', methods: ['GET'])]
@@ -119,18 +118,4 @@ class ProcessController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
-
-//    #[Route(
-//        path: "courses",
-//        defaults: [
-//            '_api_resource_class' => CourseSheet::class,
-//            '_api_operation_name' => '_api_/course_sheets',
-//        ],
-//        methods: ["GET"],
-//    )]
-//    public function getCourses(Security $security, CourseSheetRepository $repository): array
-//    {
-//        $user = $security->getUser();
-//        return $repository->findBy(['student' => $user]);
-//    }
 }
