@@ -31,6 +31,8 @@ class ProcessSaver
         $answer->setCourceSheet($sheet);
         $answer->setQuestion($element);
         $answer->setAnswer($textAnswer ?? '');
+        $answer->setCreatedAt($now);
+        $answer->setUpdatedAt($now);
 
         $this->answerRepository->add($answer);
 
