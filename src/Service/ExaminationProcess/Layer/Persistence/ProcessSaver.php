@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Repository\CourseAnswerRepository;
 use App\Repository\CourseSheetRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\Criteria;
 
 class ProcessSaver
 {
@@ -42,31 +43,11 @@ class ProcessSaver
         return $answer;
     }
 
-    /**
-     * @throws CourseSheetStatusNotFound
-     */
-    public function saveSheet(
-        User $user,
-        Course $course,
+    public function updateSheet(
+        CourseSheet $sheet,
         ?CourseElement $actualElement,
-        DateTimeInterface $now,
-        CourseSheet $sheet = null
+        DateTimeInterface $now
     ): CourseSheet {
-
-        if (null === $sheet) {
-            $sheet = $this->getSheet($user, $course);
-        }
-
-        if (null === $sheet) {
-            $sheet = new CourseSheet();
-            $sheet->setStudent($user);
-            $sheet->setCourse($course);
-            $sheet->setCreatedAt($now);
-            $sheet->setStatus(CourseSheet::STATUS_STARTED);
-        }
-        if(!$sheet->getStartedAt()) {
-            $sheet->setStartedAt($now);
-        }
 
         $sheet->setActualElement($actualElement);
         $sheet->setUpdatedAt($now);
@@ -75,12 +56,44 @@ class ProcessSaver
         return $sheet;
     }
 
-    public function getSheet(User $user, Course $course): ?CourseSheet
+    /**
+     * @throws CourseSheetStatusNotFound
+     */
+    public function findAndStart(
+        User $user,
+        Course $course,
+        ?CourseElement $actualElement,
+        DateTimeInterface $now
+    ): ?CourseSheet {
+
+        $sheet = $this->getSheet($user, $course, [CourseSheet::STATUS_NEW, CourseSheet::STATUS_STARTED]);
+
+        if (null === $sheet) {
+            return null;
+        }
+
+        if(!$sheet->getStartedAt()) {
+            $sheet->setStartedAt($now);
+        }
+
+        $sheet->setStatus(CourseSheet::STATUS_STARTED);
+
+        $sheet->setActualElement($actualElement);
+        $sheet->setUpdatedAt($now);
+
+        $this->sheetRepository->add($sheet);
+        return $sheet;
+    }
+
+    public function getSheet(User $user, Course $course, array $statuses = []): ?CourseSheet
     {
-        return $this->sheetRepository->findOneBy([
-            'course' => $course,
-            'student' => $user,
-        ]);
+        return $this->sheetRepository->matching(
+            Criteria::create()
+                ->where(Criteria::expr()->eq('course', $course))
+                ->andWhere(Criteria::expr()->eq('student', $user))
+                ->andWhere(Criteria::expr()->in('status', $statuses))
+                ->setMaxResults(1)
+        )->last() ?: null;
     }
 
     public function getAnswer(CourseSheet $sheet, CourseElement $currentElement): ?CourseAnswer

@@ -17,8 +17,8 @@ use Exception;
 class Process
 {
     public const ERROR_MESSAGE_EMPTY_SHEET = 'Не найден список с ответами для данного ученика';
-
     public const ERROR_MESSAGE_EMPTY_ELEMENT = 'Курс уже пройден';
+    public const ERROR_MESSAGE_COURSE_NOT_ASSIGNED = 'Вам ещё не назначен этот курс';
 
     public function __construct(
         private readonly ProcessSaver $saver,
@@ -31,7 +31,7 @@ class Process
      * @param DateTimeInterface $now
      * @return ProcessState
      * @throws Exception
-     * @throws CourseSheetStatusNotFound
+     * @throws ExaminationProcessException|CourseSheetStatusNotFound
      */
     public function start(User $user, Course $course, DateTimeInterface $now): ProcessState
     {
@@ -43,7 +43,11 @@ class Process
 
         $actualElement = $this->actualElement($typeCollection);
 
-        $sheet = $this->saver->saveSheet($user, $course, $actualElement, $now);
+        $sheet = $this->saver->findAndStart($user, $course, $actualElement, $now);
+
+        if (null === $sheet) {
+            throw new ExaminationProcessException(self::ERROR_MESSAGE_COURSE_NOT_ASSIGNED);
+        }
 
         $answer = $this->saver->getAnswer($sheet, $actualElement);
 
@@ -67,7 +71,7 @@ class Process
      */
     public function execution(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
-        $sheet = $this->saver->getSheet($user, $course);
+        $sheet = $this->saver->getSheet($user, $course, [CourseSheet::STATUS_STARTED]);
 
         if (null === $sheet) {
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
@@ -103,7 +107,7 @@ class Process
      */
     public function finish(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
-        $sheet = $this->saver->getSheet($user, $course);
+        $sheet = $this->saver->getSheet($user, $course, [CourseSheet::STATUS_STARTED]);
 
         if (null === $sheet) {
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
@@ -120,7 +124,7 @@ class Process
         }
         $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
         $sheet->setFinishedAt($now);
-        $this->saver->saveSheet($user, $course, $currentElement, $now, $sheet);
+        $this->saver->updateSheet($sheet, $currentElement, $now);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
@@ -138,11 +142,11 @@ class Process
      * @param string|null $sqlText
      * @param DateTimeInterface $now
      * @return ProcessState
-     * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     * @throws ExaminationProcessException
      */
     public function answer(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
-        $sheet = $this->saver->getSheet($user, $course);
+        $sheet = $this->saver->getSheet($user, $course, [CourseSheet::STATUS_STARTED]);
 
         if (null === $sheet) {
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
@@ -162,7 +166,7 @@ class Process
             return (int) ($currentElement->getOrd() + 1) === (int) $element->getOrd();
         })->first();
 
-        $this->saver->saveSheet($user, $course, $nextElement ?: null, $now, $sheet);
+        $this->saver->updateSheet($sheet, $nextElement ?: null, $now);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
@@ -179,11 +183,11 @@ class Process
      * @param Course $course
      * @param DateTimeInterface $now
      * @return ProcessState
-     * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     * @throws ExaminationProcessException
      */
     public function previousStep(User $user, Course $course, DateTimeInterface $now): ProcessState {
 
-        $sheet = $this->saver->getSheet($user, $course);
+        $sheet = $this->saver->getSheet($user, $course, [CourseSheet::STATUS_STARTED]);
 
         if (null === $sheet) {
             throw new ExaminationProcessException(self::ERROR_MESSAGE_EMPTY_SHEET);
@@ -201,7 +205,7 @@ class Process
 
         $answer = $this->saver->getAnswer($sheet, $prevElement);
 
-        $this->saver->saveSheet($user, $course, $prevElement ?: null, $now, $sheet);
+        $this->saver->updateSheet($sheet, $prevElement ?: null, $now);
 
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
