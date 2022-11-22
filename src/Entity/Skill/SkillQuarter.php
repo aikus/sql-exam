@@ -2,6 +2,7 @@
 
 namespace App\Entity\Skill;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Repository\Skill\SkillQuarterRepository;
@@ -9,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SkillQuarterRepository::class)]
+#[ApiResource]
 class SkillQuarter
 {
     #[ORM\Id]

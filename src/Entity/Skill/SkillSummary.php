@@ -2,11 +2,13 @@
 
 namespace App\Entity\Skill;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Skill\SkillSummaryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SkillSummaryRepository::class)]
+#[ApiResource]
 class SkillSummary
 {
     #[ORM\Id]

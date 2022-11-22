@@ -2,13 +2,13 @@
 
 namespace App\Entity\Skill;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Skill\SkillRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
+#[ApiResource]
 class Skill
 {
     #[ORM\Id]
@@ -37,12 +37,8 @@ class Skill
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $update_time = null;
 
-    #[ORM\OneToMany(mappedBy: 'skill', targetEntity: SkillSummary::class)]
-    private Collection $skillSummaries;
-
     public function __construct(\DateTimeInterface $update_time = null)
     {
-        $this->skillSummaries = new ArrayCollection();
         $this->update_time = $update_time ?? new \DateTime();
     }
 
@@ -131,36 +127,6 @@ class Skill
     public function setUpdateTime(\DateTimeInterface $update_time): self
     {
         $this->update_time = $update_time;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, SkillSummary>
-     */
-    public function getSkillSummaries(): Collection
-    {
-        return $this->skillSummaries;
-    }
-
-    public function addSkillSummary(SkillSummary $skillSummary): self
-    {
-        if (!$this->skillSummaries->contains($skillSummary)) {
-            $this->skillSummaries->add($skillSummary);
-            $skillSummary->setSkill($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSkillSummary(SkillSummary $skillSummary): self
-    {
-        if ($this->skillSummaries->removeElement($skillSummary)) {
-            // set the owning side to null (unless already changed)
-            if ($skillSummary->getSkill() === $this) {
-                $skillSummary->setSkill(null);
-            }
-        }
 
         return $this;
     }
