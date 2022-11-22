@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CourseSheetRepository;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -48,10 +47,10 @@ class CourseSheet
     private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTimeImmutable $started_at = null;
+    private ?DateTimeInterface $started_at = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTimeImmutable $finished_at = null;
+    private ?DateTimeInterface $finished_at = null;
 
     public function __construct()
     {
@@ -171,24 +170,24 @@ class CourseSheet
         return $this;
     }
 
-    public function getStartedAt(): ?DateTimeImmutable
+    public function getStartedAt(): ?DateTimeInterface
     {
         return $this->started_at;
     }
 
-    public function setStartedAt(?DateTimeImmutable $started_at): self
+    public function setStartedAt(?DateTimeInterface $started_at): self
     {
         $this->started_at = $started_at;
 
         return $this;
     }
 
-    public function getFinishedAt(): ?DateTimeImmutable
+    public function getFinishedAt(): ?DateTimeInterface
     {
         return $this->finished_at;
     }
 
-    public function setFinishedAt(?DateTimeImmutable $finished_at): self
+    public function setFinishedAt(?DateTimeInterface $finished_at): self
     {
         $this->finished_at = $finished_at;
 

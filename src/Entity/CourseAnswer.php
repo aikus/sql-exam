@@ -5,7 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Connectors\CourseAnswerListener;
 use App\Repository\CourseAnswerRepository;
-use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,10 +37,10 @@ class CourseAnswer
     private ?array $result = [];
 
     #[ORM\Column(nullable: true)]
-    private ?DateTimeImmutable $created_at = null;
+    private ?DateTimeInterface $created_at = null;
 
     #[ORM\Column(nullable: true)]
-    private ?DateTimeImmutable $updated_at = null;
+    private ?DateTimeInterface $updated_at = null;
 
     public function getId(): ?int
     {
@@ -107,24 +107,24 @@ class CourseAnswer
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(?DateTimeImmutable $created_at): self
+    public function setCreatedAt(?DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(?DateTimeImmutable $updated_at): self
+    public function setUpdatedAt(?DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
 
