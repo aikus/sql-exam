@@ -345,17 +345,17 @@ export const Practice = () => {
                     </C.RightBlock>
                 </C.Task>
                 {
-                    chosenTable &&
-                    <C.TableWrapper>
-                        <TextM>{chosenTable}</TextM>
-                        <ExampleTable tableData={givenTablesData[chosenTable]}/>
-                    </C.TableWrapper>
-                }
-                {
                     null !== sqlResponse &&
                     <C.Block>
                         <ResultBlock data={sqlResponse}/>
                     </C.Block>
+                }
+                {
+                  chosenTable &&
+                  <C.TableWrapper>
+                      <TextM>{chosenTable}</TextM>
+                      <ExampleTable tableData={givenTablesData[chosenTable]}/>
+                  </C.TableWrapper>
                 }
             </C.Main>
         </C.Wrapper>
