@@ -64,6 +64,9 @@ class ProcessSaver
             $sheet->setCreatedAt($now);
             $sheet->setStatus(CourseSheet::STATUS_STARTED);
         }
+        if(!$sheet->getStartedAt()) {
+            $sheet->setStartedAt($now);
+        }
 
         $sheet->setActualElement($actualElement);
         $sheet->setUpdatedAt($now);

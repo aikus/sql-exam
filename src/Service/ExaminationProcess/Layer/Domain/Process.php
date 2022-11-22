@@ -119,6 +119,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
         $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
+        $sheet->setFinishedAt($now);
         $this->saver->saveSheet($user, $course, $currentElement, $now, $sheet);
 
         return new ProcessState(
