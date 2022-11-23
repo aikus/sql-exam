@@ -9,6 +9,7 @@ use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Service\ExaminationProcess\Layer\Persistence\ProcessSaver;
 use App\Service\ExaminationProcess\Layer\Responder\ProcessState;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -123,7 +124,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
         $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
-        $sheet->setFinishedAt($now);
+        $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
 
         return new ProcessState(

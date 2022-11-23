@@ -10,6 +10,7 @@ use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Repository\CourseAnswerRepository;
 use App\Repository\CourseSheetRepository;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Criteria;
 
@@ -32,8 +33,8 @@ class ProcessSaver
         $answer->setCourceSheet($sheet);
         $answer->setQuestion($element);
         $answer->setAnswer($textAnswer ?? '');
-        $answer->setCreatedAt($now);
-        $answer->setUpdatedAt($now);
+        $answer->setCreatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+        $answer->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
 
         $this->answerRepository->add($answer);
 
@@ -73,13 +74,13 @@ class ProcessSaver
         }
 
         if(!$sheet->getStartedAt()) {
-            $sheet->setStartedAt($now);
+            $sheet->setStartedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
         }
 
         $sheet->setStatus(CourseSheet::STATUS_STARTED);
 
         $sheet->setActualElement($actualElement);
-        $sheet->setUpdatedAt($now);
+        $sheet->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
 
         $this->sheetRepository->add($sheet);
         return $sheet;
