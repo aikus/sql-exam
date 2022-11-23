@@ -7,7 +7,8 @@ import { H2, TextL } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 
-export const CourseBlock = ({id, items}) => {
+export const CourseBlock = ({id, items, title, mainButton, resultButton}) => {
+    console.log(mainButton, resultButton);
     const navigate = useNavigate();
     const goToPractice = id => {
         navigate(`/react/my-profile/practice?course=${id}`)
@@ -17,10 +18,10 @@ export const CourseBlock = ({id, items}) => {
         navigate(`/react/my-profile/course-result?course=${id}`)
     }
 
-    return (
+    return 0 === items.length ? <></> : (
         <>
           <C.HeaderBlock>
-              <H2>Доступные курсы</H2>
+              <H2>{title}</H2>
               <C.SeeAll>
                   <a href={'#'}>
                       <div>Посмотреть всё</div>
@@ -28,10 +29,6 @@ export const CourseBlock = ({id, items}) => {
                   </a>
               </C.SeeAll>
           </C.HeaderBlock>
-          {items.length === 0 &&
-            <Skeleton variant="rectangular" animation="wave" height={80} sx={{marginTop: '24px', borderRadius: '4px'}}/>
-          }
-          {items.length !== 0 &&
             <C.AccordionBlock>
               {items.map((item, i) => {
                 return (
@@ -45,12 +42,12 @@ export const CourseBlock = ({id, items}) => {
                     </AccordionSummary>
                     <AccordionDetails>
                       <Stack direction="row" justifyContent={"flex-start"} spacing={2} sx={{marginBottom: "2rem"}}>
-                        <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
-                          Начать прохождение
-                        </Button>
-                        <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourse(item.id)}>
-                            Результаты
-                        </Button>
+                          {mainButton && <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
+                              {mainButton}
+                        </Button>}
+                          {resultButton && <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourse(item.id)}>
+                            {resultButton}
+                        </Button>}
                       </Stack>
                       <C.Description>
                         <TextL>{item.description}</TextL>
@@ -60,7 +57,6 @@ export const CourseBlock = ({id, items}) => {
                 )
               })}
             </C.AccordionBlock>
-          }
 
         </>
     )

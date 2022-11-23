@@ -7,9 +7,12 @@ import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 
 export const MyProfile = () => {
-    const outletContent = useOutletContext()
-    const inProgress = outletContent.inProgress
-    const useInfo = outletContent.userInfo
+    const outletContent = useOutletContext(),
+        newCurses = outletContent.newCurses,
+        inProgress = outletContent.inProgress,
+        completedCourses = outletContent.completedCourses,
+        useInfo = outletContent.userInfo
+    console.log(outletContent);
 
     return (
         <>
@@ -39,60 +42,31 @@ export const MyProfile = () => {
             </section>
             <section>
                 <CourseBlock
-                  id={'in-progress'}
-                  items={inProgress}
+                    id={'in-progress'}
+                    title={"В процессе"}
+                    items={inProgress}
+                    mainButton={"Продолжить прохождение"}
+                    resultButton={""}
+                />
+            </section>
+            <section>
+                <CourseBlock
+                    id={'new-courses'}
+                    title={"Ожидают прохождения"}
+                    items={newCurses}
+                    mainButton={"Начать прохождение"}
+                    resultButton={""}
+                />
+            </section>
+            <section>
+                <CourseBlock
+                    id={'completed-courses'}
+                    title={"Завершённые"}
+                    items={completedCourses}
+                    mainButton={""}
+                    resultButton={"Результаты"}
                 />
             </section>
         </>
     )
-}
-
-const courseWaiting = {
-    header: 'Ожидают прохождения',
-    link: '#',
-    items: [
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-            linkToStart: '#'
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-            linkToStart: '#'
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-            linkToStart: '#'
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-            linkToStart: '#'
-        }
-    ]
-}
-
-const courseFinished = {
-    header: 'Завершенные курсы',
-    link: '#',
-    items: [
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-        },
-        {
-            title: 'Курс какой-то там чего-то там',
-            description: 'Описание курса чего-то там',
-        }
-    ]
 }

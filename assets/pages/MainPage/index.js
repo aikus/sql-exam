@@ -3,8 +3,6 @@ import * as C from './styles'
 import { Popper, MenuItem, Divider, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
 import { TextM, TextL, H5 } from '../../components/Typography'
 import { Logo } from "../../components/Logo";
-import { MyProfile } from '../MyProfile'
-import { CourseBlock } from '../MyProfile/CourseBlock/CourseBlock'
 import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
 import { hostName } from '../../config'
@@ -14,16 +12,19 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 import {Auth, GetPermission} from '../../Service/Auth'
+import CourseRepository from "./CourseRepository";
 
 export const MainPage = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
     const [inProgress, setInProgress] = useState([])
+    const [newCurses, setNewCourses] = useState([])
+    const [completedCourses, setCompletedCourses] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [userInfo, setUserInfo] = useState({})
-    const [outletContent, setOutletContent] = useState({inProgress, userInfo})
+    const [outletContent, setOutletContent] = useState({newCurses, inProgress, completedCourses, userInfo})
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleProfileMenuClick = (e) => {
@@ -57,22 +58,20 @@ export const MainPage = () => {
     }
 
     useEffect(() => {
-        const handleSuccess = (data) => {
-            setInProgress(data)
-        }
-
         const handleSetUserInfo = (data) => {
             setUserInfo(data)
             Auth.role = data.roles;
         }
 
-        HttpRequest.get(`${hostName}/api-platform/courses`, (data) => handleSuccess(data))
+        CourseRepository.getNewCourses().then(setNewCourses);
+        CourseRepository.getStartedCourses().then(setInProgress);
+        CourseRepository.getCompletedCourses().then(setCompletedCourses);
         HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
     }, [])
 
     useEffect(() => {
-        setOutletContent({inProgress, userInfo})
-    }, [inProgress, userInfo])
+        setOutletContent({newCurses, inProgress, completedCourses, userInfo})
+    }, [newCurses, inProgress, completedCourses, userInfo])
 
     return (
         <C.Wrapper>
