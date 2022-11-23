@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as C from './styles'
 import { Button, ButtonGroup, Link, TextField } from "@mui/material";
-import { H2, H5, TextL, TextM } from '../../components/Typography'
+import { H2, H5, TextL, TextM, TextS } from '../../components/Typography'
 import { TableToChoose } from "./TableToChoose";
 import { ExampleTable } from "./ExampleTable";
 import { ResultBlock } from "./ResultBlock";
@@ -13,6 +13,8 @@ import { StudentTableData } from "../../Service/StudentTableData";
 import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import {hostName} from "../../config";
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -39,6 +41,9 @@ export const Practice = () => {
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
     const [error, setError] = useState(false)
+    const [timer, setTimer] = useState(0);
+    const [showTimer, setShowTimer] = useState(false);
+    const [redBorder, setRedBorder] = useState(false);
 
     const urlContainer = (key, id) => {
         if (null === id) {
@@ -71,6 +76,31 @@ export const Practice = () => {
                 setLoader(false)
             }
         );
+
+        const handleSuccess = (data) => {
+            setTimer(data?.timeLimit * 60);
+
+            if (data?.timeLimit !== 0) {
+                startTimer();
+            }
+        }
+
+        HttpRequest.get(`${hostName}/api-platform/courses/${course}`, (data) => handleSuccess(data));
+    }
+
+    const startTimer = () => {
+        let timerId = setInterval(() => {
+            setTimer((prevState) => {
+                if (prevState === 5 * 60) {
+                    setRedBorder(true);
+                }
+                if (prevState <= 1) {
+                    clearInterval(timerId);
+                    handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
+                }
+                return prevState - 1;
+            });
+        }, 1000);
     }
 
     const getElement = process => {
@@ -273,20 +303,37 @@ export const Practice = () => {
                 <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
             </C.Header>
             <C.Main>
-                <ButtonGroup>
-                    <div>
-                        <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
-                            disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
-                        >
-                            Назад
-                        </Button>
-                        <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
-                            disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
-                        >
-                            Далее
-                        </Button>
-                    </div>
-                </ButtonGroup>
+                <C.TopBlock>
+                    <ButtonGroup>
+                        <div>
+                            <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
+                                    disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
+                            >
+                                Назад
+                            </Button>
+                            <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
+                                    disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
+                            >
+                                Далее
+                            </Button>
+                        </div>
+                    </ButtonGroup>
+                    {Boolean(timer) &&
+                      <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
+                          {showTimer ?
+                            <>
+                                <H5>Осталось {Math.trunc(timer / 60)} мин {timer % 60} сек</H5>
+                                <TextS>По истечении времени прохождение будет завершено</TextS>
+                            </>
+                            :
+                            <C.ClosedTimer>
+                                <TimerOutlinedIcon fontSize={'large'} sx={{color: redBorder ? '#ED1C24' : 'none'}}/>
+                                <TextM>Осталось {redBorder && 'мало'} времени...</TextM>
+                            </C.ClosedTimer>
+                          }
+                      </C.Timer>
+                    }
+                </C.TopBlock>
                 <C.Task>
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>

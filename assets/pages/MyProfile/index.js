@@ -12,7 +12,6 @@ export const MyProfile = () => {
         inProgress = outletContent.inProgress,
         completedCourses = outletContent.completedCourses,
         useInfo = outletContent.userInfo
-    console.log(outletContent);
 
     return (
         <>

@@ -26,8 +26,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
-    console.log("handleSelectChange", "start", e);
-
     const actual = courseContent[step - 1];
 
     const typeObject = {
@@ -47,7 +45,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       typeObject["variants"] = ['', ''];
       typeObject["right-variant"] = '';
     }
-    console.log("handleSelectChange", "typeObject = ", typeObject);
 
     setCourseContent((prevState) => {
       let newState = [...prevState]

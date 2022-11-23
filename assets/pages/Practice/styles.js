@@ -111,3 +111,38 @@ export const TableWrapper = styled.div`
 export const Block = styled.div`
   margin-top: 1.5rem;
 `
+
+export const TopBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  
+  & > div:first-child {
+    width: 70%;
+  }
+  
+  & > div:last-child {
+    width: 30%;
+  }
+`
+
+export const Timer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 2px solid ${props => props.changeBC ? '#ED1C24' : '#262626'};
+  border-radius: 8px;
+  padding: 8px;
+  box-sizing: border-box;
+  
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+export const ClosedTimer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: auto;
+`

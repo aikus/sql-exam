@@ -8,7 +8,6 @@ import {useNavigate} from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 
 export const CourseBlock = ({id, items, title, mainButton, resultButton}) => {
-    console.log(mainButton, resultButton);
     const navigate = useNavigate();
     const goToPractice = id => {
         navigate(`/react/my-profile/practice?course=${id}`)

@@ -16,7 +16,6 @@ export const ExampleTable = ({tableData}) => {
         for (let key in tableData.table[0]) {
             accumArr.push(key)
         }
-        console.log('accumArr', accumArr)
         return accumArr ?? []
     }
 

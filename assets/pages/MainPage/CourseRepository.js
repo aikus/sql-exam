@@ -60,7 +60,6 @@ class CourseRepositoryClass {
 
     _getCache(type) {
         const now = new Date().getTime();
-        console.log(now, this.cache[type])
         if(!this.cache[type] || now - this.cache[type].time > 100) {
             return null;
         }
