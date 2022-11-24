@@ -40,7 +40,8 @@ export const Report = () => {
                 reports?.courses &&
                 Object.keys(reports.courses).map((report) => {
                     return <Box my={3}>
-                        <ReportTable report={reports.courses[report]}/>
+                        <p>{reports.courses[report].header}</p>
+                        <ReportTable report={reports.courses[report].data}/>
                     </Box>
                 })
             }
