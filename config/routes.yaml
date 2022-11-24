@@ -43,7 +43,17 @@ app_react_create-course:
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]
 
-app_react_result:
+app_react_course-result:
     path: react/my-profile/course-result
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_student-result:
+    path: react/my-profile/student-result
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
+app_react_report:
+    path: react/my-profile/report
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]

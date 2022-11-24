@@ -13,7 +13,7 @@ export const CourseBlock = ({id, items, title, mainButton, resultButton}) => {
         navigate(`/react/my-profile/practice?course=${id}`)
     }
 
-    const goToCourse = id => {
+    const goToCourseResult = id => {
         navigate(`/react/my-profile/course-result?course=${id}`)
     }
 
@@ -44,7 +44,7 @@ export const CourseBlock = ({id, items, title, mainButton, resultButton}) => {
                           {mainButton && <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
                               {mainButton}
                         </Button>}
-                          {resultButton && <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourse(item.id)}>
+                          {resultButton && <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourseResult(item.id)}>
                             {resultButton}
                         </Button>}
                       </Stack>
