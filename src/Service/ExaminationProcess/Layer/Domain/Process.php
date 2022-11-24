@@ -241,7 +241,7 @@ class Process
 
     private function secondsTimeLeft(Course $course, CourseSheet $sheet, DateTimeInterface $now): ?int
     {
-        if (null === $course->getTimeLimit() || 0 === $course->getTimeLimit()) {
+        if (null === $course->getTimeLimit()) {
             return null;
         }
         return ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp());
