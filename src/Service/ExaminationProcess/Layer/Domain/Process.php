@@ -60,7 +60,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -97,7 +97,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -137,7 +137,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -180,7 +180,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -220,7 +220,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -237,5 +237,13 @@ class Process
         });
 
         return (new ArrayCollection(iterator_to_array($iterator)))->first();
+    }
+
+    private function secondsTimeLeft(Course $course, CourseSheet $sheet, DateTimeInterface $now): ?int
+    {
+        if (null === $course->getTimeLimit() || 0 === $course->getTimeLimit()) {
+            return null;
+        }
+        return ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp());
     }
 }
