@@ -52,6 +52,7 @@ class Process
 
         $answer = $this->saver->getAnswer($sheet, $actualElement);
 
+        // таймер = курс - (текущее - старт)
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
@@ -59,7 +60,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
         );
     }
 
@@ -96,7 +97,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
         );
     }
 
@@ -136,7 +137,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
         );
     }
 
@@ -179,7 +180,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
         );
     }
 
@@ -219,7 +220,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp())
         );
     }
 
