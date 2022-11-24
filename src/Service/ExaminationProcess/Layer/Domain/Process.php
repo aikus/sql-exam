@@ -126,7 +126,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
         $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
-        $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+        $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
 
         return new ProcessState(
