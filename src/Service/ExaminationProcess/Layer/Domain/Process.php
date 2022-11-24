@@ -58,7 +58,8 @@ class Process
             $course->getType()->toArray(),
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult()
+            ($answer ?? null)?->getResult(),
+            $sheet->getStartedAt()
         );
     }
 
@@ -94,7 +95,8 @@ class Process
             $course->getType()->toArray(),
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult()
+            ($answer ?? null)?->getResult(),
+            $sheet->getStartedAt()
         );
     }
 
@@ -133,7 +135,8 @@ class Process
             $course->getType()->toArray(),
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult()
+            ($answer ?? null)?->getResult(),
+            $sheet->getStartedAt()
         );
     }
 
@@ -175,7 +178,8 @@ class Process
             $course->getType()->toArray(),
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult()
+            ($answer ?? null)?->getResult(),
+            $sheet->getStartedAt()
         );
     }
 
@@ -214,7 +218,8 @@ class Process
             $course->getType()->toArray(),
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult()
+            ($answer ?? null)?->getResult(),
+            $sheet->getStartedAt()
         );
     }
 

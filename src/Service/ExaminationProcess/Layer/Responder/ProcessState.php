@@ -23,7 +23,8 @@ class ProcessState extends Responder
         readonly array $elements,
         readonly ?CourseElement $currentElement,
         readonly ?string $sqlRequest = null,
-        readonly ?array $sqlResponse = null
+        readonly ?array $sqlResponse = null,
+        readonly \DateTimeInterface|null $startedAt = null
     ) {
     }
 
@@ -36,6 +37,7 @@ class ProcessState extends Responder
             'currentElement' => $this->currentElement,
             'sqlRequest' => $this->sqlRequest,
             'sqlResponse' => $this->sqlResponse,
+            'startedAt' => $this->startedAt->format('Y-m-d H:i:s'),
         ]);
     }
 
