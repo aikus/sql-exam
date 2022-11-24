@@ -41,7 +41,7 @@ export const Practice = () => {
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
     const [error, setError] = useState(false)
-    const [timer, setTimer] = useState(0);
+    const [timer, setTimer] = useState(null);
     const [showTimer, setShowTimer] = useState(false);
     const [redBorder, setRedBorder] = useState(false);
 
@@ -70,22 +70,16 @@ export const Practice = () => {
                 setAnswer(data.sqlRequest)
                 setError(false)
                 getElement(data)
+                setTimer(data?.secondsTimeLeft);
+                if (data?.secondsTimeLeft !== null) {
+                    startTimer();
+                }
             },
             error => {
                 setError(error)
                 setLoader(false)
             }
         );
-
-        const handleSuccess = (data) => {
-            setTimer(data?.timeLimit * 60);
-
-            if (data?.timeLimit !== 0) {
-                startTimer();
-            }
-        }
-
-        HttpRequest.get(`${hostName}/api-platform/courses/${course}`, (data) => handleSuccess(data));
     }
 
     const startTimer = () => {
@@ -318,7 +312,7 @@ export const Practice = () => {
                             </Button>
                         </div>
                     </ButtonGroup>
-                    {Boolean(timer) &&
+                    {timer &&
                       <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
                           {showTimer ?
                             <>
