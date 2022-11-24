@@ -98,6 +98,11 @@ export const MainPage = () => {
                                                 <Link to="course-management">Администрирование курсов</Link>
                                             </MenuItem>
                                           }
+                                          {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                                            <MenuItem onClick={handleMenuClose}>
+                                                <Link to="report">Результаты</Link>
+                                            </MenuItem>
+                                          }
                                       </MenuList>
                                   </ClickAwayListener>
                               </Paper>
@@ -117,6 +122,9 @@ export const MainPage = () => {
                     <Link to=""><TextL>Личный кабинет</TextL></Link>
                     {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
                       <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
+                    }
+                    {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                      <Link to="report"><TextL>Результаты</TextL></Link>
                     }
                 </C.NavBarItemsBox>
                 <C.ProfileBlock
