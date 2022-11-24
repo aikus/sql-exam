@@ -184,7 +184,7 @@ export const Practice = () => {
             data => {
                 setProcessState(data)
                 setError(false)
-                setAnswer('')
+                setAnswer(data.sqlRequest ?? '')
                 setSqlResponse(null)
             },
             error => {

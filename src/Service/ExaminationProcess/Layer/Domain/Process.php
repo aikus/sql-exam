@@ -3,6 +3,7 @@
 namespace App\Service\ExaminationProcess\Layer\Domain;
 
 use App\Entity\Course;
+use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
 use App\Entity\CourseSheetStatusNotFound;
@@ -173,13 +174,17 @@ class Process
 
         $this->saver->updateSheet($sheet, $nextElement ?: null, $now);
 
+        $nextAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($nextElement) {
+            return $answer->getQuestion()->getId() === $nextElement->getId();
+        })->last() ?: null;
+
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult(),
+            ($nextAnswer ?? null)?->getAnswer(),
+            ($nextAnswer ?? null)?->getResult(),
             $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
