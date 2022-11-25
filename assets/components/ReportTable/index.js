@@ -60,7 +60,7 @@ export const ReportTable = ({report}) => {
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
+                <Table stickyHeader aria-label="sticky table" size={'small'}>
                     <TableHead>
                         <TableRow>
                             {columns.map((column) => (
@@ -90,7 +90,7 @@ export const ReportTable = ({report}) => {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 25, 100]}
                 component="div"
                 count={rows().length}
                 rowsPerPage={rowsPerPage}
