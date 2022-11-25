@@ -58,14 +58,16 @@ class CourseResultController extends AbstractController
         return new JsonResponse($this->buildStudentCourseResultReport($sheet));
     }
 
-        #[Route('/report', name: 'app_api_report', methods: ['GET'])]
-    public function report(CourseSheetRepository $sheetRepository): Response
+    #[Route('/course/{id}/report/', name: 'app_api_course_report', methods: ['GET'])]
+    public function report(Course $course,CourseSheetRepository $sheetRepository): Response
     {
         /** @var CourseSheet[] $allSheet */
         $allSheet = $sheetRepository->matching(
             Criteria::create()
                 ->where(Criteria::expr()->neq('status', ''))
-                ->setMaxResults(1000)
+                ->andWhere(Criteria::expr()->neq('status', 'new'))
+                ->andWhere(Criteria::expr()->eq('course', $course))
+                ->setMaxResults(500)
         );
 
         foreach ($allSheet as $sheet) {
@@ -123,21 +125,30 @@ class CourseResultController extends AbstractController
     }
 
     /** @throws Exception */
-    private function lastAnswer(CourseElement $element, CourseSheet $sheet): ?CourseAnswer
+    private function lastRightAnswer(CourseElement $element, CourseSheet $sheet): ?CourseAnswer
     {
-        $iterator = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
-            return $answer->getQuestion()->getId() === $element->getId();
-        })->getIterator();
+        $lastRightAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
+            if ($answer->isIsRight()) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            }
+            return false;
+        })->last();
 
-        $iterator->uasort(fn(CourseAnswer $a, CourseAnswer $b) => $a->getId() <=> $b->getId());
+        if (!$lastRightAnswer) {
+            $lastRightAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            })->last();
+        }
 
-        return (new ArrayCollection(iterator_to_array($iterator)))->last() ?: null;
+//        $iterator->uasort(fn(CourseAnswer $a, CourseAnswer $b) => $a->getId() <=> $b->getId());
+
+        return $lastRightAnswer ?: null;
     }
 
     private function buildStudentCourseResultReport(CourseSheet $sheet): array
     {
         foreach ($sheet->getCourse()?->getType() ?? [] as $element) {
-            $answer = $this->lastAnswer($element, $sheet);
+            $answer = $this->lastRightAnswer($element, $sheet);
             $table[] = [
                 '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
@@ -150,6 +161,7 @@ class CourseResultController extends AbstractController
             'courseName' => $sheet->getCourse()?->getName(),
             'head' => [],
             'table' => $table ?? [],
+            'fio' => $sheet->getStudent()->getFio()
         ];
     }
 }

@@ -8,23 +8,41 @@ import {Box} from "@mui/material";
 
 export const Report = () => {
 
-    const [reports, setReports] = useState({})
+    const [reports, setReports] = useState({courses: {}})
     const [loader, setLoader] = useState(true)
     const [error, setError] = useState(false)
 
     const requestReport = () => {
         setLoader(true)
-        HttpRequest.get(`/api/report`,
+        HttpRequest.get(`/api-platform/courses`,
             data => {
-                setReports(data)
-                setError(false)
-                setLoader(false)
+                data.map(course => {
+                    HttpRequest.get(`/api/course/${course.id}/report/`,
+                        data => {
+                            addReport(course.id, data)
+                            setError(false)
+                            setLoader(false)
+                        },
+                        error => {
+                            setError(error)
+                            setLoader(false)
+                        }
+                    );
+                })
             },
             error => {
                 setError(error)
                 setLoader(false)
-            }
-        );
+            });
+    }
+
+    const addReport = (courseId, report) => {
+        let courseData = {courses: {}};
+        courseData.courses = reports.courses;
+        Object.keys(report.courses).map((course) => {
+            courseData.courses[course] = report.courses[course];
+        })
+        setReports(courseData);
     }
 
     useEffect(() => {
@@ -38,10 +56,10 @@ export const Report = () => {
 
             {
                 reports?.courses &&
-                Object.keys(reports.courses).map((report) => {
+                Object.keys(reports.courses).map((course) => {
                     return <Box my={3}>
-                        <p>{reports.courses[report].header}</p>
-                        <ReportTable report={reports.courses[report].data}/>
+                        <p>{reports.courses[course].header}</p>
+                        <ReportTable report={reports.courses[course].data}/>
                     </Box>
                 })
             }
