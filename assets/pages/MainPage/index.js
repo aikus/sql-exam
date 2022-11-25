@@ -12,19 +12,15 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 import {Auth, GetPermission} from '../../Service/Auth'
-import CourseRepository from "./CourseRepository";
 
 export const MainPage = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
-    const [inProgress, setInProgress] = useState([])
-    const [newCurses, setNewCourses] = useState([])
-    const [completedCourses, setCompletedCourses] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [userInfo, setUserInfo] = useState({})
-    const [outletContent, setOutletContent] = useState({newCurses, inProgress, completedCourses, userInfo})
+    const [outletContent, setOutletContent] = useState({userInfo})
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleProfileMenuClick = (e) => {
@@ -63,15 +59,12 @@ export const MainPage = () => {
             Auth.role = data.roles;
         }
 
-        CourseRepository.getNewCourses().then(setNewCourses);
-        CourseRepository.getStartedCourses().then(setInProgress);
-        CourseRepository.getCompletedCourses().then(setCompletedCourses);
         HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
     }, [])
 
     useEffect(() => {
-        setOutletContent({newCurses, inProgress, completedCourses, userInfo})
-    }, [newCurses, inProgress, completedCourses, userInfo])
+        setOutletContent({userInfo})
+    }, [userInfo])
 
     return (
         <C.Wrapper>
