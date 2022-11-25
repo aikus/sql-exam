@@ -56,7 +56,7 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
           <TextL>Пока не создано ни одного курса</TextL>
         </C.LoadingBlock>
       }
-      {items !== null &&
+      {items !== null && items.length &&
         <C.AccordionBlock>
           {items.map((item, i) => {
             return (
