@@ -58,21 +58,21 @@ export const MyProfile = () => {
             </section>
             <section>
                 <CourseBlock
-                    id={'in-progress'}
-                    title={"В процессе"}
+                    id='in-progress'
+                    title="В процессе"
                     items={inProgress}
-                    mainButton={"Продолжить прохождение"}
-                    resultButton={"Test 123"}
+                    mainButton="Продолжить прохождение"
+                    resultButton=""
                     noCourseText="У Вас нет курсов в процессе прохождения"
                 />
             </section>
             <section>
                 <CourseBlock
-                    id={'completed-courses'}
-                    title={"Завершённые"}
+                    id='completed-courses'
+                    title="Завершённые"
                     items={completedCourses}
-                    mainButton={""}
-                    resultButton={"Результаты"}
+                    mainButton=""
+                    resultButton="Результаты"
                     noCourseText="Вы пока не завершили ни один курс"
                 />
             </section>
