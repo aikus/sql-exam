@@ -1,11 +1,11 @@
 import { createTheme } from "@mui/material";
-import { yellow, grey } from '@mui/material/colors';
+import { blue, grey } from '@mui/material/colors';
 
 export const theme = createTheme({
     palette: {
         type: "maim",
         primary: {
-            main: yellow["600"],
+            main: blue["700"],
         },
         secondary: {
             main: grey["900"],
@@ -24,5 +24,10 @@ export const theme = createTheme({
                 },
             },
         },
+    },
+    typography: {
+        button: {
+            textTransform: 'none'
+        }
     }
 });

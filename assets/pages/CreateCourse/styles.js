@@ -113,27 +113,26 @@ export const ButtonsBlock = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 32px;
+  gap: 8px;
   
-  & button {
-    width: unset;
-  }
-  
-  & > div:first-child {
-    display: flex;
+  @media(min-width: 768px) {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #BFBFBF;
   }
 `
 
 export const MovementButtons = styled.div`
-  display: flex;
-  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #BFBFBF;
+  padding-bottom: 24px;
 `
 
 export const StepActions = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 8px;
+
+  @media(min-width: 768px) {
+    flex-direction: row;
+  }
 `

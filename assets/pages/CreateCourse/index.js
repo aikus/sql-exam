@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel } from "@mui/material";
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {TaskSheet} from './TaskSheet'
 import {Loader} from "../../components/Loader";
@@ -271,7 +271,8 @@ export const CreateCourse = () => {
               {/*    </C.FieldBox>*/}
               {/*  </C.CheckBoxControled>*/}
               {/*}*/}
-              <Button
+              <ButtonCust
+                size='l'
                 onClick={() => {
                   setLoader(true)
                   if (courseMainInfo.courseId) {
@@ -280,7 +281,7 @@ export const CreateCourse = () => {
                     createCourseReq()
                   }
                 }}
-              >{searchParam.get('course') ? 'Далее' : 'Создать шаг'}</Button>
+              >{searchParam.get('course') ? 'Далее' : 'Создать шаг'}</ButtonCust>
             </C.FirstStep>
           }
           {step >= 1 &&

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as C from './styles'
 import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails, Dialog } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import { H4, TextL } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import {LoaderInBLock} from "../../components/Loader/LoaderInBLock";
@@ -68,18 +68,16 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <C.Description>
-                    <TextL>{item.description}</TextL>
                     <C.ButtonWrapper>
-                      <Button
-                        size={'S'}
+                      <ButtonCust
                         onClick={() => editCourse(item.id)}
-                      >Редактирование</Button>
-                      <Button
-                        size={'S'}
-                        view={'outlined'}
+                      >Редактирование</ButtonCust>
+                      <ButtonCust
+                        variant={'outlined'}
                         onClick={() => setDelCourseInf({id: item.id, isOpen: true})}
-                      >Удалить</Button>
+                      >Удалить</ButtonCust>
                     </C.ButtonWrapper>
+                    <TextL>{item.description}</TextL>
                   </C.Description>
                 </AccordionDetails>
               </Accordion>
