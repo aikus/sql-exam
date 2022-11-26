@@ -1,10 +1,11 @@
 import React from 'react';
 import * as C from './styles'
-import {Accordion, AccordionSummary, AccordionDetails, ButtonGroup, Button, Grid, Stack, Skeleton} from "@mui/material";
+import {Accordion, AccordionSummary, AccordionDetails, Skeleton} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import { H2, TextL } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
+import {ButtonCust} from '../../../components/Button'
 
 export const CourseBlock = ({id, items, title, mainButton, resultButton, noCourseText}) => {
     const navigate = useNavigate();
@@ -48,15 +49,15 @@ export const CourseBlock = ({id, items, title, mainButton, resultButton, noCours
                             <C.Title><TextL>{item.name}</TextL></C.Title>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Stack direction="row" justifyContent={"flex-start"} spacing={2} sx={{marginBottom: "2rem"}}>
-                                {mainButton && <Button size='S' variant={"contained"} onClick={() => goToPractice(item.id)}>
-                                    {mainButton}
-                                </Button>}
-                                {resultButton && <Button size='S' variant={"contained"} color={"inherit"} onClick={() => goToCourseResult(item.id)}>
-                                    {resultButton}
-                                </Button>}
-                            </Stack>
                             <C.Description>
+                                <C.Buttons>
+                                    {mainButton &&
+                                      <ButtonCust onClick={() => goToPractice(item.id)}>{mainButton}</ButtonCust>
+                                    }
+                                    {resultButton &&
+                                      <ButtonCust onClick={() => goToCourseResult(item.id)} variant='outlined'>{resultButton}</ButtonCust>
+                                    }
+                                </C.Buttons>
                                 <TextL>{item.description}</TextL>
                             </C.Description>
                         </AccordionDetails>

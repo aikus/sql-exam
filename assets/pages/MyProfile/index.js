@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import { H2, TextL, TextM } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
@@ -36,8 +36,8 @@ export const MyProfile = () => {
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
                         <C.ButtonBox>
-                            <Button size={'S'}>Посмотреть другие курсы</Button>
-                            <Button size={'S'}>Посмотреть свою подробную статистику</Button>
+                            <ButtonCust>Посмотреть другие курсы</ButtonCust>
+                            <ButtonCust variant='outlined'>Посмотреть свою подробную статистику</ButtonCust>
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>
@@ -62,7 +62,7 @@ export const MyProfile = () => {
                     title={"В процессе"}
                     items={inProgress}
                     mainButton={"Продолжить прохождение"}
-                    resultButton={""}
+                    resultButton={"Test 123"}
                     noCourseText="У Вас нет курсов в процессе прохождения"
                 />
             </section>

@@ -52,12 +52,20 @@ export const ForgotPassword = styled.div`
 `
 
 export const ButtonBox = styled.div`
+  width: 100%;
+  margin-top: 24px;
+  
+  & > button {
     width: 100%;
-    margin-top: 24px;
+  }
 `
 
 export const ButtonReg = styled(ButtonBox)`
-    margin-top: 40px;
+  margin-top: 40px;
+
+  & > button {
+    width: 100%;
+  }
 `
 
 export const RegistrationText = styled.div`

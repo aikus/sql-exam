@@ -11,7 +11,7 @@ import {
   TextField
 } from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import {Loader} from "../../components/Loader";
 import {H5, TextM} from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
@@ -234,7 +234,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>
-          <Button size={'S'} onClick={addVariant}>Добавить вариант</Button>
+          <ButtonCust onClick={addVariant}>Добавить вариант</ButtonCust>
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
@@ -290,25 +290,24 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       <C.ButtonsBlock>
         <div>
           <C.StepActions>
-            <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
-            <Button onClick={() => handleSaveStep()} size={'S'} view='outlined'>Сохранить шаг</Button>
-            <Button onClick={handleCreateStep} size={'S'}>Добавить шаг</Button>
+            <ButtonCust onClick={() => setDialogOpen(true)} variant='outlined'>Удалить шаг</ButtonCust>
+            <ButtonCust onClick={() => handleSaveStep()} variant='outlined'>Сохранить шаг</ButtonCust>
+            <ButtonCust onClick={handleCreateStep}>Добавить шаг</ButtonCust>
           </C.StepActions>
           {searchParam.get('course') ?
-            <Button size={'S'} onClick={handleExitCourse}>Завершить редактирование курса</Button>
+            <ButtonCust onClick={handleExitCourse}>Завершить редактирование курса</ButtonCust>
             :
-            <Button size={'S'} onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
+            <ButtonCust onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</ButtonCust>
           }
 
         </div>
         <C.MovementButtons>
-          <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
-          <Button
+          <ButtonCust onClick={handlePrevStep} variant='outlined'>Назад</ButtonCust>
+          <ButtonCust
             onClick={() => handleNextStep()}
-            view='outlined'
-            size={'S'}
+            variant='outlined'
             disabled={courseContent.length === step}
-          >Далее</Button>
+          >Далее</ButtonCust>
         </C.MovementButtons>
       </C.ButtonsBlock>
 
