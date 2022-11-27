@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     TableContainer,
     Paper,
@@ -7,11 +7,14 @@ import {
     TableCell,
     TableBody,
     TablePagination,
-    Button
+    Button, Container
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
+import {HttpRequest} from "../../Service/HttpRequest";
+import {Notice} from "../Notice";
+import {ReCheckReport} from "./ReCheckReport";
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy]?.value < a[orderBy]?.value) {
@@ -41,14 +44,16 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-export const ReportTable = ({rows = [], title}) => {
+export const ReportTable = ({title = '', courseId = null, rows = []}) => {
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [order, setOrder] = React.useState('asc')
+    const [orderBy, setOrderBy] = React.useState('calories')
+    const [page, setPage] = React.useState(0)
+    const [rowsPerPage, setRowsPerPage] = React.useState(5)
+    const [reCheckReport, setReCheckReport] = useState({status: null, report: []})
+    const [error, setError] = useState(false)
     const columns = [
         { id: 'id', label: 'ID', width: 50 },
         { id: 'fio', label: 'ФИО', minWidth: 250 },
@@ -56,22 +61,45 @@ export const ReportTable = ({rows = [], title}) => {
         { id: 'rightCount', label: 'Количество выполненных', width: 50 },
         { id: 'status', label: 'Статус', width: 50 },
         { id: 'actions', label: 'Действия', width: 50 },
-    ];
+    ]
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-    };
+    }
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-    };
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
+    }
+
+    const handleReCheck = (loader, setLoader, setReCheckSuccess) => {
+        if (!loader) {
+            setLoader(true);
+            HttpRequest.get('/api/re-check/'+courseId,
+                data => {
+                    setReCheckReport(data);
+                    setReCheckSuccess(data.status === 'success')
+                    setLoader(false);
+                },
+                error => {
+                    console.info('error', error)
+                    setError(error)
+                    setLoader(false);
+                }
+            )
+        }
+
+    }
+
+    const closeReCheck = () => {
+        setReCheckReport({status: null, report: []})
+    }
 
     const goToReportByStudent = (params) => {
         navigate(`/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`)
@@ -93,7 +121,12 @@ export const ReportTable = ({rows = [], title}) => {
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <EnhancedTableToolbar title={title}/>
+            <Notice message={error}/>
+
+            <EnhancedTableToolbar title={title} handleReCheck={handleReCheck} closeReCheck={closeReCheck}/>
+            <Container>
+                <ReCheckReport report={reCheckReport.report} status={reCheckReport.status} />
+            </Container>
             <TableContainer>
                 <Table stickyHeader aria-label="sticky table" size={'small'}>
                     <EnhancedTableHead
@@ -107,7 +140,7 @@ export const ReportTable = ({rows = [], title}) => {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id?.value}>
+                                    <TableRow hover tabIndex={-1} key={row.id?.value}>
                                         {columns.map((column) => {
                                             return (tableCell(column, row));
                                         })}

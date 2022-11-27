@@ -49,6 +49,15 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
             }
             if (handleError) {
                 if (init.method !== 'DELETE') {
+                    if (error.status === 500) {
+                        handleError({
+                            status: error.status,
+                            statusText: error.statusText,
+                            body: error.body
+                        })
+                        return error
+                    }
+
                     error.json().then(json => {
                         handleError({
                             status: error.status,

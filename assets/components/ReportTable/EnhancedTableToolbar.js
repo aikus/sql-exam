@@ -1,9 +1,14 @@
-import React from 'react';
-import {IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
+import React, {useState} from 'react';
+import {Box, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import CloseIcon from "@mui/icons-material/Close";
 
 const EnhancedTableToolbar = (props) => {
-    const { title } = props;
+    const { title, handleReCheck, closeReCheck } = props;
+
+    const [loader, setLoader] = useState(false)
+    const [reCheckSuccess, setReCheckSuccess] = useState(false)
+
     return (
         <Toolbar
             sx={{
@@ -19,13 +24,33 @@ const EnhancedTableToolbar = (props) => {
             >
                 {title}
             </Typography>
-            <Tooltip title="Re-check">
-                <IconButton>
-                    <PublishedWithChangesIcon />
-                </IconButton>
-            </Tooltip>
+            <Box sx={{ m: 1, position: 'relative' }}>
+                <Tooltip title="Re-check">
+                    {
+                        reCheckSuccess
+                            ? <IconButton onClick={closeReCheck}>
+                                <CloseIcon />
+                            </IconButton>
+                            : <IconButton onClick={() => {handleReCheck(loader, setLoader, setReCheckSuccess)}}>
+                                <PublishedWithChangesIcon color={"primary"} />
+                            </IconButton>
+                    }
+                </Tooltip>
+                {loader && (
+                    <CircularProgress
+                        size={40}
+                        sx={{
+                            color: 'primary',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            zIndex: 1,
+                        }}
+                    />
+                )}
+            </Box>
         </Toolbar>
-    );
+    )
 }
 
 export default EnhancedTableToolbar;

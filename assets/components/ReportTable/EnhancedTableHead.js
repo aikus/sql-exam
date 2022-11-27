@@ -1,7 +1,6 @@
-import {Box, TableCell, TableHead, TableRow} from "@mui/material";
 import React from "react";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import {visuallyHidden} from "@mui/utils";
+import { Box, TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import { visuallyHidden } from "@mui/utils";
 
 const EnhancedTableHead = (props) => {
 

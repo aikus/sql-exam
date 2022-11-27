@@ -74,7 +74,8 @@ class CourseResultController extends AbstractController
 
             $courseId = $sheet->getCourse()->getId();
 
-            $courses['/api-platform/courses/' . $courseId]['header'] = $sheet->getCourse()->getName();
+            $courses['/api-platform/courses/' . $courseId]['title'] = $sheet->getCourse()->getName();
+            $courses['/api-platform/courses/' . $courseId]['courseId'] = $sheet->getCourse()->getId();
             $courses['/api-platform/courses/' . $courseId]['data'][] = [
                 'id' => [
                     'value' => $sheet->getId()

@@ -56,9 +56,13 @@ export const Report = () => {
 
             {
                 reports?.courses &&
-                Object.keys(reports.courses).map((course) => {
+                Object.keys(reports.courses).map((courseApi) => {
                     return <Box my={3}>
-                        <ReportTable rows={reports.courses[course].data} title={reports.courses[course].header}/>
+                        <ReportTable
+                            title={reports.courses[courseApi].title}
+                            courseId={reports.courses[courseApi].courseId}
+                            rows={reports.courses[courseApi].data}
+                        />
                     </Box>
                 })
             }
