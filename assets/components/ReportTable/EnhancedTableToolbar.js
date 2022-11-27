@@ -28,7 +28,7 @@ const EnhancedTableToolbar = (props) => {
                 <Tooltip title="Re-check">
                     {
                         reCheckSuccess
-                            ? <IconButton onClick={closeReCheck}>
+                            ? <IconButton onClick={() => {closeReCheck(setReCheckSuccess)}}>
                                 <CloseIcon />
                             </IconButton>
                             : <IconButton onClick={() => {handleReCheck(loader, setLoader, setReCheckSuccess)}}>

@@ -97,7 +97,8 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
 
     }
 
-    const closeReCheck = () => {
+    const closeReCheck = (setReCheckSuccess) => {
+        setReCheckSuccess(false)
         setReCheckReport({status: null, report: []})
     }
 
