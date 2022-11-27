@@ -15,6 +15,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import {hostName} from "../../config";
+import {ButtonCust} from '../../components/Button';
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -362,22 +363,23 @@ export const Practice = () => {
                             </C.Description>
                         }
                         <C.ButtonBox>
-                            {
-                                isAnswerable()
-                                && <div>
-                                    <Button variant={'contained'} color="primary"
-                                            onClick={handleExecution}>
-                                        Выполнить запрос
-                                    </Button>
-                                </div>
+                            {isAnswerable() &&
+                              <div>
+                                <ButtonCust
+                                  onClick={handleExecution}
+                                >
+                                    Выполнить запрос
+                                </ButtonCust>
+                              </div>
                             }
-                            {
-                                !isExistNextStep
-                                && <Button size='S' variant={'contained'} onClick={() => {
+                            {!isExistNextStep &&
+                              <ButtonCust
+                                onClick={() => {
                                     handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
-                                }}>
+                                }}
+                              >
                                     Завершить
-                                </Button>
+                              </ButtonCust>
                             }
                         </C.ButtonBox>
                     </C.LeftBlock>
