@@ -14,7 +14,6 @@ import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
-import {hostName} from "../../config";
 import {ButtonCust} from '../../components/Button';
 
 export const Practice = () => {
