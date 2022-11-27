@@ -10,7 +10,7 @@ export const ButtonCust = (props) => {
 
     return (
         <>
-            {!variant &&
+            {(!variant || variant === 'contained') &&
               <StandardButton {...props} size={size} title={title}>{children}</StandardButton>
             }
             {variant === 'outlined' &&
