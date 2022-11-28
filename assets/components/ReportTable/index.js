@@ -55,7 +55,7 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
     const [reCheckReport, setReCheckReport] = useState({status: null, report: []})
     const [error, setError] = useState(false)
     const columns = [
-        { id: 'id', label: 'ID', width: 50 },
+        { id: 'id', label: 'ID табеля', width: 50 },
         { id: 'fio', label: 'ФИО', minWidth: 250 },
         { id: 'finishTime', label: 'Время завершения', width: 50 },
         { id: 'rightCount', label: 'Количество выполненных', width: 50 },
@@ -159,6 +159,7 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage={'На странице'}
             />
         </Paper>
     );

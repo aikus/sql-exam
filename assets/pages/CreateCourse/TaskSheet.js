@@ -182,7 +182,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           <Button
             size='medium'
             variant='outlined'
-            onClick={handlePrevStep}
+            onClick={() => handlePrevStep()}
             color="secondary"
             startIcon={<ChevronLeftRoundedIcon/>}
           >
@@ -191,7 +191,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           <Button
             size='medium'
             variant='outlined'
-            onClick={handleNextStep}
+            onClick={() => handleNextStep()}
             color="secondary"
             disabled={courseContent.length === step}
             endIcon={<ChevronRightRoundedIcon />}
