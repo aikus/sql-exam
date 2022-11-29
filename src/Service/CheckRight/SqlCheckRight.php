@@ -4,7 +4,6 @@ namespace App\Service\CheckRight;
 
 use App\Connectors\PdoConnection;
 use App\Entity\CourseAnswer;
-use App\Entity\CourseSheet;
 use App\Service\CheckRight\Domain\CheckRight;
 use App\Service\CheckRight\Domain\Comparator;
 use App\Service\CheckRight\Domain\Question;
@@ -16,8 +15,14 @@ use App\Service\CheckRight\UseCase\Sql\SqlExecutor;
 class SqlCheckRight implements CheckRight
 {
     public function __construct(
-        private readonly PdoConnection $connection,
+        private PdoConnection $connection,
     ) {
+    }
+
+    public function setConnection(PdoConnection $connection): self
+    {
+        $this->connection = $connection;
+        return $this;
     }
 
     public function checkAnswer(CourseAnswer $answer, \DateTimeInterface $now = null): int
