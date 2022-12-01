@@ -11,7 +11,8 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
-import {Auth, GetPermission} from '../../Service/Auth'
+import {GetPermission} from '../../Service/AskPermission'
+import useAuth from '../../hooks/useAuth'
 
 export const MainPage = () => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ export const MainPage = () => {
     const [userInfo, setUserInfo] = useState({})
     const [outletContent, setOutletContent] = useState({userInfo})
     const [menuOpen, setMenuOpen] = useState(false);
+    const {setAuth} = useAuth();
 
     const handleProfileMenuClick = (e) => {
         setAnchorEl(e.currentTarget);
@@ -56,7 +58,7 @@ export const MainPage = () => {
     useEffect(() => {
         const handleSetUserInfo = (data) => {
             setUserInfo(data)
-            Auth.role = data.roles;
+            setAuth({roles: data.roles})
         }
 
         HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
