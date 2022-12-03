@@ -8,11 +8,10 @@ use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
 use App\Entity\User;
 use App\Repository\CourseSheetRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +30,7 @@ class CourseResultController extends AbstractController
     {
         $user = $this->security->getUser();
 
-        if(!$user) {
+        if (!$user) {
             return new JsonResponse([]);
         }
 
@@ -59,7 +58,7 @@ class CourseResultController extends AbstractController
     }
 
     #[Route('/course/{id}/report/', name: 'app_api_course_report', methods: ['GET'])]
-    public function report(Course $course,CourseSheetRepository $sheetRepository): Response
+    public function report(Course $course, CourseSheetRepository $sheetRepository): Response
     {
         /** @var CourseSheet[] $allSheet */
         $allSheet = $sheetRepository->matching(
@@ -71,7 +70,6 @@ class CourseResultController extends AbstractController
         );
 
         foreach ($allSheet as $sheet) {
-
             $courseId = $sheet->getCourse()->getId();
 
             $courses['/api-platform/courses/' . $courseId]['title'] = $sheet->getCourse()->getName();
@@ -104,6 +102,37 @@ class CourseResultController extends AbstractController
             'courses' => $courses ?? [],
         ]);
     }
+    #[Route('/course/{id}/statistic/', name: 'app_api_course_statistic', methods: ['GET'])]
+    public function statistic(Course $course, CourseSheetRepository $sheetRepository): Response
+    {
+        $sheetCollection = $sheetRepository->findBy(['course' => $course]);
+        /** @var Collection<int, CourseElement> $questionCollection */
+        $questionCollection = $sheetCollection[0]?->getCourse()->getType();
+
+        $i = 1;
+        foreach ($sheetCollection as $sheet) {
+            $answers = $sheet->getCourseAnswers();
+            foreach ($questionCollection as $question) {
+                if ($this->rightAnswerCountByQuestion($answers, $question) > 0) {
+                    if (isset($result[$question->getId()])) {
+                        $result[$question->getId()] += 1;
+                    }
+                    else {
+                        $result[$question->getId()] = 1;
+                    }
+                }
+            }
+            $i++;
+        }
+
+        return new JsonResponse([
+            'course' => $course->getName(),
+            'labels' => array_map(function (CourseElement $question) {
+                return ['id' => $question->getId(), 'name' => $question->getName()];
+            }, $questionCollection->toArray()),
+            'result' => $result ?? [],
+        ]);
+    }
 
     private function rightAnswerCount(CourseSheet $sheet): int
     {
@@ -112,15 +141,28 @@ class CourseResultController extends AbstractController
 
         $result = 0;
         foreach ($questions as $element) {
-            $rightAnswer = $answers->filter(function (CourseAnswer $answer) use ($element) {
-                if ($answer->isIsRight()) {
-                    return $answer->getQuestion()->getId() === $element->getId();
-                }
-                return false;
-            })->last();
-
-            if ($rightAnswer) $result++;
+            $result += $this->rightAnswerCountByQuestion($answers, $element);
         }
+
+        return $result;
+    }
+
+    /**
+     * @param Collection<int, CourseAnswer> $answers
+     * @param CourseElement $element
+     * @return int
+     */
+    private function rightAnswerCountByQuestion(Collection $answers, CourseElement $element): int
+    {
+        $result = 0;
+        $rightAnswer = $answers->filter(function (CourseAnswer $answer) use ($element) {
+            if ($answer->isIsRight()) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            }
+            return false;
+        })->last();
+
+        if ($rightAnswer) $result++;
 
         return $result;
     }
