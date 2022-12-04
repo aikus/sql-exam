@@ -108,7 +108,7 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
         return <TableCell key={column.id} align={column.align}>
             {column.id === 'actions'
                 ? <Button
-                    variant={"contained"}
+                    variant={"outlined"}
                     href={linkToReportByStudent(row[column.id]?.params)}
                     target="_blank"
                     underline="none"
