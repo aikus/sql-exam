@@ -1,13 +1,17 @@
 import React, {useState} from 'react';
-import {Box, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CloseIcon from "@mui/icons-material/Close";
 
 const EnhancedTableToolbar = (props) => {
-    const { title, handleReCheck, closeReCheck } = props;
+    const { title, handleReCheck, closeReCheck, courseId } = props;
 
     const [loader, setLoader] = useState(false)
     const [reCheckSuccess, setReCheckSuccess] = useState(false)
+
+    const linkToStatistic = (courseId) => {
+        return `/react/my-profile/statistic?course=${courseId}`
+    }
 
     return (
         <Toolbar
@@ -24,6 +28,14 @@ const EnhancedTableToolbar = (props) => {
             >
                 {title}
             </Typography>
+            <Button
+                variant={"contained"}
+                target="_blank"
+                href={linkToStatistic(courseId)}
+                underline="none"
+            >
+                Статистика
+            </Button>
             <Box sx={{ m: 1, position: 'relative' }}>
                 <Tooltip title="Re-check">
                     {

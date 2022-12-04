@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import {
     TableContainer,
     Paper,
@@ -9,7 +9,6 @@ import {
     TablePagination,
     Button, Container
 } from '@mui/material';
-import { useNavigate } from "react-router-dom";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
 import {HttpRequest} from "../../Service/HttpRequest";
@@ -45,8 +44,6 @@ function stableSort(array, comparator) {
 }
 
 export const ReportTable = ({title = '', courseId = null, rows = []}) => {
-
-    const navigate = useNavigate()
 
     const [order, setOrder] = React.useState('asc')
     const [orderBy, setOrderBy] = React.useState('calories')
@@ -102,8 +99,8 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
         setReCheckReport({status: null, report: []})
     }
 
-    const goToReportByStudent = (params) => {
-        navigate(`/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`)
+    const linkToReportByStudent = (params) => {
+        return `/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`
     }
 
     const tableCell = (column, row) => {
@@ -112,7 +109,9 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
             {column.id === 'actions'
                 ? <Button
                     variant={"contained"}
-                    onClick={() => {goToReportByStudent(row[column.id]?.params)}}
+                    href={linkToReportByStudent(row[column.id]?.params)}
+                    target="_blank"
+                    underline="none"
                 >
                     {value}
                 </Button>
@@ -124,10 +123,13 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Notice message={error}/>
 
-            <EnhancedTableToolbar title={title} handleReCheck={handleReCheck} closeReCheck={closeReCheck}/>
-            <Container>
-                <ReCheckReport report={reCheckReport.report} status={reCheckReport.status} />
-            </Container>
+            <EnhancedTableToolbar
+                title={title}
+                handleReCheck={handleReCheck}
+                closeReCheck={closeReCheck}
+                courseId={courseId}
+            />
+            <ReCheckReport report={reCheckReport.report} status={reCheckReport.status} />
             <TableContainer>
                 <Table stickyHeader aria-label="sticky table" size={'small'}>
                     <EnhancedTableHead

@@ -79,35 +79,32 @@ class ReCheckController extends AbstractController
         CourseAnswer $answer,
         CourseAnswerRepository $repository
     ): void {
+        $userId = $answer->getCourceSheet()->getStudent()->getId();
         try {
             $old = $answer->isIsRight();
             $this->factory->getHandler($answer)->handle($answer);
             $repository->add($answer);
 
             if ($old !== $answer->isIsRight()) {
-                $this->userAnswerIds[] = $answer->getId();
+                $this->userAnswerIds[$userId][] = $answer->getId();
             }
-            $this->increment(
-                $this->userAnswerCountSuccess,
-                $answer->getCourceSheet()->getStudent()->getId()
-            );
+
+            if (isset($this->userAnswerCountSuccess[$userId])) {
+                $this->userAnswerCountSuccess[$userId]++;
+            }
+            else {
+                $this->userAnswerCountSuccess[$userId] = 1;
+            }
         }
         catch (\Throwable $e) {
-            $this->increment(
-                $this->userAnswerCountError,
-                $answer->getCourceSheet()->getStudent()->getId()
-            );
-            return;
-        }
-    }
 
-    private function increment(array &$counter, int $userId): void
-    {
-        if (isset($counter[$userId])) {
-            $counter[$userId]++;
-        }
-        else {
-            $counter[$userId] = 1;
+            if (isset($this->userAnswerCountError[$userId])) {
+                $this->userAnswerCountError[$userId]++;
+            }
+            else {
+                $this->userAnswerCountError[$userId] = 1;
+            }
+            return;
         }
     }
 }
