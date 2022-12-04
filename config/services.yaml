@@ -42,6 +42,8 @@ services:
     App\Connectors\Student\ExaminationRepository: ~
     RandomLib\Factory: ~
     App\Service\RandomGeneratorFactory: ~
+    App\Service\ReCheck\ReCheck: ~
+
     RandomLib\Generator:
         factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
 
