@@ -17,23 +17,27 @@ export const Report = () => {
         HttpRequest.get(`/api-platform/courses`,
             data => {
                 data.map(course => {
-                    HttpRequest.get(`/api/course/${course.id}/report/`,
-                        data => {
-                            addReport(course.id, data)
-                            setError(false)
-                            setLoader(false)
-                        },
-                        error => {
-                            setError(error)
-                            setLoader(false)
-                        }
-                    );
+                    fetchReport(course.id)
                 })
             },
             error => {
                 setError(error)
                 setLoader(false)
             });
+    }
+
+    const fetchReport = (courseId) => {
+        HttpRequest.get(`/api/course/${courseId}/report/`,
+            data => {
+                addReport(courseId, data)
+                setError(false)
+                setLoader(false)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        );
     }
 
     const addReport = (courseId, report) => {
@@ -62,6 +66,7 @@ export const Report = () => {
                             title={reports.courses[courseApi].title}
                             courseId={reports.courses[courseApi].courseId}
                             rows={reports.courses[courseApi].data}
+                            fetchReport={fetchReport}
                         />
                     </Box>
                 })

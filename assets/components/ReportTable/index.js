@@ -43,7 +43,7 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-export const ReportTable = ({title = '', courseId = null, rows = []}) => {
+export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport = () => {}}) => {
 
     const [order, setOrder] = React.useState('asc')
     const [orderBy, setOrderBy] = React.useState('calories')
@@ -82,6 +82,7 @@ export const ReportTable = ({title = '', courseId = null, rows = []}) => {
                 data => {
                     setReCheckReport(data);
                     setReCheckSuccess(data.status === 'success')
+                    fetchReport(courseId)
                     setLoader(false);
                 },
                 error => {
