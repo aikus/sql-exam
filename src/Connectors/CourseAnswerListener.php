@@ -2,7 +2,7 @@
 
 namespace App\Connectors;
 
-use App\Connectors\AnswerHandler\Factory;
+use App\Connectors\CourseElementHandler\Factory;
 use App\Entity\CourseAnswer;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 

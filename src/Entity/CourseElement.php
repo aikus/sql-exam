@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\CourseElementListener;
 use App\Repository\CourseElementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\EntityListeners([CourseElementListener::class])]
 #[ORM\Entity(repositoryClass: CourseElementRepository::class)]
 #[ApiResource]
 class CourseElement
@@ -39,7 +42,12 @@ class CourseElement
     private ?string $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ApiProperty(security: "is_granted('ROLE_TEACHER')")]
     private ?string $answer = null;
+
+    #[ORM\Column(nullable: true)]
+    #[ApiProperty(security: "is_granted('ROLE_TEACHER')")]
+    private array $answerExecutionResult = [];
 
     public function getId(): ?int
     {
@@ -120,6 +128,18 @@ class CourseElement
     public function setAnswer(?string $answer): self
     {
         $this->answer = $answer;
+
+        return $this;
+    }
+
+    public function getAnswerExecutionResult(): array
+    {
+        return $this->answerExecutionResult ?? [];
+    }
+
+    public function setAnswerExecutionResult(?array $answerExecutionResult): self
+    {
+        $this->answerExecutionResult = $answerExecutionResult ?? [];
 
         return $this;
     }

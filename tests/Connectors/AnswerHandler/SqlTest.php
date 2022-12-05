@@ -2,7 +2,7 @@
 
 namespace App\Tests\Connectors\AnswerHandler;
 
-use App\Connectors\AnswerHandler\Sql;
+use App\Connectors\CourseElementHandler\Sql;
 use App\Connectors\PdoConnection;
 use App\Entity\CourseAnswer;
 use App\Service\CheckRight\Domain\CheckRight;
