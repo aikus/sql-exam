@@ -16,10 +16,10 @@ import {Notice} from "../Notice";
 import {ReCheckReport} from "./ReCheckReport";
 
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy]?.value < a[orderBy]?.value) {
+    if (b.columns[orderBy] < a.columns[orderBy]) {
         return -1;
     }
-    if (b[orderBy]?.value > a[orderBy]?.value) {
+    if (b.columns[orderBy] > a.columns[orderBy]) {
         return 1;
     }
     return 0;
@@ -104,20 +104,48 @@ export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport
         return `/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`
     }
 
-    const tableCell = (column, row) => {
-        const value = row[column.id]?.value;
+    const linkToStatisticByStudent = (params) => {
+        return `/react/my-profile/student-statistic?student=${params?.studentId}`
+    }
+
+    const tableCell = (row, column, params) => {
         return <TableCell key={column.id} align={column.align}>
-            {column.id === 'actions'
-                ? <Button
-                    variant={"outlined"}
-                    href={linkToReportByStudent(row[column.id]?.params)}
-                    target="_blank"
-                    underline="none"
-                >
-                    {value}
-                </Button>
-                : value}
+            { buildContentCell(row.columns, column, params) }
         </TableCell>
+    }
+
+    const buildContentCell = (row, column, params) => {
+        const container = {
+            actions: cellLinkToReportByStudentBtn,
+            fio: cellLinkToStatisticByStudentBtn,
+        }
+        const callBack = container[column.id];
+        return callBack !== undefined ? callBack(row, column, params) : cellDefaultBtn(row, column, params)
+    }
+
+    const cellLinkToReportByStudentBtn = (row, column, params) => {
+        return <Button
+            variant={"outlined"}
+            href={linkToReportByStudent(params)}
+            target="_blank"
+            underline="none"
+        >
+            {row[column.id]}
+        </Button>
+    }
+
+    const cellLinkToStatisticByStudentBtn = (row, column, params) => {
+        return <Button
+            variant={"text"}
+            href={linkToStatisticByStudent(params)}
+            target="_blank"
+        >
+            {row[column.id]}
+        </Button>
+    }
+
+    const cellDefaultBtn = (row, column, params) => {
+        return row[column.id]
     }
 
     return (
@@ -144,9 +172,9 @@ export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
-                                    <TableRow hover tabIndex={-1} key={row.id?.value}>
+                                    <TableRow hover tabIndex={-1} key={row.columns.id}>
                                         {columns.map((column) => {
-                                            return (tableCell(column, row));
+                                            return (tableCell(row, column, row.params));
                                         })}
                                     </TableRow>
                                 );

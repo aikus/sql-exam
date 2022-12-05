@@ -57,6 +57,35 @@ class CourseResultController extends AbstractController
         return new JsonResponse($this->buildStudentCourseResultReport($sheet));
     }
 
+    #[Route('/student/{id}/statistic/', name: 'app_api_student_statistic', methods: ['GET'])]
+    public function studentStatistic(User $student, CourseSheetRepository $sheetRepository): Response
+    {
+        $sheetCollection = $sheetRepository->findBy(['student' => $student]);
+
+        foreach ($sheetCollection as $sheet) {
+            $result[] = [
+                'params' => [
+                    'courseId' => $sheet->getCourse()->getId(),
+                    'studentId' => $sheet->getStudent()->getId(),
+                ],
+                'columns' => [
+                    'id' => $sheet->getId(),
+                    'courseName' => $sheet->getCourse()->getName(),
+                    'sheetStatus' => $sheet->getStatus(),
+                    'finishTime' => $sheet->getFinishedAt()?->format('Y.m.d H:i'),
+                    'rightCount' => $this->rightAnswerCount($sheet)
+                        . ' из ' . $sheet->getCourse()?->getType()->count(),
+                ],
+            ];
+        }
+
+        return new JsonResponse([
+            'fio' => $student->getFio(),
+            'email' => $student->getEmail(),
+            'result' => $result ?? [],
+        ]);
+    }
+
     #[Route('/course/{id}/report/', name: 'app_api_course_report', methods: ['GET'])]
     public function report(Course $course, CourseSheetRepository $sheetRepository): Response
     {
@@ -75,25 +104,18 @@ class CourseResultController extends AbstractController
             $courses['/api-platform/courses/' . $courseId]['title'] = $sheet->getCourse()->getName();
             $courses['/api-platform/courses/' . $courseId]['courseId'] = $sheet->getCourse()->getId();
             $courses['/api-platform/courses/' . $courseId]['data'][] = [
-                'id' => [
-                    'value' => $sheet->getId()
+                'params' => [
+                    'courseId' => $courseId,
+                    'studentId' => $sheet->getStudent()->getId(),
                 ],
-                'fio' => [
-                    'value' => $sheet->getStudent()?->getFio(),
-                ],
-                'finishTime' => [
-                    'value' => $sheet->getFinishedAt()?->format('Y.m.d H:i')
-                ],
-                'rightCount' => [
-                    'value' => $this->rightAnswerCount($sheet)
+                'columns' => [
+                    'id' => $sheet->getId(),
+                    'fio' => $sheet->getStudent()?->getFio(),
+                    'finishTime' => $sheet->getFinishedAt()?->format('Y.m.d H:i'),
+                    'rightCount' => $this->rightAnswerCount($sheet)
                         . ' из ' . $sheet->getCourse()?->getType()->count(),
-                ],
-                'status' => [
-                    'value' => $sheet->getStatus(),
-                ],
-                'actions' => [
-                    'value' => 'Подробнее',
-                    'params' => ['courseId' => $courseId, 'studentId' => $sheet->getStudent()->getId()]
+                    'status' => $sheet->getStatus(),
+                    'actions' => 'Подробнее',
                 ],
             ];
         }
@@ -102,6 +124,7 @@ class CourseResultController extends AbstractController
             'courses' => $courses ?? [],
         ]);
     }
+
     #[Route('/course/{id}/statistic/', name: 'app_api_course_statistic', methods: ['GET'])]
     public function statistic(Course $course, CourseSheetRepository $sheetRepository): Response
     {

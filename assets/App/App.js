@@ -15,6 +15,7 @@ import { ReportByStudent } from "../pages/ReportByStudent";
 import { Report } from "../pages/Report";
 import {AuthProvider} from "../context/AuthProvider";
 import { StatisticPage } from "/assets/pages/StatisticPage";
+import { StudentStatisticPage } from "../pages/StudentStatisticPage";
 
 export const App = () => {
   return (
@@ -43,6 +44,9 @@ export const App = () => {
                 </Route>
                 <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
                   <Route path="statistic" element={<StatisticPage/>}/>
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="student-statistic" element={<StudentStatisticPage/>}/>
                 </Route>
               </Route>
             </Routes>
