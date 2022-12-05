@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { TextField } from "@mui/material";
 import { Logo } from "../../components/Logo";
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
-import { H3, H5, TextL } from '../../components/Typography'
+import { H3, H5, TextL, TextS, TextM } from '../../components/Typography'
 import { hostName } from '../../config'
 import {Loader} from "../../components/Loader";
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
@@ -39,6 +39,7 @@ export const Authorization = () => {
         emailRestoreErrorText: 'Неверный формат email',
         restoreSuccessfully: false,
         emailSentMessage: '',
+        registered: false,
     })
 
     const handleAuthorizationSubmit = (e) => {
@@ -100,9 +101,14 @@ export const Authorization = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    setLoader(false)
+                    setLoader(false);
                     if (data.status === 'success') {
-                        navigate("/react/my-profile");
+                        setState((prevState) => {
+                            return { ...prevState, registered: true }
+                        })
+                        setTimeout(() => {
+                            handleBack();
+                        }, 1500)
                     }
                 })
         }
@@ -237,7 +243,7 @@ export const Authorization = () => {
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
                     <C.ButtonBox>
-                        <Button type="submit">Войти</Button>
+                        <ButtonCust type="submit" size='l'>Войти</ButtonCust>
                     </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
@@ -251,8 +257,14 @@ export const Authorization = () => {
     const renderRegistrationForm = () => {
         return (
             <>
-                <form noValidate onSubmit={handleRegistrationSubmit}>
-                    <TextField
+                {state.registered ?
+                  <C.RegisteredSuccessfully>
+                      <TaskAltOutlinedIcon fontSize={'large'} sx={{color: 'green'}}/>
+                      <H5>Вы успешно зарегистрированы :)</H5>
+                  </C.RegisteredSuccessfully>
+                  :
+                  <form noValidate onSubmit={handleRegistrationSubmit}>
+                      <TextField
                         autoFocus
                         margin="normal"
                         id="fio-reg"
@@ -264,8 +276,8 @@ export const Authorization = () => {
                         helperText={state.fioError ? state.fioErrorText : ''}
                         value={state.fio}
                         onChange={(e) => handleFieldChange(e, 'fio')}
-                    />
-                    <TextField
+                      />
+                      <TextField
                         margin="normal"
                         id="email-reg"
                         label="Email"
@@ -276,8 +288,8 @@ export const Authorization = () => {
                         helperText={state.emailRegistrationError ? state.emailRegistrationErrorText : ''}
                         value={state.emailRegistrationValue}
                         onChange={(e) => handleFieldChange(e, 'emailRegistrationValue')}
-                    />
-                    <TextField
+                      />
+                      <TextField
                         margin="normal"
                         id="password-reg-1"
                         label="Пароль"
@@ -288,8 +300,8 @@ export const Authorization = () => {
                         helperText={state.passwordRegistration1Error ? state.passwordRegistration1ErrorText : ''}
                         value={state.passwordRegistration1Value}
                         onChange={(e) => handleFieldChange(e, 'passwordRegistration1Value')}
-                    />
-                    <TextField
+                      />
+                      <TextField
                         margin="normal"
                         id="password-reg-2"
                         label="Повторите пароль"
@@ -301,11 +313,12 @@ export const Authorization = () => {
                         value={state.passwordRegistration2Value}
                         onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
                         onBlur={checkPasswordMatch}
-                    />
-                    <C.ButtonReg>
-                        <Button type="submit">Зарегистрироваться</Button>
-                    </C.ButtonReg>
-                </form>
+                      />
+                      <C.ButtonReg>
+                          <ButtonCust type="submit" size='l'>Зарегистрироваться</ButtonCust>
+                      </C.ButtonReg>
+                  </form>
+                }
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
             </>
 
@@ -336,7 +349,7 @@ export const Authorization = () => {
                             onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
                           />
                           <C.ButtonBox>
-                              <Button type="submit">Сбросить пароль</Button>
+                              <ButtonCust type="submit" size='l'>Сбросить пароль</ButtonCust>
                           </C.ButtonBox>
                       </form>
                     }
@@ -348,7 +361,7 @@ export const Authorization = () => {
     return (
         <C.Wrapper>
             <C.TopBlock>
-                <Logo style={{cursor: 'default'}}/>
+                <Logo/>
                 <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
             {state.restorePassword && renderRestorePasswordForm()}

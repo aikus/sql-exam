@@ -1,6 +1,16 @@
 import styled from "styled-components";
 import '../../../styles/app.css';
 
+export const LoadingBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: var(--authorization-background-color);
+  box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
+  padding: 32px;
+  border-radius: 8px;
+  margin-top: 24px;
+`
+
 export const HeaderBlock = styled.div`
     display: flex;
     justify-content: space-between;
@@ -40,14 +50,6 @@ export const AccordionBlock = styled.div`
 `
 
 export const Description = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
-  
   @media (min-width: 1024px) {
       padding: 0 8px 8px;
   }
@@ -67,4 +69,15 @@ export const Title = styled.div`
     @media (min-width: 1440px) {
         padding: 20px 16px;
     }
+`
+
+export const Buttons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `

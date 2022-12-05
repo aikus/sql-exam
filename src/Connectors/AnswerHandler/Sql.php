@@ -25,7 +25,7 @@ class Sql implements Handler
                 'result' => $result,
                 'header' => $this->connection->getColumnMeta(),
             ]);
-            $answer->setIsRight(AnswerChecker::IS_RIGHT === $this->sqlCheckRight->checkAnswer($answer));
+            $answer->setIsRight(AnswerChecker::IS_RIGHT === $this->sqlCheckRight->setConnection($this->connection)->checkAnswer($answer));
         } catch (Exception $exception) {
             $answer->setResult([
                 'error' => $exception->getMessage(),

@@ -14,7 +14,7 @@ import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
-import {hostName} from "../../config";
+import {ButtonCust} from '../../components/Button';
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ export const Practice = () => {
     const [givenTablesData, setGivenTablesData] = useState(null)
     const [loader, setLoader] = useState(true)
     const [error, setError] = useState(false)
-    const [timer, setTimer] = useState(0);
+    const [timer, setTimer] = useState(null);
     const [showTimer, setShowTimer] = useState(false);
     const [redBorder, setRedBorder] = useState(false);
 
@@ -70,22 +70,16 @@ export const Practice = () => {
                 setAnswer(data.sqlRequest)
                 setError(false)
                 getElement(data)
+                setTimer(data?.secondsTimeLeft);
+                if (data?.secondsTimeLeft !== null) {
+                    startTimer();
+                }
             },
             error => {
                 setError(error)
                 setLoader(false)
             }
         );
-
-        const handleSuccess = (data) => {
-            setTimer(data?.timeLimit * 60);
-
-            if (data?.timeLimit !== 0) {
-                startTimer();
-            }
-        }
-
-        HttpRequest.get(`${hostName}/api-platform/courses/${course}`, (data) => handleSuccess(data));
     }
 
     const startTimer = () => {
@@ -190,7 +184,7 @@ export const Practice = () => {
             data => {
                 setProcessState(data)
                 setError(false)
-                setAnswer('')
+                setAnswer(data.sqlRequest ?? '')
                 setSqlResponse(null)
             },
             error => {
@@ -318,7 +312,7 @@ export const Practice = () => {
                             </Button>
                         </div>
                     </ButtonGroup>
-                    {Boolean(timer) &&
+                    {timer &&
                       <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
                           {showTimer ?
                             <>
@@ -368,22 +362,23 @@ export const Practice = () => {
                             </C.Description>
                         }
                         <C.ButtonBox>
-                            {
-                                isAnswerable()
-                                && <div>
-                                    <Button variant={'contained'} color="primary"
-                                            onClick={handleExecution}>
-                                        Выполнить запрос
-                                    </Button>
-                                </div>
+                            {isAnswerable() &&
+                              <div>
+                                <ButtonCust
+                                  onClick={handleExecution}
+                                >
+                                    Выполнить запрос
+                                </ButtonCust>
+                              </div>
                             }
-                            {
-                                !isExistNextStep
-                                && <Button size='S' variant={'contained'} onClick={() => {
+                            {!isExistNextStep &&
+                              <ButtonCust
+                                onClick={() => {
                                     handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
-                                }}>
+                                }}
+                              >
                                     Завершить
-                                </Button>
+                              </ButtonCust>
                             }
                         </C.ButtonBox>
                     </C.LeftBlock>

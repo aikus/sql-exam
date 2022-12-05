@@ -11,28 +11,43 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from './theme';
 import {ProtectedRoute} from "../components/ProtectedRoute";
 import { PersonalCourseResult } from "../pages/PersonalCourseResult";
+import { ReportByStudent } from "../pages/ReportByStudent";
+import { Report } from "../pages/Report";
+import {AuthProvider} from "../context/AuthProvider";
+import { StatisticPage } from "/assets/pages/StatisticPage";
 
 export const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/react/" element={<Authorization/>}/>
-            <Route path="/react/my-profile" element={<MainPage/>}>
-              <Route index element={<MyProfile/>}/>
-              <Route path="practice" element={<Practice/>}/>
-              <Route path="questionnaire" element={<Questionnaire/>}/>
-              <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
-                <Route path="course-management" element={<CourseManagement/>}/>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/react/" element={<Authorization/>}/>
+              <Route path="/react/my-profile" element={<MainPage/>}>
+                <Route index element={<MyProfile/>}/>
+                <Route path="practice" element={<Practice/>}/>
+                <Route path="questionnaire" element={<Questionnaire/>}/>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="course-management" element={<CourseManagement/>}/>
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="create-course" element={<CreateCourse/>}/>
+                </Route>
+                <Route path="course-result" element={<PersonalCourseResult/>}/>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="student-result" element={<ReportByStudent/>}/>
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="report" element={<Report/>}/>
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="statistic" element={<StatisticPage/>}/>
+                </Route>
               </Route>
-              <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
-                <Route path="create-course" element={<CreateCourse/>}/>
-              </Route>
-              <Route path="course-result" element={<PersonalCourseResult/>}/>
-            </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </ThemeProvider>
     </>
   )

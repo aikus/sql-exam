@@ -3,6 +3,7 @@
 namespace App\Service\ExaminationProcess\Layer\Domain;
 
 use App\Entity\Course;
+use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
 use App\Entity\CourseSheetStatusNotFound;
@@ -52,6 +53,7 @@ class Process
 
         $answer = $this->saver->getAnswer($sheet, $actualElement);
 
+        // таймер = курс - (текущее - старт)
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
@@ -59,7 +61,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -96,7 +98,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -126,7 +128,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
         $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
-        $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+        $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
 
         return new ProcessState(
@@ -136,7 +138,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -172,14 +174,18 @@ class Process
 
         $this->saver->updateSheet($sheet, $nextElement ?: null, $now);
 
+        $nextAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($nextElement) {
+            return $answer->getQuestion()->getId() === $nextElement->getId();
+        })->last() ?: null;
+
         return new ProcessState(
             ProcessState::STATE_IN_PROGRESS,
             $course->getType()->count(),
             $course->getType()->toArray(),
             $sheet->getActualElement(),
-            ($answer ?? null)?->getAnswer(),
-            ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            ($nextAnswer ?? null)?->getAnswer(),
+            ($nextAnswer ?? null)?->getResult(),
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -219,7 +225,7 @@ class Process
             $sheet->getActualElement(),
             ($answer ?? null)?->getAnswer(),
             ($answer ?? null)?->getResult(),
-            $sheet->getStartedAt()
+            $this->secondsTimeLeft($course, $sheet, $now)
         );
     }
 
@@ -236,5 +242,13 @@ class Process
         });
 
         return (new ArrayCollection(iterator_to_array($iterator)))->first();
+    }
+
+    private function secondsTimeLeft(Course $course, CourseSheet $sheet, DateTimeInterface $now): ?int
+    {
+        if (null === $course->getTimeLimit() || 0 === $course->getTimeLimit()) {
+            return null;
+        }
+        return ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp());
     }
 }

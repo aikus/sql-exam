@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import * as C from './styles'
 import {
+  Button, ButtonGroup,
   FormControlLabel,
   IconButton,
   InputAdornment,
@@ -11,13 +12,15 @@ import {
   TextField
 } from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import {Loader} from "../../components/Loader";
 import {H5, TextM} from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
 import {searchParam} from "../../Service/SearchParamActions";
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -174,6 +177,29 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   return (
     <>
+      <C.MovementButtons>
+        <ButtonGroup>
+          <Button
+            size='medium'
+            variant='outlined'
+            onClick={() => handlePrevStep()}
+            color="secondary"
+            startIcon={<ChevronLeftRoundedIcon/>}
+          >
+            Назад
+          </Button>
+          <Button
+            size='medium'
+            variant='outlined'
+            onClick={() => handleNextStep()}
+            color="secondary"
+            disabled={courseContent.length === step}
+            endIcon={<ChevronRightRoundedIcon />}
+          >
+            Далее
+          </Button>
+        </ButtonGroup>
+      </C.MovementButtons>
       <C.Type>
         <H5>Выберите тип шага</H5>
         <Select
@@ -234,7 +260,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>
-          <Button size={'S'} onClick={addVariant}>Добавить вариант</Button>
+          <ButtonCust onClick={addVariant}>Добавить вариант</ButtonCust>
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
@@ -288,28 +314,16 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
         </C.VariantsBlock>
       }
       <C.ButtonsBlock>
-        <div>
-          <C.StepActions>
-            <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
-            <Button onClick={() => handleSaveStep()} size={'S'} view='outlined'>Сохранить шаг</Button>
-            <Button onClick={handleCreateStep} size={'S'}>Добавить шаг</Button>
-          </C.StepActions>
-          {searchParam.get('course') ?
-            <Button size={'S'} onClick={handleExitCourse}>Завершить редактирование курса</Button>
-            :
-            <Button size={'S'} onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
-          }
-
-        </div>
-        <C.MovementButtons>
-          <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
-          <Button
-            onClick={() => handleNextStep()}
-            view='outlined'
-            size={'S'}
-            disabled={courseContent.length === step}
-          >Далее</Button>
-        </C.MovementButtons>
+        <C.StepActions>
+          <ButtonCust onClick={() => setDialogOpen(true)} variant='outlined'>Удалить шаг</ButtonCust>
+          <ButtonCust onClick={() => handleSaveStep()} variant='outlined'>Сохранить шаг</ButtonCust>
+          <ButtonCust onClick={handleCreateStep}>Добавить шаг</ButtonCust>
+        </C.StepActions>
+        {searchParam.get('course') ?
+          <ButtonCust onClick={handleExitCourse}>Завершить редактирование курса</ButtonCust>
+          :
+          <ButtonCust onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</ButtonCust>
+        }
       </C.ButtonsBlock>
 
       <Loader show={loader}/>

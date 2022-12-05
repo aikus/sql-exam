@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {Button} from "../../components/Button";
+import {ButtonCust} from "../../components/Button";
 import { H2, TextL, TextM } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import CourseRepository from "./CourseRepository";
 
 export const MyProfile = () => {
-    const outletContent = useOutletContext(),
-        newCurses = outletContent.newCurses,
-        inProgress = outletContent.inProgress,
-        completedCourses = outletContent.completedCourses,
-        useInfo = outletContent.userInfo
+    const outletContent = useOutletContext();
+    const useInfo = outletContent.userInfo;
+    const [newCurses, setNewCourses] = useState(null);
+    const [inProgress, setInProgress] = useState(null);
+    const [completedCourses, setCompletedCourses] = useState(null);
+
+    useEffect(() => {
+      CourseRepository.getNewCourses().then(setNewCourses);
+      CourseRepository.getStartedCourses().then(setInProgress);
+      CourseRepository.getCompletedCourses().then(setCompletedCourses);
+    }, [])
 
     return (
         <>
@@ -29,8 +36,8 @@ export const MyProfile = () => {
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
                         <C.ButtonBox>
-                            <Button size={'S'}>Посмотреть другие курсы</Button>
-                            <Button size={'S'}>Посмотреть свою подробную статистику</Button>
+                            <ButtonCust>Посмотреть другие курсы</ButtonCust>
+                            <ButtonCust variant='outlined'>Посмотреть свою подробную статистику</ButtonCust>
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>
@@ -40,30 +47,33 @@ export const MyProfile = () => {
                 </C.MyProfileBox>
             </section>
             <section>
+              <CourseBlock
+                id="new-courses"
+                title="Ожидают прохождения"
+                items={newCurses}
+                mainButton="Начать прохождение"
+                resultButton=""
+                noCourseText="У Вас нет новых курсов для прохождения"
+              />
+            </section>
+            <section>
                 <CourseBlock
-                    id={'in-progress'}
-                    title={"В процессе"}
+                    id='in-progress'
+                    title="В процессе"
                     items={inProgress}
-                    mainButton={"Продолжить прохождение"}
-                    resultButton={""}
+                    mainButton="Продолжить прохождение"
+                    resultButton=""
+                    noCourseText="У Вас нет курсов в процессе прохождения"
                 />
             </section>
             <section>
                 <CourseBlock
-                    id={'new-courses'}
-                    title={"Ожидают прохождения"}
-                    items={newCurses}
-                    mainButton={"Начать прохождение"}
-                    resultButton={""}
-                />
-            </section>
-            <section>
-                <CourseBlock
-                    id={'completed-courses'}
-                    title={"Завершённые"}
+                    id='completed-courses'
+                    title="Завершённые"
                     items={completedCourses}
-                    mainButton={""}
-                    resultButton={"Результаты"}
+                    mainButton=""
+                    resultButton="Результаты"
+                    noCourseText="Вы пока не завершили ни один курс"
                 />
             </section>
         </>

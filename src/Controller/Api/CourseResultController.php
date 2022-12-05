@@ -6,8 +6,12 @@ use App\Entity\Course;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Entity\CourseSheet;
+use App\Entity\User;
 use App\Repository\CourseSheetRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,12 +25,12 @@ class CourseResultController extends AbstractController
     {
     }
 
-    #[Route('/course/{id}/result', name: 'app_api_course_result')]
+    #[Route('/course/{id}/result', name: 'app_api_course_result', methods: ['GET'])]
     public function index(Course $course, CourseSheetRepository $sheetRepository): Response
     {
         $user = $this->security->getUser();
 
-        if(!$user) {
+        if (!$user) {
             return new JsonResponse([]);
         }
 
@@ -35,9 +39,159 @@ class CourseResultController extends AbstractController
             'student' => $user,
         ]);
 
-        $table = [];
-        foreach ($course->getType() as $element) {
-            $answer = $this->lastAnswer($element, $sheet);
+        return new JsonResponse($this->buildStudentCourseResultReport($sheet));
+    }
+
+    #[Route('/student/{student}/course/{course}/result', name: 'app_api_student_course_result', methods: ['GET'])]
+    #[Entity('user', options: ['id' => 'student'])]
+    #[Entity('course', options: ['id' => 'course'])]
+    public function studentCourseResult(User $student, Course $course, CourseSheetRepository $sheetRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $sheet = $sheetRepository->findOneBy([
+            'course' => $course,
+            'student' => $student,
+        ]);
+
+        return new JsonResponse($this->buildStudentCourseResultReport($sheet));
+    }
+
+    #[Route('/course/{id}/report/', name: 'app_api_course_report', methods: ['GET'])]
+    public function report(Course $course, CourseSheetRepository $sheetRepository): Response
+    {
+        /** @var CourseSheet[] $allSheet */
+        $allSheet = $sheetRepository->matching(
+            Criteria::create()
+                ->where(Criteria::expr()->neq('status', ''))
+                ->andWhere(Criteria::expr()->neq('status', 'new'))
+                ->andWhere(Criteria::expr()->eq('course', $course))
+                ->setMaxResults(500)
+        );
+
+        foreach ($allSheet as $sheet) {
+            $courseId = $sheet->getCourse()->getId();
+
+            $courses['/api-platform/courses/' . $courseId]['title'] = $sheet->getCourse()->getName();
+            $courses['/api-platform/courses/' . $courseId]['courseId'] = $sheet->getCourse()->getId();
+            $courses['/api-platform/courses/' . $courseId]['data'][] = [
+                'id' => [
+                    'value' => $sheet->getId()
+                ],
+                'fio' => [
+                    'value' => $sheet->getStudent()?->getFio(),
+                ],
+                'finishTime' => [
+                    'value' => $sheet->getFinishedAt()?->format('Y.m.d H:i')
+                ],
+                'rightCount' => [
+                    'value' => $this->rightAnswerCount($sheet)
+                        . ' из ' . $sheet->getCourse()?->getType()->count(),
+                ],
+                'status' => [
+                    'value' => $sheet->getStatus(),
+                ],
+                'actions' => [
+                    'value' => 'Подробнее',
+                    'params' => ['courseId' => $courseId, 'studentId' => $sheet->getStudent()->getId()]
+                ],
+            ];
+        }
+
+        return new JsonResponse([
+            'courses' => $courses ?? [],
+        ]);
+    }
+    #[Route('/course/{id}/statistic/', name: 'app_api_course_statistic', methods: ['GET'])]
+    public function statistic(Course $course, CourseSheetRepository $sheetRepository): Response
+    {
+        $sheetCollection = $sheetRepository->findBy(['course' => $course]);
+        /** @var Collection<int, CourseElement> $questionCollection */
+        $questionCollection = $sheetCollection[0]?->getCourse()->getType();
+
+        $i = 1;
+        foreach ($sheetCollection as $sheet) {
+            $answers = $sheet->getCourseAnswers();
+            foreach ($questionCollection as $question) {
+                if ($this->rightAnswerCountByQuestion($answers, $question) > 0) {
+                    if (isset($result[$question->getId()])) {
+                        $result[$question->getId()] += 1;
+                    }
+                    else {
+                        $result[$question->getId()] = 1;
+                    }
+                }
+            }
+            $i++;
+        }
+
+        return new JsonResponse([
+            'course' => $course->getName(),
+            'labels' => array_map(function (CourseElement $question) {
+                return ['id' => $question->getId(), 'name' => $question->getName()];
+            }, $questionCollection->toArray()),
+            'result' => $result ?? [],
+        ]);
+    }
+
+    private function rightAnswerCount(CourseSheet $sheet): int
+    {
+        $questions = $sheet->getCourse()->getType();
+        $answers = $sheet->getCourseAnswers();
+
+        $result = 0;
+        foreach ($questions as $element) {
+            $result += $this->rightAnswerCountByQuestion($answers, $element);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Collection<int, CourseAnswer> $answers
+     * @param CourseElement $element
+     * @return int
+     */
+    private function rightAnswerCountByQuestion(Collection $answers, CourseElement $element): int
+    {
+        $result = 0;
+        $rightAnswer = $answers->filter(function (CourseAnswer $answer) use ($element) {
+            if ($answer->isIsRight()) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            }
+            return false;
+        })->last();
+
+        if ($rightAnswer) $result++;
+
+        return $result;
+    }
+
+    /** @throws Exception */
+    private function lastRightAnswer(CourseElement $element, CourseSheet $sheet): ?CourseAnswer
+    {
+        $lastRightAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
+            if ($answer->isIsRight()) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            }
+            return false;
+        })->last();
+
+        if (!$lastRightAnswer) {
+            $lastRightAnswer = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
+                return $answer->getQuestion()->getId() === $element->getId();
+            })->last();
+        }
+
+//        $iterator->uasort(fn(CourseAnswer $a, CourseAnswer $b) => $a->getId() <=> $b->getId());
+
+        return $lastRightAnswer ?: null;
+    }
+
+    private function buildStudentCourseResultReport(CourseSheet $sheet): array
+    {
+        foreach ($sheet->getCourse()?->getType() ?? [] as $element) {
+            $answer = $this->lastRightAnswer($element, $sheet);
             $table[] = [
                 '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
@@ -46,24 +200,11 @@ class CourseResultController extends AbstractController
             ];
         }
 
-        return new JsonResponse([
-            'courseName' => $course->getName(),
+        return [
+            'courseName' => $sheet->getCourse()?->getName(),
             'head' => [],
-            'table' => $table,
-        ]);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function lastAnswer(CourseElement $element, CourseSheet $sheet): ?CourseAnswer
-    {
-        $iterator = $sheet->getCourseAnswers()->filter(function (CourseAnswer $answer) use ($element) {
-            return $answer->getQuestion()->getId() === $element->getId();
-        })->getIterator();
-
-        $iterator->uasort(fn(CourseAnswer $a, CourseAnswer $b) => $a->getId() <=> $b->getId());
-
-        return (new ArrayCollection(iterator_to_array($iterator)))->last() ?: null;
+            'table' => $table ?? [],
+            'fio' => $sheet->getStudent()->getFio()
+        ];
     }
 }

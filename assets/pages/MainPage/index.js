@@ -11,21 +11,19 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
-import {Auth, GetPermission} from '../../Service/Auth'
-import CourseRepository from "./CourseRepository";
+import {GetPermission} from '../../Service/AskPermission'
+import useAuth from '../../hooks/useAuth'
 
 export const MainPage = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
-    const [inProgress, setInProgress] = useState([])
-    const [newCurses, setNewCourses] = useState([])
-    const [completedCourses, setCompletedCourses] = useState([])
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null)
     const [userInfo, setUserInfo] = useState({})
-    const [outletContent, setOutletContent] = useState({newCurses, inProgress, completedCourses, userInfo})
+    const [outletContent, setOutletContent] = useState({userInfo})
     const [menuOpen, setMenuOpen] = useState(false);
+    const {setAuth} = useAuth();
 
     const handleProfileMenuClick = (e) => {
         setAnchorEl(e.currentTarget);
@@ -60,18 +58,15 @@ export const MainPage = () => {
     useEffect(() => {
         const handleSetUserInfo = (data) => {
             setUserInfo(data)
-            Auth.role = data.roles;
+            setAuth({roles: data.roles})
         }
 
-        CourseRepository.getNewCourses().then(setNewCourses);
-        CourseRepository.getStartedCourses().then(setInProgress);
-        CourseRepository.getCompletedCourses().then(setCompletedCourses);
         HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
     }, [])
 
     useEffect(() => {
-        setOutletContent({newCurses, inProgress, completedCourses, userInfo})
-    }, [newCurses, inProgress, completedCourses, userInfo])
+        setOutletContent({userInfo})
+    }, [userInfo])
 
     return (
         <C.Wrapper>
@@ -98,6 +93,11 @@ export const MainPage = () => {
                                                 <Link to="course-management">Администрирование курсов</Link>
                                             </MenuItem>
                                           }
+                                          {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                                            <MenuItem onClick={handleMenuClose}>
+                                                <Link to="report">Результаты</Link>
+                                            </MenuItem>
+                                          }
                                       </MenuList>
                                   </ClickAwayListener>
                               </Paper>
@@ -117,6 +117,9 @@ export const MainPage = () => {
                     <Link to=""><TextL>Личный кабинет</TextL></Link>
                     {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
                       <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
+                    }
+                    {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
+                      <Link to="report"><TextL>Результаты</TextL></Link>
                     }
                 </C.NavBarItemsBox>
                 <C.ProfileBlock

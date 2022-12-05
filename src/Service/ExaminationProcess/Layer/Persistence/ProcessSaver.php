@@ -33,8 +33,8 @@ class ProcessSaver
         $answer->setCourceSheet($sheet);
         $answer->setQuestion($element);
         $answer->setAnswer($textAnswer ?? '');
-        $answer->setCreatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
-        $answer->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+        $answer->setCreatedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
+        $answer->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
 
         $this->answerRepository->add($answer);
 
@@ -74,13 +74,13 @@ class ProcessSaver
         }
 
         if(!$sheet->getStartedAt()) {
-            $sheet->setStartedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+            $sheet->setStartedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         }
 
         $sheet->setStatus(CourseSheet::STATUS_STARTED);
 
         $sheet->setActualElement($actualElement);
-        $sheet->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:s:i')));
+        $sheet->setUpdatedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
 
         $this->sheetRepository->add($sheet);
         return $sheet;
