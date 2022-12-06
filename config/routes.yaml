@@ -58,6 +58,11 @@ app_react_student-statistic:
     controller: \App\Controller\ReactDevPageController::index
     methods: [ 'GET' ]
 
+app_react_statistic:
+    path: react/my-profile/statistic
+    controller: \App\Controller\ReactDevPageController::index
+    methods: [ 'GET' ]
+
 app_react_report:
     path: react/my-profile/report
     controller: \App\Controller\ReactDevPageController::index
