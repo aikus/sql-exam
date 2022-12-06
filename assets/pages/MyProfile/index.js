@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {ButtonCust} from "../../components/Button";
 import { H2, TextL, TextM } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import CourseRepository from "./CourseRepository";
+import {Button} from "@mui/material"
 
 export const MyProfile = () => {
     const outletContent = useOutletContext();
@@ -36,8 +36,8 @@ export const MyProfile = () => {
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
                         <C.ButtonBox>
-                            <ButtonCust>Посмотреть другие курсы</ButtonCust>
-                            <ButtonCust variant='outlined'>Посмотреть свою подробную статистику</ButtonCust>
+                            <Button variant='contained' size='medium'>Посмотреть другие курсы</Button>
+                            <Button variant='outlined' size='medium'>Посмотреть свою подробную статистику</Button>
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>

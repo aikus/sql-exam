@@ -1,11 +1,10 @@
 import React from 'react';
 import * as C from './styles'
-import {Accordion, AccordionSummary, AccordionDetails, Skeleton} from "@mui/material";
+import {Accordion, AccordionSummary, AccordionDetails, Skeleton, Button} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import arrowRight from './arrow-right.svg'
 import { H2, TextL } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
-import {ButtonCust} from '../../../components/Button'
 
 export const CourseBlock = ({id, items, title, mainButton, resultButton, noCourseText}) => {
     const navigate = useNavigate();
@@ -52,10 +51,10 @@ export const CourseBlock = ({id, items, title, mainButton, resultButton, noCours
                             <C.Description>
                                 <C.Buttons>
                                     {mainButton &&
-                                      <ButtonCust onClick={() => goToPractice(item.id)}>{mainButton}</ButtonCust>
+                                      <Button variant='contained' size='medium' onClick={() => goToPractice(item.id)}>{mainButton}</Button>
                                     }
                                     {resultButton &&
-                                      <ButtonCust onClick={() => goToCourseResult(item.id)} variant='outlined'>{resultButton}</ButtonCust>
+                                      <Button variant='outlined' size='medium' onClick={() => goToCourseResult(item.id)}>{resultButton}</Button>
                                     }
                                 </C.Buttons>
                                 <TextL>{item.description}</TextL>

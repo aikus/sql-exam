@@ -12,7 +12,6 @@ import {
   TextField
 } from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import {ButtonCust} from "../../components/Button";
 import {Loader} from "../../components/Loader";
 import {H5, TextM} from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
@@ -260,7 +259,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>
-          <ButtonCust onClick={addVariant}>Добавить вариант</ButtonCust>
+          <Button variant='contained' size='medium' onClick={addVariant}>Добавить вариант</Button>
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
@@ -315,14 +314,14 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       <C.ButtonsBlock>
         <C.StepActions>
-          <ButtonCust onClick={() => setDialogOpen(true)} variant='outlined'>Удалить шаг</ButtonCust>
-          <ButtonCust onClick={() => handleSaveStep()} variant='outlined'>Сохранить шаг</ButtonCust>
-          <ButtonCust onClick={handleCreateStep}>Добавить шаг</ButtonCust>
+          <Button variant='outlined' size='medium' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
+          <Button variant='outlined' size='medium' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
+          <Button variant='contained' size='medium' onClick={handleCreateStep}>Добавить шаг</Button>
         </C.StepActions>
         {searchParam.get('course') ?
-          <ButtonCust onClick={handleExitCourse}>Завершить редактирование курса</ButtonCust>
+          <Button variant='contained' size='medium' onClick={handleExitCourse}>Завершить редактирование курса</Button>
           :
-          <ButtonCust onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</ButtonCust>
+          <Button variant='contained' size='medium' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
         }
       </C.ButtonsBlock>
 
