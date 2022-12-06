@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import * as C from './styles'
-import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails, Dialog } from "@mui/material";
+import { Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails, Dialog, Button } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {ButtonCust} from "../../components/Button";
 import { H4, TextL } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import {LoaderInBLock} from "../../components/Loader/LoaderInBLock";
@@ -69,13 +68,16 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
                 <AccordionDetails>
                   <C.Description>
                     <C.ButtonWrapper>
-                      <ButtonCust
+                      <Button
+                        variant='contained'
+                        size='medium'
                         onClick={() => editCourse(item.id)}
-                      >Редактирование</ButtonCust>
-                      <ButtonCust
-                        variant={'outlined'}
+                      >Редактирование</Button>
+                      <Button
+                        variant='outlined'
+                        size='medium'
                         onClick={() => setDelCourseInf({id: item.id, isOpen: true})}
-                      >Удалить</ButtonCust>
+                      >Удалить</Button>
                     </C.ButtonWrapper>
                     <TextL>{item.description}</TextL>
                   </C.Description>

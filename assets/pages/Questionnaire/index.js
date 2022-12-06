@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import {ButtonCust} from "../../components/Button";
 import { TextM, TextL, TextS, H2, H3 } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import {SkillTable} from './SkillTable'
 import {ArtefactTable} from './ArtefactTable'
+import {Button} from '@mui/material';
 
 const initFormData = () => {
     let accumulator = {}
@@ -63,7 +63,7 @@ export const Questionnaire = () => {
                     </C.ArtefactBlock>
                 }
                 <C.ButtonBlock>
-                    <ButtonCust>Завершить заполнение</ButtonCust>
+                    <Button variant='contained' size='medium'>Завершить заполнение</Button>
                 </C.ButtonBlock>
             </C.Main>
         </C.Wrapper>

@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components'
 import '../../styles/app.css';
-import * as C from "../../pages/CourseManagement/styles";
 import {H4} from "../Typography";
-import {ButtonCust} from "../Button";
-import {Dialog} from "@mui/material";
+import {Dialog, Button} from "@mui/material";
 
 export const DialogWinDelete = ({isOpen, handleDelete, handleClose, whatToDelete}) => {
 
@@ -16,13 +14,16 @@ export const DialogWinDelete = ({isOpen, handleDelete, handleClose, whatToDelete
           <DialogContent>
               <H4>Вы действительно ходите удалить этот {whatToDelete}?</H4>
               <DialogButtonWrap>
-                  <ButtonCust
+                  <Button
                     variant='outlined'
+                    size='medium'
                     onClick={handleDelete}
-                  >Да</ButtonCust>
-                  <ButtonCust
+                  >Да</Button>
+                  <Button
+                    variant='contained'
+                    size='medium'
                     onClick={handleClose}
-                  >Нет</ButtonCust>
+                  >Нет</Button>
               </DialogButtonWrap>
           </DialogContent>
       </Dialog>

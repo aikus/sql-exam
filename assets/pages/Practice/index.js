@@ -14,7 +14,6 @@ import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
-import {ButtonCust} from '../../components/Button';
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -364,21 +363,25 @@ export const Practice = () => {
                         <C.ButtonBox>
                             {isAnswerable() &&
                               <div>
-                                <ButtonCust
+                                <Button
+                                  variant='contained'
+                                  size='medium'
                                   onClick={handleExecution}
                                 >
                                     Выполнить запрос
-                                </ButtonCust>
+                                </Button>
                               </div>
                             }
                             {!isExistNextStep &&
-                              <ButtonCust
+                              <Button
+                                variant='contained'
+                                size='medium'
                                 onClick={() => {
                                     handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
                                 }}
                               >
                                     Завершить
-                              </ButtonCust>
+                              </Button>
                             }
                         </C.ButtonBox>
                     </C.LeftBlock>

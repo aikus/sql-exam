@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import * as C from './styles'
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { Logo } from "../../components/Logo";
-import {ButtonCust} from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { H3, H5, TextL, TextS, TextM } from '../../components/Typography'
 import { hostName } from '../../config'
@@ -243,7 +242,11 @@ export const Authorization = () => {
                     />
                     <C.ForgotPassword onClick={handleForgotPassword}>Не помню пароль</C.ForgotPassword>
                     <C.ButtonBox>
-                        <ButtonCust type="submit" size='l'>Войти</ButtonCust>
+                        <Button
+                          variant='contained'
+                          size='large'
+                          type="submit"
+                        >Войти</Button>
                     </C.ButtonBox>
                 </form>
                 <C.RegistrationText>
@@ -315,7 +318,11 @@ export const Authorization = () => {
                         onBlur={checkPasswordMatch}
                       />
                       <C.ButtonReg>
-                          <ButtonCust type="submit" size='l'>Зарегистрироваться</ButtonCust>
+                          <Button
+                            variant='contained'
+                            size='large'
+                            type="submit"
+                          >Зарегистрироваться</Button>
                       </C.ButtonReg>
                   </form>
                 }
@@ -349,7 +356,11 @@ export const Authorization = () => {
                             onChange={(e) => handleFieldChange(e, 'emailRestoreValue')}
                           />
                           <C.ButtonBox>
-                              <ButtonCust type="submit" size='l'>Сбросить пароль</ButtonCust>
+                              <Button
+                                variant='contained'
+                                size='large'
+                                type="submit"
+                              >Сбросить пароль</Button>
                           </C.ButtonBox>
                       </form>
                     }
