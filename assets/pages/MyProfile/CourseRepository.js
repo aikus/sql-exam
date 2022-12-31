@@ -10,6 +10,10 @@ class CourseRepositoryClass {
         }
     }
 
+    async getRestartable() {
+        return this._getCourseObjectsByType("restartable");
+    }
+
     async getNewCourses() {
         return this._getCourseObjectsByType("new");
     }

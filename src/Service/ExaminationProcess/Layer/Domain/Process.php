@@ -127,7 +127,7 @@ class Process
         if (!empty($sqlText)) {
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
-        $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
+        $sheet->setStatus(CourseSheet::STATUS_RESTARTABLE);
         $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
 

@@ -17,7 +17,8 @@ class CourseSheet
     const STATUS_NEW = 'new';
     const STATUS_STARTED = 'started';
     const STATUS_COMPLETED = 'completed';
-    const STATUSES = [self::STATUS_NEW, self::STATUS_STARTED, self::STATUS_COMPLETED];
+    const STATUS_RESTARTABLE = 'restartable';
+    const STATUSES = [self::STATUS_NEW, self::STATUS_STARTED, self::STATUS_COMPLETED, self::STATUS_RESTARTABLE];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

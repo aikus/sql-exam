@@ -67,7 +67,11 @@ class ProcessSaver
         DateTimeInterface $now
     ): ?CourseSheet {
 
-        $sheet = $this->getSheet($user, $course, [CourseSheet::STATUS_NEW, CourseSheet::STATUS_STARTED]);
+        $sheet = $this->getSheet($user, $course, [
+            CourseSheet::STATUS_NEW,
+            CourseSheet::STATUS_STARTED,
+            CourseSheet::STATUS_RESTARTABLE,
+        ]);
 
         if (null === $sheet) {
             return null;
