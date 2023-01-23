@@ -64,7 +64,7 @@ class CourseResultController extends AbstractController
             $security->getUser()->getUserIdentifier() !== $student->getUserIdentifier()
         ) {
             return new JsonResponse([
-                'code' => 403,
+                'code' => Response::HTTP_FORBIDDEN,
                 'message' => 'Access denied',
             ], Response::HTTP_FORBIDDEN);
         }
