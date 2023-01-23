@@ -35,9 +35,13 @@ export function StudentStatisticPage() {
         <Notice message={error}/>
         <Loader show={loader}/>
 
-        <Typography variant="subtitle1" mt={3}>
-            {data.fio} <Typography variant={"caption"}>({data.email})</Typography>
-        </Typography>
+        {
+            data.fio
+                ? <Typography variant="subtitle1" mt={3}>
+                    {data.fio} <Typography variant={"caption"}>({data.email})</Typography>
+                </Typography>
+                : ''
+        }
         <Paper sx={{ my: 3, width: '100%' }}>
             <StudentStatistic data={data.result}/>
         </Paper>

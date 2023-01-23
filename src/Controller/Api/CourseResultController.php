@@ -58,8 +58,17 @@ class CourseResultController extends AbstractController
     }
 
     #[Route('/student/{id}/statistic/', name: 'app_api_student_statistic', methods: ['GET'])]
-    public function studentStatistic(User $student, CourseSheetRepository $sheetRepository): Response
+    public function studentStatistic(User $student, CourseSheetRepository $sheetRepository, Security $security): Response
     {
+        if (
+            $security->getUser()->getUserIdentifier() !== $student->getUserIdentifier()
+        ) {
+            return new JsonResponse([
+                'code' => 403,
+                'message' => 'Access denied',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $sheetCollection = $sheetRepository->findBy(['student' => $student]);
 
         foreach ($sheetCollection as $sheet) {

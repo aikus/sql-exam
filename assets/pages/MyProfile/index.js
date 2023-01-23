@@ -22,6 +22,10 @@ export const MyProfile = () => {
       CourseRepository.getCompletedCourses().then(setCompletedCourses);
     }, [])
 
+    const linkToStatisticByStudent = (studentId) => {
+        return `/react/my-profile/student-statistic?student=${studentId}`
+    }
+
     return (
         <>
             <section>
@@ -39,7 +43,15 @@ export const MyProfile = () => {
                         </C.Text>
                         <C.ButtonBox>
                             <Button variant='contained' size='medium'>Посмотреть другие курсы</Button>
-                            <Button variant='outlined' size='medium'>Посмотреть свою подробную статистику</Button>
+                            <Button
+                                variant="outlined"
+                                size="medium"
+                                target="_blank"
+                                href={linkToStatisticByStudent(useInfo?.userId)}
+                                underline="none"
+                            >
+                                Посмотреть свою подробную статистику
+                            </Button>
                         </C.ButtonBox>
                     </C.MyProfile>
                     <C.Rating>
