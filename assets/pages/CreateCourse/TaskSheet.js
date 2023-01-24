@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import * as C from './styles'
-import { TextField, MenuItem, Select, FormControlLabel, RadioGroup, Radio, InputAdornment, IconButton } from "@mui/material";
+import {
+  Button, ButtonGroup,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField
+} from "@mui/material";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import {Button} from "../../components/Button";
 import {Loader} from "../../components/Loader";
-import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
+import {H5, TextM} from '../../components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
+import {searchParam} from "../../Service/SearchParamActions";
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -16,8 +28,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
-    console.log("handleSelectChange", "start", e);
-
     const actual = courseContent[step - 1];
 
     const typeObject = {
@@ -37,7 +47,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       typeObject["variants"] = ['', ''];
       typeObject["right-variant"] = '';
     }
-    console.log("handleSelectChange", "typeObject = ", typeObject);
 
     setCourseContent((prevState) => {
       let newState = [...prevState]
@@ -46,29 +55,52 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleNextStep = () => {
-    setCourseContent((prevState) => {
+  const handleSaveStep = (stepToSave, exitAfterSave) => {
+    const _step = stepToSave || step;
+    setLoader(true);
+    let newState = [...courseContent];
 
-      if(!prevState[step - 1].ord) {
-        prevState[step - 1].ord = step;
+    if(!newState[_step - 1].ord) {
+      newState[_step - 1].ord = _step;
+    }
+
+    CourseElementRepository.save(newState[_step - 1], courseId).then(
+      data => {
+        newState[_step - 1] = data;
+        setCourseContent(newState);
+        setLoader(false);
+        if (exitAfterSave) {
+          handleExitCourse();
+        }
       }
-      CourseElementRepository.save(prevState[step - 1], courseId).then(
-          data => prevState[step - 1] = data
-      );
-      let newState = [...prevState]
+    );
+  }
 
-      if (step === courseContent.length) {
+  const handleCreateStep = () => {
+    setLoader(true);
+    let newState = [...courseContent];
+
+    if(!newState[courseContent.length - 1].ord) {
+      newState[courseContent.length - 1].ord = courseContent.length;
+    }
+
+    CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
+      data => {
+        newState[courseContent.length - 1] = data;
         newState.push({
           'type': 'article',
           'name': '',
           'description': '',
         })
+        setCourseContent(newState);
+        setLoader(false);
+        handleNextStep(courseContent.length);
       }
+    );
+  }
 
-      return newState
-    })
-
-    nextStep()
+  const handleNextStep = (lastStep) => {
+    nextStep(lastStep)
   }
 
   const handlePrevStep = () => {
@@ -93,19 +125,8 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleCreateCourse = () => {
-    setLoader(true)
-
-    if(!courseContent[step - 1].ord) {
-      courseContent[step - 1].ord = step;
-    }
-    CourseElementRepository.save(courseContent[step - 1], courseId).then(
-      data => {
-        courseContent[step - 1] = data
-        setLoader(false)
-        navigate("/react/my-profile/course-management");
-      }
-    );
+  const handleExitCourse = () => {
+    navigate("/react/my-profile/course-management");
   }
 
   const handleVariantDelete = (i) => {
@@ -155,6 +176,29 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   return (
     <>
+      <C.MovementButtons>
+        <ButtonGroup>
+          <Button
+            size='medium'
+            variant='outlined'
+            onClick={() => handlePrevStep()}
+            color="secondary"
+            startIcon={<ChevronLeftRoundedIcon/>}
+          >
+            Назад
+          </Button>
+          <Button
+            size='medium'
+            variant='outlined'
+            onClick={() => handleNextStep()}
+            color="secondary"
+            disabled={courseContent.length === step}
+            endIcon={<ChevronRightRoundedIcon />}
+          >
+            Далее
+          </Button>
+        </ButtonGroup>
+      </C.MovementButtons>
       <C.Type>
         <H5>Выберите тип шага</H5>
         <Select
@@ -163,8 +207,8 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           sx={{minWidth: '150px'}}
         >
           {
-            typeList().map((item) =>
-              <MenuItem value={item.type}>{item.name}</MenuItem>
+            typeList().map((item, i) =>
+              <MenuItem key={i} value={item.type}>{item.name}</MenuItem>
             )
           }
         </Select>
@@ -215,7 +259,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       }
       {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>
-          <Button size={'S'} onClick={addVariant}>Добавить вариант</Button>
+          <Button variant='contained' size='medium' onClick={addVariant}>Добавить вариант</Button>
           <C.VariantsRow>
             <RadioGroup
               name={`course-answer-group-${step}`}
@@ -269,16 +313,16 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
         </C.VariantsBlock>
       }
       <C.ButtonsBlock>
-        <div>
-          <C.MovementButtons>
-            <Button onClick={handlePrevStep} view='outlined' size={'S'}>Назад</Button>
-            <Button onClick={handleNextStep} size={'S'}>Далее</Button>
-          </C.MovementButtons>
-          <C.DeleteButton>
-            <Button onClick={() => setDialogOpen(true)} size={'S'} view='outlined'>Удалить шаг</Button>
-          </C.DeleteButton>
-        </div>
-        <Button size={'S'} onClick={handleCreateCourse}>Завершить создание курса</Button>
+        <C.StepActions>
+          <Button variant='outlined' size='medium' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
+          <Button variant='outlined' size='medium' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
+          <Button variant='contained' size='medium' onClick={handleCreateStep}>Добавить шаг</Button>
+        </C.StepActions>
+        {searchParam.get('course') ?
+          <Button variant='contained' size='medium' onClick={handleExitCourse}>Завершить редактирование курса</Button>
+          :
+          <Button variant='contained' size='medium' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
+        }
       </C.ButtonsBlock>
 
       <Loader show={loader}/>

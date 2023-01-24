@@ -25,6 +25,7 @@ class UserInfoController extends AbstractController
         return new JsonResponse([
             'userFio' => method_exists($user, 'getFio') ? $user->getFio() : null,
             'userIdentifier' => $user->getUserIdentifier(),
+            'userId' => $user->getId(),
             'roles' => $user->getRoles(),
             'setting' => [
                 'theme' => 'light'

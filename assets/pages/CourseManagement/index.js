@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import { TextField } from "@mui/material";
-import {Button} from "../../components/Button";
+import { TextField, Button } from "@mui/material";
 import {CourseBlock} from './CourseBlock'
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {useNavigate} from "react-router-dom";
@@ -32,9 +31,13 @@ export const CourseManagement = () => {
       <C.Wrapper>
         <H2>Администрирование курсов</H2>
         <C.CreateCourse>
-            <Button onClick={() => {
+            <Button
+              variant='contained'
+              size='large'
+              onClick={() => {
                 navigate("/react/my-profile/create-course")
-            }}>Создать новый курс</Button>
+              }}
+            >Создать новый курс</Button>
         </C.CreateCourse>
         <C.CourseList>
             <H3>Список курсов</H3>

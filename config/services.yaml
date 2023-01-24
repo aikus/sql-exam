@@ -35,6 +35,14 @@ services:
             $pgDSN: '%env(STUDENT_PG_DB_DSN)%'
             $pgLogin: '%env(STUDENT_PG_DB_USER)%'
             $pgPassword: '%env(STUDENT_PG_DB_PASSWORD)%'
+    App\Connectors\CourseElementHandler\Factory:
+        arguments:
+            $mysqlDSN: '%env(STUDENT_DB_DSN)%'
+            $mysqlLogin: '%env(STUDENT_DB_USER)%'
+            $mysqlPassword: '%env(STUDENT_DB_PASSWORD)%'
+            $pgDSN: '%env(STUDENT_PG_DB_DSN)%'
+            $pgLogin: '%env(STUDENT_PG_DB_USER)%'
+            $pgPassword: '%env(STUDENT_PG_DB_PASSWORD)%'
 
 
     App\Service\StudentResultTable\StudentResultTable: ~
@@ -42,6 +50,8 @@ services:
     App\Connectors\Student\ExaminationRepository: ~
     RandomLib\Factory: ~
     App\Service\RandomGeneratorFactory: ~
+    App\Service\ReCheck\ReCheck: ~
+
     RandomLib\Generator:
         factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
 
