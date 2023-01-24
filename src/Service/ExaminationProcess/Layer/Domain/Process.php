@@ -129,7 +129,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
 
-        if ($this->isTimeOut($now, $course->getTimeLimit())) {
+        if ($this->isTimeOut($now, $sheet->getStartedAt(), $course->getTimeLimit())) {
             $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
         }
         else {
@@ -260,13 +260,13 @@ class Process
         return ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp());
     }
 
-    private function isTimeOut(DateTimeInterface $now, ?int $timeLimit): bool
+    private function isTimeOut(DateTimeInterface $now, DateTimeInterface $start, ?int $timeLimit): bool
     {
         if ($timeLimit) {
             return false;
         }
 
-        $endTime = (clone $now);
+        $endTime = (clone $start);
         $endTime->add(new \DateInterval("PT{$timeLimit}S"));
 
         return $now->getTimestamp() >= $endTime->getTimestamp();
