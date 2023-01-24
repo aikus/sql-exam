@@ -230,6 +230,7 @@ class CourseResultController extends AbstractController
             $table[] = [
                 '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
+                'Текст вопроса' => $element->getDescription(),
                 'Ответ' => $answer?->getAnswer(),
                 'Статус' => $answer?->isIsRight(),
             ];
