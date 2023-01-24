@@ -25,6 +25,7 @@ class RegistrationController extends AbstractController
         UserAuthenticatorInterface $userAuthenticator,
         AppCustomAuthenticator $authenticator
     ): Response {
+        throw new HttpException(404, "Page not found");
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

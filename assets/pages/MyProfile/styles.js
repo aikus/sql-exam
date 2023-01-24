@@ -60,16 +60,9 @@ export const ButtonBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  
-  & > button {
-      width: unset;
-  }
 
   @media (min-width: 768px) {
     margin-top: 48px;
-  }
-
-  @media (min-width: 1024px) {
     flex-direction: row;
   }
 `

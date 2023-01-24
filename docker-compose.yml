@@ -50,6 +50,8 @@ services:
       - .:/symfony
       - ./var/log:/var/log/nginx/
     container_name: sql_exam-nginx
+    depends_on:
+      - php-fpm
 #    restart: always
     ports:
       - "80:80"

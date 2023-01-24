@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel } from "@mui/material";
-import {Button} from "../../components/Button";
+import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel, Button } from "@mui/material";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import {TaskSheet} from './TaskSheet'
 import {Loader} from "../../components/Loader";
@@ -110,11 +109,15 @@ export const CreateCourse = () => {
     setCourseMainInfo(prevState => ({...prevState, exam: event.target.checked}));
   };
 
-  const handleNextStep = () => {
-    if (step + 1 > stepsTotal) {
+  const handleNextStep = (lastStep) => {
+    if (step + 1 > stepsTotal || lastStep) {
       setStepsTotal((prevState) => prevState + 1)
     }
-    setStep(prevState => prevState + 1);
+    if (lastStep) {
+      setStep(lastStep + 1);
+    } else {
+      setStep(prevState => prevState + 1);
+    }
   };
 
   const handlePrevStep = () => {
@@ -149,8 +152,6 @@ export const CreateCourse = () => {
       setLoader(true)
       getCourseInfo(courseId)
     }
-
-    // HttpRequest.get
   }, [])
 
   return (
@@ -226,9 +227,9 @@ export const CreateCourse = () => {
                     }
                   }}
                 />
-		<C.Hint>
-		    <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
-		</C.Hint>
+              <C.Hint>
+                  <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
+              </C.Hint>
               </C.FieldBox>
               {/*<C.CheckBoxWrapper>*/}
               {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
@@ -270,6 +271,8 @@ export const CreateCourse = () => {
               {/*  </C.CheckBoxControled>*/}
               {/*}*/}
               <Button
+                variant='contained'
+                size='large'
                 onClick={() => {
                   setLoader(true)
                   if (courseMainInfo.courseId) {
@@ -278,7 +281,7 @@ export const CreateCourse = () => {
                     createCourseReq()
                   }
                 }}
-              >Далее</Button>
+              >{searchParam.get('course') ? 'Далее' : 'Создать шаг'}</Button>
             </C.FirstStep>
           }
           {step >= 1 &&

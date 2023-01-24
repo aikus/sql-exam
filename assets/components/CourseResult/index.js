@@ -27,6 +27,7 @@ export const CourseResult = (data) => {
         <>
             <C.Header>
                 <H1>{data.personalResult?.courseName}</H1>
+                <p>{data.personalResult?.fio}</p>
             </C.Header>
             <TableContainer component={Paper}>
                 <Table stickyHeader>
@@ -50,7 +51,7 @@ export const CourseResult = (data) => {
                                     >
                                         {
                                             Object.keys(row).map((cell, ii) => (
-                                                ii === (header().length-1)
+                                                cell === 'Статус'
                                                     ? <TableCell key={ii}>
                                                         {
                                                             null === row[cell]

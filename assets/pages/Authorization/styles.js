@@ -52,12 +52,20 @@ export const ForgotPassword = styled.div`
 `
 
 export const ButtonBox = styled.div`
+  width: 100%;
+  margin-top: 24px;
+  
+  & > button {
     width: 100%;
-    margin-top: 24px;
+  }
 `
 
 export const ButtonReg = styled(ButtonBox)`
-    margin-top: 40px;
+  margin-top: 40px;
+
+  & > button {
+    width: 100%;
+  }
 `
 
 export const RegistrationText = styled.div`
@@ -96,10 +104,9 @@ export const EmailSentBlock = styled.div`
   align-items: center;
   justify-content: center;
   gap: 16px;
-  height: 160px;
   border: 1px solid green;
   border-radius: 16px;
-  padding: 0 16px;
+  padding: 32px 16px;
   text-align: center;
   margin-top: 40px;
   
@@ -107,4 +114,7 @@ export const EmailSentBlock = styled.div`
     width: 60px;
     height: 60px;
   }
+`
+
+export const RegisteredSuccessfully = styled(EmailSentBlock)`
 `

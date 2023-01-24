@@ -2,10 +2,9 @@
 
 namespace App\Tests\Connectors\AnswerHandler;
 
-use App\Connectors\AnswerHandler\Sql;
+use App\Connectors\CourseElementHandler\Sql;
 use App\Connectors\PdoConnection;
-use App\Entity\CourseAnswer;
-use App\Service\CheckRight\Domain\CheckRight;
+use App\Entity\CourseElement;
 use PHPUnit\Framework\TestCase;
 
 class SqlTest extends TestCase
@@ -19,27 +18,19 @@ class SqlTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $answer = $this->getMockBuilder(CourseAnswer::class)
-            ->onlyMethods(['setResult'])
+        $element = $this->getMockBuilder(CourseElement::class)
+            ->onlyMethods(['setAnswerExecutionResult'])
             ->getMock();
 
-        $answer->expects($this->once())
-            ->method('setResult')
+        $element->expects($this->once())
+            ->method('setAnswerExecutionResult')
             ->with($expected);
 
-        $answer->setAnswer('');
+        $element->setAnswer('');
 
-        $checkRight = $this->getMockBuilder(CheckRight::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $handler = new Sql($connection);
 
-        $checkRight->expects($this->once())
-            ->method('checkAnswer')
-            ->with($answer);
-
-        $handler = new Sql($connection, $checkRight);
-
-        $handler->handle($answer);
+        $handler->handle($element);
     }
 
     public function data_handle(): array

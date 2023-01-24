@@ -154,12 +154,25 @@ class ProcessTest extends TestCase
 
     private function buildMockCreator(CourseSheet $sheet = null, array $resultAnswer = []): ProcessSaver
     {
+        $sheet = $sheet ?? new CourseSheet();
+
         $sheetRepository = $this->getMockBuilder(CourseSheetRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $sheetRepository->method('findOneBy')
-            ->willReturn($sheet ?? new CourseSheet());
+            ->willReturn($sheet);
+
+        $collection = $this->getMockBuilder(\Doctrine\Common\Collections\AbstractLazyCollection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['last', 'doInitialize'])
+            ->getMock();
+
+        $collection->method('last')
+            ->willReturn($sheet);
+
+        $sheetRepository->method('matching')
+            ->willReturn($collection);
 
         return new ProcessSaver($sheetRepository, $this->buildAnswerRepository($resultAnswer));
     }
