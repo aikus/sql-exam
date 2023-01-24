@@ -262,12 +262,13 @@ class Process
 
     private function isTimeOut(DateTimeInterface $now, DateTimeInterface $start, ?int $timeLimit): bool
     {
-        if ($timeLimit) {
+        if (null === $timeLimit || 0 === $timeLimit) {
             return false;
         }
 
-        $endTime = (clone $start);
-        $endTime->add(new \DateInterval("PT{$timeLimit}S"));
+        $endTime = new \DateTime();
+        $endTime->setTimestamp($start->getTimestamp());
+        $endTime->add(new \DateInterval("PT{$timeLimit}M"));
 
         return $now->getTimestamp() >= $endTime->getTimestamp();
     }
