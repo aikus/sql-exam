@@ -7,6 +7,7 @@ import { H3, H5, TextL, TextS, TextM } from '../../components/Typography'
 import { hostName } from '../../config'
 import {Loader} from "../../components/Loader";
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import {AuthorizationRep} from '../../Repositories/Repository';
 
 export const Authorization = () => {
     const navigate = useNavigate();
@@ -46,20 +47,9 @@ export const Authorization = () => {
 
         if (state.emailValue && state.passwordValue) {
             setLoader(true)
-            fetch(`${hostName}/api/login`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({
-                    email: state.emailValue,
-                    password: state.passwordValue
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setLoader(false)
+            AuthorizationRep.login(state.emailValue, state.passwordValue,
+                (data) => {
+                    setLoader(false);
                     if (data.code === 401) {
                         setState((prevState) => {
                             return {
@@ -75,7 +65,40 @@ export const Authorization = () => {
                         localStorage.setItem('jwtToken', data.token)
                         navigate("/react/my-profile");
                     }
-                })
+                }
+            );
+
+
+            // fetch(`${hostName}/api/login`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json;charset=utf-8'
+            //     },
+            //     body: JSON.stringify({
+            //         email: state.emailValue,
+            //         password: state.passwordValue
+            //     })
+            // })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         setLoader(false)
+            //         if (data.code === 401) {
+            //             setState((prevState) => {
+            //                 return {
+            //                     ...prevState,
+            //                     passwordError: true,
+            //                     passwordErrorText: data.message,
+            //                 }
+            //             })
+            //         } else {
+            //             setState((prevState) => {
+            //                 return { ...prevState, passwordError: false }
+            //             })
+            //             localStorage.setItem('jwtToken', data.token)
+            //             navigate("/react/my-profile");
+            //         }
+            //     })
         }
     }
 
