@@ -42,9 +42,8 @@ export const MyProfile = () => {
                             <TextL>Здесь ты можешь посмотреть свой рейтинг и курсы</TextL>
                         </C.Text>
                         <C.ButtonBox>
-                            <Button variant='contained' size='medium'>Посмотреть другие курсы</Button>
                             <Button
-                                variant="outlined"
+                                variant="contained"
                                 size="medium"
                                 target="_blank"
                                 href={linkToStatisticByStudent(useInfo?.userId)}
@@ -66,7 +65,7 @@ export const MyProfile = () => {
                     title="Можно пройти снова"
                     items={restartable}
                     mainButton="Начать прохождение"
-                    resultButton=""
+                    resultButton="Результаты"
                     noCourseText="У вас нет курсов для прохождения"
                 />
             </section>

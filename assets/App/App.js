@@ -37,17 +37,13 @@ export const App = () => {
                 </Route>
                 <Route path="course-result" element={<PersonalCourseResult/>}/>
                 <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
-                  <Route path="student-result" element={<ReportByStudent/>}/>
-                </Route>
-                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
                   <Route path="report" element={<Report/>}/>
                 </Route>
                 <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
                   <Route path="statistic" element={<StatisticPage/>}/>
                 </Route>
-                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
-                  <Route path="student-statistic" element={<StudentStatisticPage/>}/>
-                </Route>
+                <Route path="student-result" element={<ReportByStudent/>}/>
+                <Route path="student-statistic" element={<StudentStatisticPage/>}/>
               </Route>
             </Routes>
           </BrowserRouter>
