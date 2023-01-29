@@ -65,7 +65,7 @@ export const MyProfile = () => {
                     title="Можно пройти снова"
                     items={restartable}
                     mainButton="Начать прохождение"
-                    resultButton=""
+                    resultButton="Результаты"
                     noCourseText="У вас нет курсов для прохождения"
                 />
             </section>
