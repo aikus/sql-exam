@@ -5,7 +5,7 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Button, TableHead
+    Button, TableHead, Chip, Link
 } from '@mui/material';
 
 export const StudentStatistic = ({data}) => {
@@ -15,24 +15,53 @@ export const StudentStatistic = ({data}) => {
         { id: 'courseName', label: 'Курс', minWidth: 250 },
         { id: 'sheetStatus', label: 'Статус табеля' },
         { id: 'finishTime', label: 'Время завершения' },
-        { id: 'rightCount', label: 'Количество выполненных' },
+        { id: 'rightCount', label: 'Количество правильных' },
         { id: 'actions', label: 'Действия' },
     ]
 
     const tableCell = (column, row, params) => {
         const value = row[column.id];
+
         return <TableCell key={column.id}>
-            {column.id === 'actions'
-                ? <Button
-                    variant={"outlined"}
-                    href={`/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`}
-                    target="_blank"
-                    underline="none"
-                >
-                    Результаты
-                </Button>
-                : value}
+            {cellContentFabric(column.id, value, params)}
         </TableCell>
+    }
+
+    const cellContentFabric = (columnId, value, params) => {
+
+        let container = {
+            "actions": buttonCell,
+            "sheetStatus": chipStatusCell,
+        }
+
+        return container[columnId] !== undefined
+            ? container[columnId](value, params)
+            : value;
+    }
+
+    const chipStatusCell = (value, params) => {
+        const sheetStatusTranslator = {
+            "new": "Новый",
+            "started": "Начат",
+            "completed": "Завершён",
+            "restartable": "Можно пройти снова"
+        }
+        if (value) {
+            return <Chip label={sheetStatusTranslator[value]} title={value}/>;
+        }
+
+        return '';
+    }
+
+    const buttonCell = (value, params) => {
+        return <Button
+            variant={"outlined"}
+            href={`/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`}
+            target="_blank"
+            underline="none"
+        >
+            Результаты
+        </Button>
     }
 
     return (data !== undefined)

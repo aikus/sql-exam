@@ -47,7 +47,12 @@ class CourseResultController extends AbstractController
     #[Entity('course', options: ['id' => 'course'])]
     public function studentCourseResult(User $student, Course $course, CourseSheetRepository $sheetRepository): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        if (!$this->isOwnerOrAdmin($student)) {
+            return new JsonResponse([
+                'code' => Response::HTTP_FORBIDDEN,
+                'message' => 'Access denied',
+            ], Response::HTTP_FORBIDDEN);
+        }
 
         $sheet = $sheetRepository->findOneBy([
             'course' => $course,
@@ -58,11 +63,9 @@ class CourseResultController extends AbstractController
     }
 
     #[Route('/student/{id}/statistic/', name: 'app_api_student_statistic', methods: ['GET'])]
-    public function studentStatistic(User $student, CourseSheetRepository $sheetRepository, Security $security): Response
+    public function studentStatistic(User $student, CourseSheetRepository $sheetRepository): Response
     {
-        if (
-            $security->getUser()->getUserIdentifier() !== $student->getUserIdentifier()
-        ) {
+        if (!$this->isOwnerOrAdmin($student)) {
             return new JsonResponse([
                 'code' => Response::HTTP_FORBIDDEN,
                 'message' => 'Access denied',
@@ -227,6 +230,7 @@ class CourseResultController extends AbstractController
             $table[] = [
                 '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
+                'Текст вопроса' => $element->getDescription(),
                 'Ответ' => $answer?->getAnswer(),
                 'Статус' => $answer?->isIsRight(),
             ];
@@ -238,5 +242,13 @@ class CourseResultController extends AbstractController
             'table' => $table ?? [],
             'fio' => $sheet->getStudent()->getFio()
         ];
+    }
+
+    private function isOwnerOrAdmin(User $student): bool
+    {
+        return
+            $this->security->isGranted(User::ROLE_ADMIN)
+            || $this->security->isGranted(User::ROLE_TEACHER)
+            || $this->security->getUser()->getUserIdentifier() === $student->getUserIdentifier();
     }
 }

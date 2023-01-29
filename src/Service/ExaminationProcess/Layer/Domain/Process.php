@@ -109,6 +109,7 @@ class Process
      * @param DateTimeInterface $now
      * @return ProcessState
      * @throws ExaminationProcessException|CourseSheetStatusNotFound
+     * @throws Exception
      */
     public function finish(User $user, Course $course, ?string $sqlText, DateTimeInterface $now): ProcessState {
 
@@ -127,7 +128,14 @@ class Process
         if (!empty($sqlText)) {
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
-        $sheet->setStatus(CourseSheet::STATUS_RESTARTABLE);
+
+        if ($this->isTimeOut($now, $sheet->getStartedAt(), $course->getTimeLimit())) {
+            $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
+        }
+        else {
+            $sheet->setStatus(CourseSheet::STATUS_RESTARTABLE);
+        }
+
         $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
 
@@ -165,7 +173,7 @@ class Process
         }
 
         if (!empty($sqlText)) {
-            $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
+            $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
 
         $nextElement = $course->getType()->filter(function (CourseElement $element) use ($currentElement) {
@@ -250,5 +258,18 @@ class Process
             return null;
         }
         return ($course->getTimeLimit() * 60) - ($now->getTimestamp() - $sheet->getStartedAt()->getTimestamp());
+    }
+
+    private function isTimeOut(DateTimeInterface $now, DateTimeInterface $start, ?int $timeLimit): bool
+    {
+        if (null === $timeLimit || 0 === $timeLimit) {
+            return false;
+        }
+
+        $endTime = new \DateTime();
+        $endTime->setTimestamp($start->getTimestamp());
+        $endTime->add(new \DateInterval("PT{$timeLimit}M"));
+
+        return $now->getTimestamp() >= $endTime->getTimestamp();
     }
 }
