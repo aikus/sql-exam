@@ -67,38 +67,6 @@ export const Authorization = () => {
                     }
                 }
             );
-
-
-            // fetch(`${hostName}/api/login`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json;charset=utf-8'
-            //     },
-            //     body: JSON.stringify({
-            //         email: state.emailValue,
-            //         password: state.passwordValue
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         setLoader(false)
-            //         if (data.code === 401) {
-            //             setState((prevState) => {
-            //                 return {
-            //                     ...prevState,
-            //                     passwordError: true,
-            //                     passwordErrorText: data.message,
-            //                 }
-            //             })
-            //         } else {
-            //             setState((prevState) => {
-            //                 return { ...prevState, passwordError: false }
-            //             })
-            //             localStorage.setItem('jwtToken', data.token)
-            //             navigate("/react/my-profile");
-            //         }
-            //     })
         }
     }
 
