@@ -16,7 +16,7 @@ export const StudentStatistic = ({data}) => {
         { id: 'sheetStatus', label: 'Статус табеля' },
         { id: 'finishTime', label: 'Время завершения' },
         { id: 'rightCount', label: 'Количество правильных' },
-        { id: 'actions', label: 'Действия' },
+        { id: 'actions', label: 'Действия', minWidth: 270 },
     ]
 
     const tableCell = (column, row) => {
@@ -127,7 +127,10 @@ export const StudentStatistic = ({data}) => {
                     <TableRow>
                         {
                             columns.map((col, key) => {
-                                return <TableCell key={key}>{col.label}</TableCell>
+                                return <TableCell key={key} sx={{
+                                    width: col.width,
+                                    minWidth: col.minWidth
+                                }}>{col.label}</TableCell>
                             })
                         }
                     </TableRow>
