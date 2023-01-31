@@ -5,7 +5,7 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Button, TableHead, Chip, Link
+    Button, TableHead, Chip, ButtonGroup
 } from '@mui/material';
 
 export const StudentStatistic = ({data}) => {
@@ -19,27 +19,28 @@ export const StudentStatistic = ({data}) => {
         { id: 'actions', label: 'Действия' },
     ]
 
-    const tableCell = (column, row, params) => {
-        const value = row[column.id];
+    const tableCell = (column, row) => {
+        const columnId = column.id;
+        const value = row.columns[columnId];
 
-        return <TableCell key={column.id}>
-            {cellContentFabric(column.id, value, params)}
+        return <TableCell key={columnId}>
+            {cellContentFabric(columnId, column, row, value)}
         </TableCell>
     }
 
-    const cellContentFabric = (columnId, value, params) => {
+    const cellContentFabric = (columnId, column, row, value) => {
 
-        let container = {
+        const container = {
             "actions": buttonCell,
             "sheetStatus": chipStatusCell,
         }
 
         return container[columnId] !== undefined
-            ? container[columnId](value, params)
+            ? container[columnId](value, row)
             : value;
     }
 
-    const chipStatusCell = (value, params) => {
+    const chipStatusCell = (value, row) => {
         const sheetStatusTranslator = {
             "new": "Новый",
             "started": "Начат",
@@ -53,14 +54,69 @@ export const StudentStatistic = ({data}) => {
         return '';
     }
 
-    const buttonCell = (value, params) => {
+    const buttonCell = (value, row) => {
+        const params = row.params;
+        const sheetStatus = row.columns.sheetStatus;
+
+        const buttonContainer = {
+            "new": [startBtn],
+            "started": [continueBtn],
+            "completed": [resultsBtn],
+            "restartable": [passAgainBtn, resultsBtn],
+        }
+
+        return <ButtonGroup>
+            {
+                buttonContainer[sheetStatus] !== undefined
+                    ? buttonContainer[sheetStatus].map((buttonCallback, key) => {
+                        return buttonCallback(key, params);
+                    })
+                    : value
+            }
+        </ButtonGroup>
+    }
+
+    const startBtn = (key, param) => {
+        return btn(
+            key,
+            `/react/my-profile/practice?course=${param?.courseId}`,
+            'Начать'
+        )
+    }
+
+    const continueBtn = (key, param) => {
+        return btn(
+            key,
+            `/react/my-profile/practice?course=${param?.courseId}`,
+            'Продолжить'
+        )
+    }
+
+    const passAgainBtn = (key, param) => {
+        return btn(
+            key,
+            `/react/my-profile/practice?course=${param?.courseId}`,
+            'Пройти снова'
+        )
+    }
+
+    const resultsBtn = (key, param) => {
+        return btn(
+            key,
+            `/react/my-profile/student-result?course=${param?.courseId}&student=${param?.studentId}`,
+            'Результаты'
+        )
+    }
+
+    const btn = (key, href, name) => {
         return <Button
+            key={key}
             variant={"outlined"}
-            href={`/react/my-profile/student-result?course=${params?.courseId}&student=${params?.studentId}`}
+            href={href}
             target="_blank"
             underline="none"
         >
-            Результаты
+            {name}
         </Button>
     }
 
@@ -81,7 +137,7 @@ export const StudentStatistic = ({data}) => {
                             return (
                                 <TableRow hover tabIndex={-1} key={row?.columns.id}>
                                     {columns.map((column) => {
-                                        return (tableCell(column, row.columns, row.params));
+                                        return (tableCell(column, row));
                                     })}
                                 </TableRow>
                             );
