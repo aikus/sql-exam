@@ -1,20 +1,23 @@
 export const HttpRequest = {
     isDev: true,
-    post: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'POST'),
+    post: (url, body, handleSuccess = null, handleError = null, customAction, skipToken) => request(url, body, handleSuccess, handleError, 'POST', customAction, skipToken),
     put: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT'),
     get: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET'),
     delete: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE'),
 }
 
-const request = async (url, body, handleSuccess = null, handleError, method) => {
+const request = async (url, body, handleSuccess = null, handleError, method, customAction, skipToken) => {
 
     let init = {
         method: method,
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=utf-8',
-            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
         },
+    }
+
+    if (!skipToken) {
+        init.headers.Authorization = 'Bearer ' + localStorage.getItem('jwtToken')
     }
 
     if (null !== body) {
@@ -43,7 +46,7 @@ const request = async (url, body, handleSuccess = null, handleError, method) => 
         })
         .catch(error => {
             if (HttpRequest.isDev) console.error(`HttpRequest (${init.method}): `, error)
-            if (error.status === 401) {
+            if (!customAction && error.status === 401) {
                 window.location.href = location.origin + '/react';
                 localStorage.removeItem('jwtToken')
             }

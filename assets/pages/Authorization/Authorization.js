@@ -7,7 +7,7 @@ import { H3, H5, TextL, TextS, TextM } from '../../components/Typography'
 import { hostName } from '../../config'
 import {Loader} from "../../components/Loader";
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
-import {AuthorizationRep} from '../../Repositories/Repository';
+import {TokenRepository} from '../../Repositories/tokenRepository';
 
 export const Authorization = () => {
     const navigate = useNavigate();
@@ -47,58 +47,29 @@ export const Authorization = () => {
 
         if (state.emailValue && state.passwordValue) {
             setLoader(true)
-            AuthorizationRep.login(state.emailValue, state.passwordValue,
-                (data) => {
+
+            TokenRepository.get(state.emailValue, state.passwordValue,
+              (data) => {
                     setLoader(false);
-                    if (data.code === 401) {
-                        setState((prevState) => {
-                            return {
-                                ...prevState,
-                                passwordError: true,
-                                passwordErrorText: data.message,
-                            }
-                        })
-                    } else {
-                        setState((prevState) => {
-                            return { ...prevState, passwordError: false }
-                        })
-                        localStorage.setItem('jwtToken', data.token)
-                        navigate("/react/my-profile");
-                    }
+                    setState((prevState) => {
+                      return { ...prevState, passwordError: false }
+                    })
+                    localStorage.setItem('jwtToken', data.token)
+                    navigate("/react/my-profile");
+                },
+              (error) => {
+                setLoader(false);
+                if (error.status === 401) {
+                    setState((prevState) => {
+                        return {
+                            ...prevState,
+                            passwordError: true,
+                            passwordErrorText: error.body.message,
+                        }
+                    })
                 }
+              }
             );
-
-
-            // fetch(`${hostName}/api/login`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json;charset=utf-8'
-            //     },
-            //     body: JSON.stringify({
-            //         email: state.emailValue,
-            //         password: state.passwordValue
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         setLoader(false)
-            //         if (data.code === 401) {
-            //             setState((prevState) => {
-            //                 return {
-            //                     ...prevState,
-            //                     passwordError: true,
-            //                     passwordErrorText: data.message,
-            //                 }
-            //             })
-            //         } else {
-            //             setState((prevState) => {
-            //                 return { ...prevState, passwordError: false }
-            //             })
-            //             localStorage.setItem('jwtToken', data.token)
-            //             navigate("/react/my-profile");
-            //         }
-            //     })
         }
     }
 
@@ -108,31 +79,18 @@ export const Authorization = () => {
         if (state.fio && state.emailRegistrationValue && state.passwordRegistration1Value && checkPasswordMatch()) {
             setLoader(true)
 
-            fetch(`${hostName}/api/register`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({
-                    email: state.emailRegistrationValue,
-                    agreeTerms: 1,
-                    fio: state.fio,
-                    plainPassword: state.passwordRegistration2Value
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setLoader(false);
-                    if (data.status === 'success') {
-                        setState((prevState) => {
-                            return { ...prevState, registered: true }
-                        })
-                        setTimeout(() => {
-                            handleBack();
-                        }, 1500)
-                    }
-                })
+            TokenRepository.create(state.emailRegistrationValue, state.fio, state.passwordRegistration2Value,
+              (data) => {
+                  setLoader(false);
+                  if (data.status === 'success') {
+                      setState((prevState) => {
+                          return { ...prevState, registered: true }
+                      })
+                      setTimeout(() => {
+                          handleBack();
+                      }, 1500)
+                  }
+              })
         }
     }
 
@@ -140,34 +98,28 @@ export const Authorization = () => {
         e.preventDefault()
         setLoader(true)
 
-        fetch(`${hostName}/confirm/password`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({
-                "email": state.emailRestoreValue
-            })
-        })
-          .then(response => response.json())
-          .then(data => {
+        TokenRepository.change(state.emailRestoreValue,
+          (data) => {
               setLoader(false)
-              if (data?.status === 'error') {
-                  setState((prevState) => {
-                      return {
-                          ...prevState,
-                          emailRestoreError: true,
-                          emailRestoreErrorText: data.errors[0]
-                      }
-                  })
-              } else if (data?.status === 'ok') {
+              if (data?.status === 'ok') {
                   setState((prevState) => {
                       return {
                           ...prevState,
                           emailSentMessage: data.message,
                           restoreSuccessfully: true,
                           headerText: ''
+                      }
+                  })
+              }
+          },
+          (error) => {
+              setLoader(false)
+              if (error?.status === 'error') {
+                  setState((prevState) => {
+                      return {
+                          ...prevState,
+                          emailRestoreError: true,
+                          emailRestoreErrorText: data.errors[0]
                       }
                   })
               }
