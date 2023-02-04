@@ -2,7 +2,7 @@
 
 namespace App\Connectors;
 
-use App\Connectors\CourseElementHandler\Factory;
+use App\Connectors\AnswerHandler\Factory;
 use App\Entity\CourseAnswer;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
@@ -14,7 +14,6 @@ class CourseAnswerListener
 
     public function prePersist(CourseAnswer $answer, LifecycleEventArgs $event): void
     {
-//        echo $answer->getQuestion()->getType();die;
         $this->handlerFactory->getHandler($answer)->handle($answer);
     }
 }

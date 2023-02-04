@@ -31,7 +31,6 @@ class YouCoursesController extends AbstractController
             $result[] = '/api-platform/courses/' . $sheet->getCourse()->getId();
         }
 
-
         return new JsonResponse($result);
     }
 }
