@@ -8,7 +8,7 @@ import { Loader } from "/assets/components/Loader";
 
 export const ReportByStudent = () => {
 
-    const [personalResult, setPersonalResult] = useState({})
+    const [personalResult, setPersonalResult] = useState(false)
     const [loader, setLoader] = useState(true)
     const [error, setError] = useState(false)
 
@@ -38,7 +38,10 @@ export const ReportByStudent = () => {
             <Notice message={error}/>
             <Loader show={loader}/>
 
-            <CourseResult personalResult={personalResult}/>
+            {
+                personalResult &&
+                <CourseResult personalResult={personalResult}/>
+            }
         </C.Wrapper>
     )
 }
