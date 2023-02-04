@@ -70,3 +70,7 @@ services:
     App\Connectors\CourseAnswerListener:
         tags:
             - {name: doctrine.orm.entity_listener}
+
+    App\Connectors\CourseElementListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}
