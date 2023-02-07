@@ -13,6 +13,7 @@ import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 import {GetPermission} from '../../Service/AskPermission'
 import useAuth from '../../hooks/useAuth'
+import {TokenRepository} from "../../Repositories/tokenRepository";
 
 export const MainPage = () => {
     const navigate = useNavigate();
@@ -44,7 +45,12 @@ export const MainPage = () => {
             localStorage.removeItem('jwtToken')
         }
 
-        HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
+        TokenRepository.delete((data) => {
+            window.location.href = location.origin + '/react';
+            localStorage.removeItem('jwtToken')
+        })
+
+        // HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
     }
 
     const handleProfileMenuClose = () => {
