@@ -1,13 +1,36 @@
-import React from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import * as C from './styles'
-import {Accordion, AccordionSummary, AccordionDetails, Skeleton, Button} from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import arrowRight from './arrow-right.svg'
-import { H2, TextL } from '../../../components/Typography'
+import {Tabs, Tab, Box, Skeleton} from "@mui/material";
+import { H2, TextL, H5 } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
+import defaultTile from '../../../img/default-tile.png'
+import CourseRepository from "../CourseRepository";
 
-export const CourseBlock = ({id, items, title, mainButton, resultButton, noCourseText}) => {
+export const CourseBlock = ({title}) => {
     const navigate = useNavigate();
+    const wrapperElem = useRef(null);
+    const [tileBlockWidth, setTileBlockWidth] = useState(wrapperElem?.current?.offsetWidth);
+    const [tabChosen, setTabChosen] = useState(0);
+    const [newCourses, setNewCourses] = useState(null);
+    const [restartable, setRestartable] = useState(null);
+    const [inProgress, setInProgress] = useState(null);
+    const [completedCourses, setCompletedCourses] = useState(null);
+
+    useEffect(() => {
+        CourseRepository.getRestartable().then(setRestartable);
+        CourseRepository.getNewCourses().then(setNewCourses);
+        CourseRepository.getStartedCourses().then(setInProgress);
+        CourseRepository.getCompletedCourses().then(setCompletedCourses);
+
+        window.addEventListener('resize', resizeHandler);
+        setTimeout(() => {
+            resizeHandler();
+        }, 50);
+        return () => {
+            window.removeEventListener('resize',resizeHandler);
+        }
+    }, []);
+
     const goToPractice = id => {
         navigate(`/react/my-profile/practice?course=${id}`)
     }
@@ -16,56 +39,107 @@ export const CourseBlock = ({id, items, title, mainButton, resultButton, noCours
         navigate(`/react/my-profile/course-result?course=${id}`)
     }
 
+    const handleTabChange = (event, newValue) => {
+        setTabChosen(newValue);
+    };
+
+    const resizeHandler = () => {
+        setTileBlockWidth(wrapperElem?.current?.offsetWidth);
+    }
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+          <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            {...other}
+            style={{width: '100%'}}
+          >
+              {value === index && (
+                <Box>
+                    <div>{children}</div>
+                </Box>
+              )}
+          </div>
+        );
+    }
+
+    function a11yProps(index) {
+        return {
+            id: `vertical-tab-${index}`,
+            'aria-controls': `vertical-tabpanel-${index}`,
+        };
+    }
+
+    function TileBlock({value, tileClick}) {
+
+        return (
+          <C.Wrapper ref={wrapperElem}>
+              {value === null &&
+                [0, 1, 2].map((item, i) => {
+                    return (
+                      <C.Tile key={i} blockWidth={tileBlockWidth}>
+                          <Skeleton variant="rectangular" animation="wave" height={140} sx={{borderRadius: '4px'}}/>
+                      </C.Tile>
+                    )
+                })
+              }
+              {value !== null && !value.length &&
+                <C.NoContent>
+                    <TextL>Выбранные курсы отсутствуют</TextL>
+                </C.NoContent>
+              }
+              {value !== null && Boolean(value.length) &&
+                value.map((item, i) => {
+                    return (
+                      <C.Tile key={i} blockWidth={tileBlockWidth} onClick={() => tileClick(item.id)}>
+                          <img src={defaultTile} alt="Изображение курса"/>
+                          <C.TileDescription>
+                              <H5>{item.name}</H5>
+                          </C.TileDescription>
+                      </C.Tile>
+                    )
+                })
+              }
+          </C.Wrapper>
+        );
+    }
+
     return (
-      <>
+    <>
         <C.HeaderBlock>
-          <H2>{title}</H2>
-          {/*<C.SeeAll>*/}
-          {/*    <a href={'#'}>*/}
-          {/*        <div>Посмотреть всё</div>*/}
-          {/*        <img src={arrowRight}/>*/}
-          {/*    </a>*/}
-          {/*</C.SeeAll>*/}
+            <H2>{title}</H2>
         </C.HeaderBlock>
-        {items === null &&
-          <Skeleton variant="rectangular" animation="wave" height={80} sx={{marginTop: '24px', borderRadius: '4px'}}/>
-        }
-        {items !== null && !items.length &&
-          <C.LoadingBlock>
-              <TextL>{noCourseText}</TextL>
-          </C.LoadingBlock>
-        }
-        {items !== null && Boolean(items.length) &&
-          <C.AccordionBlock>
-              {items.map((item, i) => {
-                  return (
-                    <Accordion key={i}>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls={id + '-' + i + '-content'}
-                          id={id + '-' + i + '-header'}
-                        >
-                            <C.Title><TextL>{item.name}</TextL></C.Title>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <C.Description>
-                                <C.Buttons>
-                                    {mainButton &&
-                                      <Button variant='contained' size='medium' onClick={() => goToPractice(item.id)}>{mainButton}</Button>
-                                    }
-                                    {resultButton &&
-                                      <Button variant='outlined' size='medium' onClick={() => goToCourseResult(item.id)}>{resultButton}</Button>
-                                    }
-                                </C.Buttons>
-                                <TextL>{item.description}</TextL>
-                            </C.Description>
-                        </AccordionDetails>
-                    </Accordion>
-                  )
-              })}
-          </C.AccordionBlock>
-        }
-      </>
+        <C.Base>
+            <Tabs
+              orientation="vertical"
+              value={tabChosen}
+              onChange={handleTabChange}
+              sx={{ borderRight: 1, borderColor: 'divider', flexShrink: 0 }}
+            >
+                <Tab label="Новый" {...a11yProps(0)}/>
+                <Tab label="Можно пройти снова" {...a11yProps(1)}/>
+                <Tab label="В процессе" {...a11yProps(2)}/>
+                <Tab label="Завершённые" {...a11yProps(3)}/>
+            </Tabs>
+            <TabPanel value={tabChosen} index={0}>
+                <TileBlock value={newCourses} tileClick={goToPractice}/>
+            </TabPanel>
+            <TabPanel value={tabChosen} index={1}>
+                <TileBlock value={restartable} tileClick={goToPractice}/>
+            </TabPanel>
+            <TabPanel value={tabChosen} index={2}>
+                <TileBlock value={inProgress} tileClick={goToPractice}/>
+            </TabPanel>
+            <TabPanel value={tabChosen} index={3}>
+                <TileBlock value={completedCourses} tileClick={goToCourseResult}/>
+            </TabPanel>
+        </C.Base>
+    </>
     )
 }
 

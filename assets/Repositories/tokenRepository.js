@@ -3,8 +3,6 @@ import {HttpRequest} from "../Service/HttpRequest";
 
 export const TokenRepository = {
   get: (email, password, handleSuccess, handleError) => {
-    console.log(email)
-    console.log(password)
     const body = {
       email: email,
       password: password
