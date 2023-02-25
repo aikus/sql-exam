@@ -39,25 +39,3 @@ export const Wrapper = styled.div`
     margin: 0 32px 0 16px;
   }
 `
-
-export const Tile = styled.div`
-  width: ${props => `${(props.blockWidth - 1 - 16) / 2}px`};
-  cursor: pointer;
-  
-  & > img {
-    width: 100%;
-    border-radius: 4px;
-  }
-
-  @media screen and (min-width: 870px) {
-    width: ${props => `${(props.blockWidth - 1 - 16 * 2) / 3}px`};
-  }
-
-  @media screen and (min-width: 1440px) {
-    width: ${props => `${(props.blockWidth - 1 - 16 * 3) / 4}px`};
-  }
-`
-
-export const TileDescription = styled.div`
-  margin-top: 8px;
-`

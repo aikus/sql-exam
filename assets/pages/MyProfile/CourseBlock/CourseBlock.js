@@ -1,15 +1,12 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
-import {Tabs, Tab, Box, Skeleton} from "@mui/material";
+import {Tabs, Tab, Box, Skeleton, Grid, Card, CardActionArea, CardContent, Typography} from "@mui/material";
 import { H2, TextL, H5 } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
-import defaultTile from '../../../img/default-tile.png'
 import CourseRepository from "../CourseRepository";
 
 export const CourseBlock = ({title}) => {
-    const navigate = useNavigate();
-    const wrapperElem = useRef(null);
-    const [tileBlockWidth, setTileBlockWidth] = useState(wrapperElem?.current?.offsetWidth);
+    const navigate = useNavigate()
     const [tabChosen, setTabChosen] = useState(0);
     const [newCourses, setNewCourses] = useState(null);
     const [restartable, setRestartable] = useState(null);
@@ -21,14 +18,6 @@ export const CourseBlock = ({title}) => {
         CourseRepository.getNewCourses().then(setNewCourses);
         CourseRepository.getStartedCourses().then(setInProgress);
         CourseRepository.getCompletedCourses().then(setCompletedCourses);
-
-        window.addEventListener('resize', resizeHandler);
-        setTimeout(() => {
-            resizeHandler();
-        }, 50);
-        return () => {
-            window.removeEventListener('resize',resizeHandler);
-        }
     }, []);
 
     const goToPractice = id => {
@@ -42,10 +31,6 @@ export const CourseBlock = ({title}) => {
     const handleTabChange = (event, newValue) => {
         setTabChosen(newValue);
     };
-
-    const resizeHandler = () => {
-        setTileBlockWidth(wrapperElem?.current?.offsetWidth);
-    }
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -76,17 +61,10 @@ export const CourseBlock = ({title}) => {
     }
 
     function TileBlock({value, tileClick}) {
-
         return (
-          <C.Wrapper ref={wrapperElem}>
+          <C.Wrapper>
               {value === null &&
-                [0, 1, 2].map((item, i) => {
-                    return (
-                      <C.Tile key={i} blockWidth={tileBlockWidth}>
-                          <Skeleton variant="rectangular" animation="wave" height={140} sx={{borderRadius: '4px'}}/>
-                      </C.Tile>
-                    )
-                })
+                <Skeleton variant="rectangular" animation="wave" height={140} width={250} sx={{borderRadius: '4px'}}/>
               }
               {value !== null && !value.length &&
                 <C.NoContent>
@@ -94,16 +72,26 @@ export const CourseBlock = ({title}) => {
                 </C.NoContent>
               }
               {value !== null && Boolean(value.length) &&
-                value.map((item, i) => {
-                    return (
-                      <C.Tile key={i} blockWidth={tileBlockWidth} onClick={() => tileClick(item.id)}>
-                          <img src={defaultTile} alt="Изображение курса"/>
-                          <C.TileDescription>
-                              <H5>{item.name}</H5>
-                          </C.TileDescription>
-                      </C.Tile>
-                    )
-                })
+                <Grid container spacing={2} columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+                    {value.map((itemVal, i) => {
+                        return (
+                          <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                              <Card>
+                                  <CardActionArea>
+                                      <CardContent>
+                                          <Typography gutterBottom variant="h5" component="div">
+                                              {itemVal.name}
+                                          </Typography>
+                                          <Typography variant="body2" color="text.secondary">
+                                              {itemVal.description}
+                                          </Typography>
+                                      </CardContent>
+                                  </CardActionArea>
+                              </Card>
+                          </Grid>
+                        )
+                    })}
+                </Grid>
               }
           </C.Wrapper>
         );
