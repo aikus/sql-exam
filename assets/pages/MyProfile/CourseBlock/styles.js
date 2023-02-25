@@ -8,6 +8,16 @@ export const Base = styled.div`
   padding: 32px 0;
   border-radius: 8px;
   margin-top: 24px;
+  
+  & > div:first-child {
+    width: 40%;
+  }
+
+  @media (min-width: 425px) {
+    & > div:first-child {
+      width: unset;
+    }
+  }
 `
 
 export const HeaderBlock = styled.div`

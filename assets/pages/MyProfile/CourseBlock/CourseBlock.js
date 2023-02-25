@@ -64,7 +64,7 @@ export const CourseBlock = ({title}) => {
         return (
           <C.Wrapper>
               {value === null &&
-                <Skeleton variant="rectangular" animation="wave" height={140} width={250} sx={{borderRadius: '4px'}}/>
+                <Skeleton variant="rectangular" animation="wave" height={140} sx={{borderRadius: '4px', maxWidth: '250px', width: '100%'}}/>
               }
               {value !== null && !value.length &&
                 <C.NoContent>
@@ -77,7 +77,7 @@ export const CourseBlock = ({title}) => {
                         return (
                           <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                               <Card>
-                                  <CardActionArea>
+                                  <CardActionArea onClick={() => tileClick(itemVal.id)}>
                                       <CardContent>
                                           <Typography gutterBottom variant="h5" component="div">
                                               {itemVal.name}
