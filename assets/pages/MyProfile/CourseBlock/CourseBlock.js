@@ -1,9 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import * as C from './styles'
-import {Tabs, Tab, Box, Skeleton, Grid, Card, CardActionArea, CardContent, Typography} from "@mui/material";
+import {
+    Tabs,
+    Tab,
+    Box,
+    Skeleton,
+    Grid,
+    Card,
+    CardActionArea,
+    CardContent,
+    Typography,
+    Button,
+    ButtonGroup
+} from "@mui/material";
 import { H2, TextL, H5 } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
 import CourseRepository from "../CourseRepository";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 export const CourseBlock = ({title}) => {
     const navigate = useNavigate()
@@ -60,7 +74,7 @@ export const CourseBlock = ({title}) => {
         };
     }
 
-    function TileBlock({value, tileClick}) {
+    function TileBlock({value, startCourseBtn, viewResultBtn}) {
         return (
           <C.Wrapper>
               {value === null &&
@@ -77,16 +91,37 @@ export const CourseBlock = ({title}) => {
                         return (
                           <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
                               <Card>
-                                  <CardActionArea onClick={() => tileClick(itemVal.id)}>
-                                      <CardContent>
-                                          <Typography gutterBottom variant="h5" component="div">
-                                              {itemVal.name}
-                                          </Typography>
-                                          <Typography variant="body2" color="text.secondary">
-                                              {itemVal.description}
-                                          </Typography>
-                                      </CardContent>
-                                  </CardActionArea>
+                                  <CardContent sx={{
+                                      '&:last-child': {
+                                          pb: { xs: 1, sm: 2 }
+                                      },
+                                      p: { xs: 1, sm: 2 }
+                                  }}>
+                                      <Typography gutterBottom variant="h5" component="div">
+                                          {itemVal.name}
+                                      </Typography>
+                                      <Typography variant="body2" color="text.secondary">
+                                          {itemVal.description}
+                                      </Typography>
+                                      <Box sx={{
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          pt: 2,
+                                          gap: '8px',
+                                      }}>
+                                          {startCourseBtn &&
+                                            <Button
+                                              size='S' variant={'outlined'} onClick={() => goToPractice(itemVal.id)} color="secondary">
+                                                Начать прохождение
+                                            </Button>
+                                          }
+                                          {viewResultBtn &&
+                                            <Button size='S' variant={'outlined'} onClick={() => goToCourseResult(itemVal.id)} color="secondary">
+                                                Посмотреть результаты
+                                            </Button>
+                                          }
+                                      </Box>
+                                  </CardContent>
                               </Card>
                           </Grid>
                         )
@@ -115,16 +150,29 @@ export const CourseBlock = ({title}) => {
                 <Tab label="Завершённые" {...a11yProps(3)}/>
             </Tabs>
             <TabPanel value={tabChosen} index={0}>
-                <TileBlock value={newCourses} tileClick={goToPractice}/>
+                <TileBlock
+                  value={newCourses}
+                  startCourseBtn
+                />
             </TabPanel>
             <TabPanel value={tabChosen} index={1}>
-                <TileBlock value={restartable} tileClick={goToPractice}/>
+                <TileBlock
+                  value={restartable}
+                  startCourseBtn
+                  viewResultBtn
+                />
             </TabPanel>
             <TabPanel value={tabChosen} index={2}>
-                <TileBlock value={inProgress} tileClick={goToPractice}/>
+                <TileBlock
+                  value={inProgress}
+                  startCourseBtn
+                />
             </TabPanel>
             <TabPanel value={tabChosen} index={3}>
-                <TileBlock value={completedCourses} tileClick={goToCourseResult}/>
+                <TileBlock
+                  value={completedCourses}
+                  viewResultBtn
+                />
             </TabPanel>
         </C.Base>
     </>
