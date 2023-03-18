@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as C from './styles'
 import { H2, TextL } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import {Button} from "@mui/material"
+import MUIEditor, { MUIEditorState, toHTML } from "react-mui-draft-wysiwyg";
+import * as DOMPurify from 'dompurify';
 
 export const MyProfile = () => {
     const outletContent = useOutletContext();
     const useInfo = outletContent.userInfo;
+    const editorConfig = {}
+    const [editorState, setEditorState] = React.useState(
+      MUIEditorState.createEmpty(editorConfig),
+    )
+    const [html, setHtml] = React.useState('');
+
+
+    // const { highlight } = require('sql-highlight')
+    // const sqlString = "SELECT `id`, `username` FROM `users` WHERE `email` = 'test@example.com'"
+    // const highlighted = highlight(sqlString, {
+    //   html: true,
+    // })
+
+    const onChange = newState => {
+        setEditorState(newState)
+    }
+
+    const convertToHTML = () => {
+      const stateHtml = toHTML(editorState.getCurrentContent())
+      setHtml(stateHtml)
+    }
+
+    const sanitizer = DOMPurify.sanitize;
 
     const linkToStatisticByStudent = (studentId) => {
         return `/react/my-profile/student-statistic?student=${studentId}`
@@ -52,6 +77,11 @@ export const MyProfile = () => {
                   title="Ваши курсы"
               />
             </section>
+            <MUIEditor editorState={editorState} onChange={onChange} value={'text'}/>
+            <div onClick={() => {
+                convertToHTML()
+            }}>GGG</div>
+            <div dangerouslySetInnerHTML={{__html: sanitizer(html)}} />
         </>
     )
 }
