@@ -151,7 +151,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     setLoader(true)
 
     CourseElementRepository.delete(courseContent[step - 1]).then(
-      data => {
+        () => {
         deleteStep()
         setLoader(false)
       }
@@ -171,6 +171,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       {name: 'Текст', type: 'article'},
       {name: 'Практика Mysql', type: 'mysql'},
       {name: 'Практика Postgres', type: 'postgres'},
+      {name: 'Открытый вопрос', type: 'open-question'},
     ];
   }
 
@@ -256,6 +257,22 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             onChange={(e) => handleInputChange(e.target.value, 'answer')}
           />
         </C.AnswerBlock>
+      }
+      {'open-question' === courseContent[step - 1].type &&
+          <C.AnswerBlock>
+            <H5>Введите правильный ответ</H5>
+            <TextField
+                required
+                id={`course-${step}-2`}
+                type="text"
+                variant="outlined"
+                multiline={true}
+                fullWidth={true}
+                minRows={5}
+                value={courseContent[step - 1].answer}
+                onChange={(e) => handleInputChange(e.target.value, 'answer')}
+            />
+          </C.AnswerBlock>
       }
       {courseContent[step - 1].type === 'poll' &&
         <C.VariantsBlock>

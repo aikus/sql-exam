@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
-import { Button, ButtonGroup, Link, TextField } from "@mui/material";
-import { H2, H5, TextL, TextM, TextS } from '../../components/Typography'
-import { TableToChoose } from "./TableToChoose";
-import { ExampleTable } from "./ExampleTable";
-import { ResultBlock } from "./ResultBlock";
-import { useNavigate } from "react-router-dom";
-import { HttpRequest } from "../../Service/HttpRequest";
-import { Loader } from "../../components/Loader";
-import { UrlService } from "../../Service/UrlService";
-import { StudentTableData } from "../../Service/StudentTableData";
-import { Notice } from "../../components/Notice";
+import {Button, ButtonGroup, TextField} from "@mui/material";
+import {H2, H5, TextL, TextM, TextS} from '../../components/Typography'
+import {TableToChoose} from "./TableToChoose";
+import {ExampleTable} from "./ExampleTable";
+import {ResultBlock} from "./ResultBlock";
+import {useNavigate} from "react-router-dom";
+import {HttpRequest} from "../../Service/HttpRequest";
+import {Loader} from "../../components/Loader";
+import {UrlService} from "../../Service/UrlService";
+import {StudentTableData} from "../../Service/StudentTableData";
+import {Notice} from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
@@ -45,17 +45,17 @@ export const Practice = () => {
     const [redBorder, setRedBorder] = useState(false);
 
     const urlContainer = (key, id) => {
-        if (null === id) {
-            throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
-        }
-
-        let container = {
+        const container = {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
             processFinish: `/api-process/${id}/finish`,
             processPreviousStep: `/api-process/${id}/previous-step`,
         };
+
+        if (null === id) {
+            throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
+        }
         return container[key];
     }
 
@@ -131,6 +131,9 @@ export const Practice = () => {
     }
 
     const handleExecution = callBack => {
+        if('open-question' === element.type) {
+            return;
+        }
         setLoader(true)
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
@@ -220,8 +223,7 @@ export const Practice = () => {
                 statusText: 'Bad Request',
                 body: {message: 'Не найден шаг следующий за ' + element.name},
             })
-        }
-        else {
+        } else {
             sendAnswer()
             processState.currentElement = processState.elements[nextIndex]
             getElement(processState)
@@ -237,8 +239,7 @@ export const Practice = () => {
                 statusText: 'Bad Request',
                 body: {message: 'Не найден шаг перед ' + element.name},
             })
-        }
-        else {
+        } else {
             sendPrevStep()
             processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
@@ -263,9 +264,35 @@ export const Practice = () => {
         return process?.elements.indexOf(process.currentElement);
     }
 
-    const isAnswerable = () => {
-        return element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
-    }
+    const answerableTypes = {
+            mysql: true,
+            postgres: true,
+            oracle: true,
+            'open-question': true
+        },
+        executeLabel = "Выполнить запрос",
+        fieldLabel = "Введите текст запроса",
+        buttonLabels = {
+            mysql: executeLabel,
+            postgres: executeLabel,
+            oracle: executeLabel,
+            'open-question': "Сохранить"
+        },
+        answerFieldLabels = {
+            mysql: fieldLabel,
+            postgres: fieldLabel,
+            oracle: fieldLabel,
+            'open-question': "Ваш ответ"
+        },
+        isAnswerable = () => {
+            return answerableTypes[element.type] || false;
+        },
+        buttonLabel = () => {
+            return buttonLabels[element.type] || "";
+        },
+        answerFieldLabel = () => {
+            return answerFieldLabels[element.type] || ""
+        };
 
     useEffect(() => {
         start()
@@ -288,7 +315,7 @@ export const Practice = () => {
             <Loader show={loader}/>
 
             <Button onClick={() => navigate("/react/my-profile")} variant={'text'} color='info' size='S'
-                    startIcon={<KeyboardArrowLeftIcon />}>
+                    startIcon={<KeyboardArrowLeftIcon/>}>
                 Вернуться к опроснику
             </Button>
             <C.Header>
@@ -300,31 +327,31 @@ export const Practice = () => {
                     <ButtonGroup>
                         <div>
                             <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
-                                    disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
+                                    disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon/>}
                             >
                                 Назад
                             </Button>
                             <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
-                                    disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
+                                    disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon/>}
                             >
                                 Далее
                             </Button>
                         </div>
                     </ButtonGroup>
                     {timer &&
-                      <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
-                          {showTimer ?
-                            <>
-                                <H5>Осталось {Math.trunc(timer / 60)} мин {timer % 60} сек</H5>
-                                <TextS>По истечении времени прохождение будет завершено</TextS>
-                            </>
-                            :
-                            <C.ClosedTimer>
-                                <TimerOutlinedIcon fontSize={'large'} sx={{color: redBorder ? '#ED1C24' : 'none'}}/>
-                                <TextM>Осталось {redBorder && 'мало'} времени...</TextM>
-                            </C.ClosedTimer>
-                          }
-                      </C.Timer>
+                        <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
+                            {showTimer ?
+                                <>
+                                    <H5>Осталось {Math.trunc(timer / 60)} мин {timer % 60} сек</H5>
+                                    <TextS>По истечении времени прохождение будет завершено</TextS>
+                                </>
+                                :
+                                <C.ClosedTimer>
+                                    <TimerOutlinedIcon fontSize={'large'} sx={{color: redBorder ? '#ED1C24' : 'none'}}/>
+                                    <TextM>Осталось {redBorder && 'мало'} времени...</TextM>
+                                </C.ClosedTimer>
+                            }
+                        </C.Timer>
                     }
                 </C.TopBlock>
                 <C.Task>
@@ -338,7 +365,7 @@ export const Practice = () => {
                             && <TextField
                                 margin="normal"
                                 id="practice-1"
-                                label="Введите текст запроса"
+                                label={answerFieldLabel()}
                                 type="text"
                                 variant="outlined"
                                 multiline={true}
@@ -352,7 +379,7 @@ export const Practice = () => {
                             />
                         }
                         {
-                            isAnswerable()
+                            isAnswerable() && 'open-question' !== element.type
                             && <C.Description>
                                 <TextM>
                                     Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
@@ -362,31 +389,34 @@ export const Practice = () => {
                         }
                         <C.ButtonBox>
                             {isAnswerable() &&
-                              <div>
-                                <Button
-                                  variant='contained'
-                                  size='medium'
-                                  onClick={handleExecution}
-                                >
-                                    Выполнить запрос
-                                </Button>
-                              </div>
+                                <div>
+                                    <Button
+                                        variant='contained'
+                                        size='medium'
+                                        onClick={handleExecution}
+                                    >
+                                        {buttonLabel()}
+                                    </Button>
+                                </div>
                             }
                             {!isExistNextStep &&
-                              <Button
-                                variant='contained'
-                                size='medium'
-                                onClick={() => {
-                                    handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
-                                }}
-                              >
+                                <Button
+                                    variant='contained'
+                                    size='medium'
+                                    onClick={() => {
+                                        handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
+                                    }}
+                                >
                                     Завершить
-                              </Button>
+                                </Button>
                             }
                         </C.ButtonBox>
                     </C.LeftBlock>
                     <C.RightBlock>
-                        <TableToChoose tableData={givenTables} setTable={setChosenTable}/>
+                        {
+                            'open-question' !== element.type &&
+                            <TableToChoose tableData={givenTables} setTable={setChosenTable}/>
+                        }
                     </C.RightBlock>
                 </C.Task>
                 {
@@ -396,11 +426,11 @@ export const Practice = () => {
                     </C.Block>
                 }
                 {
-                  chosenTable &&
-                  <C.TableWrapper>
-                      <TextM>{chosenTable}</TextM>
-                      <ExampleTable tableData={givenTablesData[chosenTable]}/>
-                  </C.TableWrapper>
+                    chosenTable &&
+                    <C.TableWrapper>
+                        <TextM>{chosenTable}</TextM>
+                        <ExampleTable tableData={givenTablesData[chosenTable]}/>
+                    </C.TableWrapper>
                 }
             </C.Main>
         </C.Wrapper>

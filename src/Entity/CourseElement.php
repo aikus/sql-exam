@@ -19,6 +19,15 @@ class CourseElement
     const TYPE_POSTGRES = 'postgres';
     const TYPE_ORACLE = 'oracle';
     const TYPE_POLL = 'poll';
+    const TYPE_OPEN_QUESTION = 'open-question';
+    const ALL_TYPES = [
+        self::TYPE_ARTICLE,
+        self::TYPE_MYSQL,
+        self::TYPE_POSTGRES,
+        self::TYPE_ORACLE,
+        self::TYPE_POLL,
+        self::TYPE_OPEN_QUESTION
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -112,7 +121,7 @@ class CourseElement
      */
     public function setType(string $type): self
     {
-        if(!in_array($type, [self::TYPE_MYSQL, self::TYPE_ORACLE, self::TYPE_POLL, self::TYPE_POSTGRES, self::TYPE_ARTICLE])) {
+        if (!in_array($type, self::ALL_TYPES)) {
             throw new CourseElementTypeNotFound($type);
         }
         $this->type = $type;
