@@ -6,8 +6,10 @@ import {TaskSheet} from './TaskSheet'
 import {Loader} from "../../components/Loader";
 import {HttpRequest} from '../../Service/HttpRequest'
 import {CourseElementRepository} from "./CourseElementRepository";
-import { hostName } from '../../config'
+import {hostName, wysiwygConfig} from '../../config'
 import {searchParam} from "../../Service/SearchParamActions";
+import MUIEditor, {MUIEditorState, toHTML, toolbarControlTypes} from "react-mui-draft-wysiwyg";
+import {ContentState, convertFromHTML} from 'draft-js';
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
@@ -16,15 +18,16 @@ export const CreateCourse = () => {
   const [courseMainInfo, setCourseMainInfo] = useState({
     courseId: '',
     name: '',
-    description: '',
+    description: MUIEditorState.createEmpty(),
     intendedFor: [],
     exam: false,
     numOfTries: '',
     minForTrie: ''
   });
+
   const defaultElement = {
     'type': 'article',
-    'description': '',
+    'description': MUIEditorState.createEmpty(),
     'name': '',
   };
   const [courseContent, setCourseContent] = useState([defaultElement]);
@@ -32,7 +35,7 @@ export const CreateCourse = () => {
   const createCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: toHTML(courseMainInfo.description.getCurrentContent()),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -53,7 +56,7 @@ export const CreateCourse = () => {
   const changeCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: toHTML(courseMainInfo.description.getCurrentContent()),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -76,14 +79,24 @@ export const CreateCourse = () => {
         ...prevState,
         courseId: id,
         name: data.name,
-        description: data.description,
+        description: convertHTMLtoObj(data.description),
         minForTrie: data.timeLimit,
         exam: data.timeLimit || data.timeLimit === 0 ? true : false
       }));
 
       CourseElementRepository.getByCourse(data).then(elements => {
-        setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
-        if (elements && elements.length > 0) {
+        const elemExist = elements && elements.length > 0;
+        let modifiedElem = [];
+
+        if (elemExist) {
+          modifiedElem = [...elements];
+          modifiedElem.forEach((item, i) => {
+            item.description = convertHTMLtoObj(item.description);
+          });
+        }
+
+        setCourseContent(elemExist ? elements : [defaultElement])
+        if (elemExist) {
           setStepsTotal(elements.length)
         }
 
@@ -154,6 +167,10 @@ export const CreateCourse = () => {
     }
   }, [])
 
+  const onDescriptionChange = newState => {
+    setCourseMainInfo(prevState => ({...prevState, description: newState}));
+  };
+
   return (
       <C.Wrapper>
         <C.Header>
@@ -178,15 +195,10 @@ export const CreateCourse = () => {
               </C.FieldBox>
               <C.FieldBox>
                 <H5>Описание курса</H5>
-                <TextField
-                  required
-                  placeholder="Введите описание"
-                  type="text"
-                  multiline={true}
-                  fullWidth={true}
-                  minRows={5}
-                  value={courseMainInfo.description}
-                  onChange={(e) => handleInputChange(e.target.value, 'description')}
+                <MUIEditor
+                  editorState={courseMainInfo.description}
+                  onChange={onDescriptionChange}
+                  config={wysiwygConfig}
                 />
               </C.FieldBox>
               {/*<C.FieldBox>*/}
@@ -300,6 +312,17 @@ export const CreateCourse = () => {
         <Loader show={loader}/>
       </C.Wrapper>
   )
+}
+
+export const convertHTMLtoObj = (description) => {
+  const fromHTML = convertFromHTML(description);
+
+  const newState = ContentState.createFromBlockArray(
+    fromHTML.contentBlocks,
+    fromHTML.entityMap,
+  );
+
+  return MUIEditorState.createWithContent(wysiwygConfig, newState);
 }
 
 const names = [

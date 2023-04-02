@@ -17,3 +17,11 @@ body {
 .profile-arrow-up {
     transform: rotate(180deg);
 }
+
+.sql-hl-keyword {
+    color: red;
+}
+
+.sql-hl-special {
+    color: blue;
+}

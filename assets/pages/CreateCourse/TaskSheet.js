@@ -20,6 +20,9 @@ import {useNavigate} from "react-router-dom";
 import {searchParam} from "../../Service/SearchParamActions";
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import MUIEditor, {MUIEditorState, toHTML} from "react-mui-draft-wysiwyg";
+import {wysiwygConfig} from "../../config";
+import {convertHTMLtoObj} from "./index";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -55,17 +58,39 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
+  const deepCopy = (targetObj, sourceObj) => {
+    if (targetObj && sourceObj) {
+      for (let x in sourceObj) {
+        if (sourceObj.hasOwnProperty(x)) {
+          if (targetObj[x] && typeof sourceObj[x] === 'object') {
+            targetObj[x] = deepCopy(targetObj[x], sourceObj[x]);
+          } else {
+            targetObj[x] = sourceObj[x];
+          }
+        }
+      }
+    }
+    return targetObj;
+  };
+
   const handleSaveStep = (stepToSave, exitAfterSave) => {
     const _step = stepToSave || step;
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[_step - 1].ord) {
       newState[_step - 1].ord = _step;
     }
 
+    newState[_step - 1].description = toHTML(newState[_step - 1].description.getCurrentContent())
+
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[_step - 1] = data;
         setCourseContent(newState);
         setLoader(false);
@@ -78,19 +103,26 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   const handleCreateStep = () => {
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[courseContent.length - 1].ord) {
       newState[courseContent.length - 1].ord = courseContent.length;
     }
 
+    newState[courseContent.length - 1].description = toHTML(newState[courseContent.length - 1].description.getCurrentContent())
+
     CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[courseContent.length - 1] = data;
         newState.push({
           'type': 'article',
           'name': '',
-          'description': '',
+          'description': MUIEditorState.createEmpty(),
         })
         setCourseContent(newState);
         setLoader(false);
@@ -229,16 +261,10 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       </C.HeaderBlock>
       <C.QuestionBlock>
         <H5>Введите текст</H5>
-        <TextField
-            required
-            id={`course-${step}`}
-            type="text"
-            variant="outlined"
-            multiline={true}
-            fullWidth={true}
-            minRows={5}
-            value={courseContent[step - 1].description}
-            onChange={(e) => handleInputChange(e.target.value, 'description')}
+        <MUIEditor
+          editorState={courseContent[step - 1].description}
+          onChange={(e) => handleInputChange(e, 'description')}
+          config={wysiwygConfig}
         />
       </C.QuestionBlock>
       {isPractice(courseContent[step - 1].type) &&
