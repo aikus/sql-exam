@@ -64,7 +64,6 @@ export const Practice = () => {
         HttpRequest.get(
             urlContainer('processStart', course),
             data => {
-                console.info('start data', data);
                 setProcessState(data)
                 setAnswer(data.sqlRequest)
                 setError(false)
@@ -131,9 +130,6 @@ export const Practice = () => {
     }
 
     const handleExecution = callBack => {
-        if('open-question' === element.type) {
-            return;
-        }
         setLoader(true)
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
@@ -145,7 +141,9 @@ export const Practice = () => {
                 setAnswer(data.sqlRequest)
                 setSqlResponse(data.sqlResponse)
                 setError(false)
-                if (typeof callBack === 'function') callBack()
+                if (typeof callBack === 'function') {
+                    callBack();
+                }
                 getElement(data)
             },
             error => {
@@ -260,7 +258,6 @@ export const Practice = () => {
     }
 
     const currentStepIndex = process => {
-        console.info('currentStepIndex process:', JSON.parse(JSON.stringify(process)))
         return process?.elements.indexOf(process.currentElement);
     }
 
@@ -270,13 +267,13 @@ export const Practice = () => {
             oracle: true,
             'open-question': true
         },
-        executeLabel = "Выполнить запрос",
+        executeLabel = "Принять ответ",
         fieldLabel = "Введите текст запроса",
         buttonLabels = {
             mysql: executeLabel,
             postgres: executeLabel,
             oracle: executeLabel,
-            'open-question': "Сохранить"
+            'open-question': executeLabel
         },
         answerFieldLabels = {
             mysql: fieldLabel,
@@ -292,6 +289,14 @@ export const Practice = () => {
         },
         answerFieldLabel = () => {
             return answerFieldLabels[element.type] || ""
+        },
+        showRequestResult = (sqlResponse) => {
+            return ('open-question' === element.type) ? <C.Block>
+                    <ResultBlock data={"Ответ сохранён"}/>
+                </C.Block> :
+                <C.Block>
+                    <ResultBlock data={sqlResponse}/>
+                </C.Block>
         };
 
     useEffect(() => {
@@ -420,10 +425,7 @@ export const Practice = () => {
                     </C.RightBlock>
                 </C.Task>
                 {
-                    null !== sqlResponse &&
-                    <C.Block>
-                        <ResultBlock data={sqlResponse}/>
-                    </C.Block>
+                        null !== sqlResponse && showRequestResult(sqlResponse)
                 }
                 {
                     chosenTable &&

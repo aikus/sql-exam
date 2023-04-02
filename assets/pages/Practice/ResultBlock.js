@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as C from './styles'
-import { TextM, TextL, TextS, H2, H5 } from '../../components/Typography'
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -12,6 +11,11 @@ import {Alert, AlertTitle} from "@mui/material";
 
 export const ResultBlock = tableData => {
 
+    if(typeof tableData.data === 'string') {
+        return <>
+            <div>{tableData.data}</div>
+        </>
+    }
     if ('' !== tableData.data.error) {
         return (
             <>

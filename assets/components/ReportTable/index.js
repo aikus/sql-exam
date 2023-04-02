@@ -7,7 +7,7 @@ import {
     TableCell,
     TableBody,
     TablePagination,
-    Button, Container
+    Button
 } from '@mui/material';
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
@@ -86,7 +86,6 @@ export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport
                     setLoader(false);
                 },
                 error => {
-                    console.info('error', error)
                     setError(error)
                     setLoader(false);
                 }
@@ -144,7 +143,7 @@ export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport
         </Button>
     }
 
-    const cellDefaultBtn = (row, column, params) => {
+    const cellDefaultBtn = (row, column) => {
         return row[column.id]
     }
 
