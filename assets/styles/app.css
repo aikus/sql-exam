@@ -17,3 +17,19 @@ body {
 .profile-arrow-up {
     transform: rotate(180deg);
 }
+
+.wysiwyg-editor {
+    height: 270px;
+    border: 1px solid #BFBFBF;
+    padding: 10px;
+    border-radius: 2px;
+    background-color: white;
+}
+
+.wysiwyg-editor > div > div > div > div {
+    padding-bottom: 1px;
+}
+
+.wysiwyg-toolbar {
+    border: 1px solid #BFBFBF;
+}

@@ -10,6 +10,7 @@ import {Loader} from "../../components/Loader";
 import { hostName } from '../../config'
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import Skeleton from '@mui/material/Skeleton';
+import * as DOMPurify from "dompurify";
 
 export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const navigate = useNavigate();
@@ -45,6 +46,8 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
     setDelCourseInf({id: '', isOpen: false})
   }
 
+  const sanitizer = DOMPurify.sanitize;
+
   return (
     <>
       {items === null &&
@@ -79,7 +82,7 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
                         onClick={() => setDelCourseInf({id: item.id, isOpen: true})}
                       >Удалить</Button>
                     </C.ButtonWrapper>
-                    <TextL>{item.description}</TextL>
+                    <TextL dangerouslySetInnerHTML={{__html: sanitizer(item.description)}} />
                   </C.Description>
                 </AccordionDetails>
               </Accordion>
