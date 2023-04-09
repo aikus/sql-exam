@@ -1,16 +1,14 @@
-import {hostName} from "../config";
 import {HttpRequest} from "../Service/HttpRequest";
 
 export const TokenRepository = {
   get: (email, password, handleSuccess, handleError) => {
-    console.log(email)
-    console.log(password)
     const body = {
       email: email,
       password: password
     }
 
-    HttpRequest.post(`${hostName}/api/login`, body, (data) => handleSuccess(data), (error) => handleError(error), true)
+    HttpRequest.customAction = true;
+    HttpRequest.post(`/api/login`, body, (data) => handleSuccess(data), (error) => handleError(error))
   },
 
   create: (email, fio, plainPassword, handleSuccess, handleError) => {
@@ -21,7 +19,8 @@ export const TokenRepository = {
       plainPassword: plainPassword
     }
 
-    HttpRequest.post(`${hostName}/api/register`, body, (data) => handleSuccess(data), (error) => handleError(error), false, true)
+    HttpRequest.skipToken = true;
+    HttpRequest.post(`/api/register`, body, (data) => handleSuccess(data), (error) => handleError(error))
   },
 
   change: (email, handleSuccess, handleError) => {
@@ -29,10 +28,11 @@ export const TokenRepository = {
       email: email,
     }
 
-    HttpRequest.post(`${hostName}/confirm/password`, body, (data) => handleSuccess(data), (error) => handleError(error), false, true)
+    HttpRequest.skipToken = true;
+    HttpRequest.post(`/confirm/password`, body, (data) => handleSuccess(data), (error) => handleError(error))
   },
 
   delete: (handleResponse) => {
-    HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
+    HttpRequest.get(`/api/logout`,(data) => handleResponse(data), (error) => handleResponse(error))
   }
 }

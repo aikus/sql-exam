@@ -1,27 +1,36 @@
 export const HttpRequest = {
     isDev: true,
-    post: (url, body, handleSuccess = null, handleError = null, customAction, skipToken) => request(url, body, handleSuccess, handleError, 'POST', customAction, skipToken),
-    put: (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT'),
-    get: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET'),
-    delete: (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE'),
+    skipToken: false,
+    isStringifyBody: true,
+    customAction: false,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+    },
+    post: async (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'POST', HttpRequest),
+    put: async (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT', HttpRequest),
+    get: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET', HttpRequest),
+    delete: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE', HttpRequest),
+    upload: async (url, body, handleSuccess = null, handleError = null) => {
+        HttpRequest.headers = {};
+        HttpRequest.isStringifyBody = false;
+        return request(url, body, handleSuccess, handleError, 'POST', HttpRequest);
+    },
 }
 
-const request = async (url, body, handleSuccess = null, handleError, method, customAction, skipToken) => {
+const request = async (url, body, handleSuccess = null, handleError, method, config) => {
 
     let init = {
         method: method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json;charset=utf-8',
-        },
+        headers: config.headers,
     }
 
-    if (!skipToken) {
+    if (!config.skipToken) {
         init.headers.Authorization = 'Bearer ' + localStorage.getItem('jwtToken')
     }
 
     if (null !== body) {
-        init['body'] = JSON.stringify(body)
+        init['body'] = config.isStringifyBody ? JSON.stringify(body) : body
     }
 
     return await fetch(url, init)
@@ -41,12 +50,12 @@ const request = async (url, body, handleSuccess = null, handleError, method, cus
         .then(data => {
             if (HttpRequest.isDev) console.log(`HttpRequest (${init.method}): `, data)
             if (handleSuccess) {
-                handleSuccess(data)
+                return handleSuccess(data)
             }
         })
         .catch(error => {
             if (HttpRequest.isDev) console.error(`HttpRequest (${init.method}): `, error)
-            if (!customAction && error.status === 401) {
+            if (!config.customAction && error.status === 401) {
                 window.location.href = location.origin + '/react';
                 localStorage.removeItem('jwtToken')
             }

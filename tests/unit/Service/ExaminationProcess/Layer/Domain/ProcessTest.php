@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service\ExaminationProcess\Layer\Domain;
+namespace App\Tests\unit\Service\ExaminationProcess\Layer\Domain;
 
 use App\Entity\Course;
 use App\Entity\CourseAnswer;
