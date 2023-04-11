@@ -4708,6 +4708,11 @@
     "select-hose" "^2.0.0"
     "spdy-transport" "^3.0.0"
 
+"sql-highlight@^4.3.2":
+  "integrity" "sha512-7r6R5QKkiyKdMPMMdoUYwHbFZWdRhjJNxb0vUsFqloSZybGgFRcnM8IDZ9ZQSV2s6MWbtwn6O130+2ySL86oOA=="
+  "resolved" "https://registry.npmjs.org/sql-highlight/-/sql-highlight-4.3.2.tgz"
+  "version" "4.3.2"
+
 "stable@^0.1.8":
   "integrity" "sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w=="
   "resolved" "https://registry.npmjs.org/stable/-/stable-0.1.8.tgz"

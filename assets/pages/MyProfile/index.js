@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as C from './styles'
 import { H2, TextL } from '../../components/Typography'
 import {CourseBlock} from "./CourseBlock/CourseBlock";
 import {useOutletContext} from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import {Button} from "@mui/material"
+import * as DOMPurify from 'dompurify';
+import {highlight} from "sql-highlight";
 
 export const MyProfile = () => {
     const outletContent = useOutletContext();
@@ -13,6 +15,23 @@ export const MyProfile = () => {
     const linkToStatisticByStudent = (studentId) => {
         return `/react/my-profile/student-statistic?student=${studentId}`
     }
+
+
+
+    const [textArea, setTextArea] = useState('');
+    const [test, setTest] = useState('');
+
+
+    const highlightText = (text) => {
+        const { highlight } = require('sql-highlight')
+        const highlighted = highlight(text, {
+            html: true,
+        })
+
+        setTest(highlighted)
+    }
+
+    const sanitizer = DOMPurify.sanitize;
 
     return (
         <>
@@ -52,6 +71,12 @@ export const MyProfile = () => {
                   title="Ваши курсы"
               />
             </section>
+
+            <textarea name="test" cols="30" rows="10" value={textArea} onChange={(e) => {
+                highlightText(e.target.value)
+                setTextArea(e.target.value)
+            }} />
+            <div dangerouslySetInnerHTML={{__html: sanitizer(test)}} />
         </>
     )
 }
