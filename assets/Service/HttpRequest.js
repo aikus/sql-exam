@@ -12,9 +12,10 @@ export const HttpRequest = {
     get: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET', HttpRequest),
     delete: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE', HttpRequest),
     upload: async (url, body, handleSuccess = null, handleError = null) => {
-        HttpRequest.headers = {};
-        HttpRequest.isStringifyBody = false;
-        return request(url, body, handleSuccess, handleError, 'POST', HttpRequest);
+        return request(url, body, handleSuccess, handleError, 'POST', {
+            headers: {},
+            isStringifyBody: false
+        });
     },
 }
 
