@@ -10,6 +10,7 @@ const buttonContainedTheme = {
     boxShadow: 'none',
     backgroundColor: '#FFCC00',
     border: '1px solid transparent',
+    textTransform: 'none',
     '&:hover': {
         backgroundColor: '#FAC000',
         borderColor: '#FAC000',
@@ -25,6 +26,7 @@ const buttonOutlinedTheme = {
     letterSpacing: '0.3px',
     backgroundColor: 'transparent',
     border: '1px solid #FFCC00',
+    textTransform: 'none',
     '&:hover': {
         backgroundColor: '#FAC000',
         borderColor: '#FAC000'
@@ -40,14 +42,15 @@ export const theme = createTheme({
         secondary: {
             main: grey["900"],
         },
+        appBar: {
+            main: grey["50"],
+        },
         text: {
             primary: grey["900"],
         }
     },
     typography: {
-        button: {
-            textTransform: 'none'
-        }
+        button: {}
     },
     components: {
         MuiButton: {
@@ -82,6 +85,29 @@ export const theme = createTheme({
                         ...buttonOutlinedTheme,
                         fontSize: '16px',
                         padding: '16px 48px',
+                    }
+                },
+                {
+                    props: { variant: "outlined-alter", size: "medium" },
+                    style: {
+                        textTransform: "uppercase",
+                        border: '1px solid #FFCC00',
+                        '&:hover': {
+                            backgroundColor: '#FAC00070',
+                            boxShadow: 'none',
+                        }
+                    }
+                },
+                {
+                    props: { variant: "contained-alter", size: "medium" },
+                    style: {
+                        textTransform: "uppercase",
+                        backgroundColor: '#FFCC00',
+                        '&:hover': {
+                            backgroundColor: '#FAC000',
+                            borderColor: '#FAC000',
+                            boxShadow: 'none',
+                        }
                     }
                 },
             ]

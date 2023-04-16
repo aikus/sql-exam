@@ -16,6 +16,8 @@ import { Report } from "../pages/Report";
 import {AuthProvider} from "../context/AuthProvider";
 import { StatisticPage } from "/assets/pages/StatisticPage";
 import { StudentStatisticPage } from "../pages/StudentStatisticPage";
+import { FeedbackForm } from "../pages/FeedbackForm";
+import { TextPageTemplate } from "../Tamplate/TextPageTemplate";
 
 export const App = () => {
   return (
@@ -25,6 +27,9 @@ export const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/react/" element={<Authorization/>}/>
+              <Route path="/react">
+                <Route path="feedback-form" element={<TextPageTemplate><FeedbackForm /></TextPageTemplate>}/>
+              </Route>
               <Route path="/react/my-profile" element={<MainPage/>}>
                 <Route index element={<MyProfile/>}/>
                 <Route path="practice" element={<Practice/>}/>

@@ -27,3 +27,7 @@ yarn-error.log
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*
 ###< lexik/jwt-authentication-bundle ###
+
+###> public upload files ###
+/public/upload
+###< public upload files ###
