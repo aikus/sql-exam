@@ -18,6 +18,7 @@ import {useNavigate} from "react-router-dom";
 import CourseRepository from "../CourseRepository";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import {sanitizer} from "../../../Service/Sanitizer";
 
 export const CourseBlock = ({title}) => {
     const navigate = useNavigate()
@@ -100,9 +101,7 @@ export const CourseBlock = ({title}) => {
                                       <Typography gutterBottom variant="h5" component="div">
                                           {itemVal.name}
                                       </Typography>
-                                      <Typography variant="body2" color="text.secondary">
-                                          {itemVal.description}
-                                      </Typography>
+                                      <Typography variant="body2" color="text.secondary" dangerouslySetInnerHTML={{__html: sanitizer(itemVal.description)}} />
                                       <Box sx={{
                                           display: 'flex',
                                           flexDirection: 'column',

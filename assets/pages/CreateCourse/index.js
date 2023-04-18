@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel, Button } from "@mui/material";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
-import {TaskSheet} from './TaskSheet'
-import {Loader} from "../../components/Loader";
-import {HttpRequest} from '../../Service/HttpRequest'
-import {CourseElementRepository} from "./CourseElementRepository";
-import { hostName } from '../../config'
-import {searchParam} from "../../Service/SearchParamActions";
+import { TaskSheet } from './TaskSheet'
+import { Loader } from "../../components/Loader";
+import { HttpRequest } from '../../Service/HttpRequest'
+import { CourseElementRepository } from "./CourseElementRepository";
+import { hostName, wysiwygConfig } from '../../config'
+import { searchParam } from "../../Service/SearchParamActions";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
@@ -16,7 +20,7 @@ export const CreateCourse = () => {
   const [courseMainInfo, setCourseMainInfo] = useState({
     courseId: '',
     name: '',
-    description: '',
+    description: EditorState.createEmpty(),
     intendedFor: [],
     exam: false,
     numOfTries: '',
@@ -24,7 +28,7 @@ export const CreateCourse = () => {
   });
   const defaultElement = {
     'type': 'article',
-    'description': '',
+    'description': EditorState.createEmpty(),
     'name': '',
   };
   const [courseContent, setCourseContent] = useState([defaultElement]);
@@ -32,7 +36,7 @@ export const CreateCourse = () => {
   const createCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: convertObjToHTML(courseMainInfo.description),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -53,7 +57,7 @@ export const CreateCourse = () => {
   const changeCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: convertObjToHTML(courseMainInfo.description),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -76,14 +80,24 @@ export const CreateCourse = () => {
         ...prevState,
         courseId: id,
         name: data.name,
-        description: data.description,
+        description: convertHTMLtoObj(data.description),
         minForTrie: data.timeLimit,
         exam: data.timeLimit || data.timeLimit === 0 ? true : false
       }));
 
       CourseElementRepository.getByCourse(data).then(elements => {
+        const elemExist = elements && elements.length > 0;
+        let modifiedElem = [];
+
+        if (elemExist) {
+          modifiedElem = [...elements];
+          modifiedElem.forEach((item, i) => {
+            item.description = convertHTMLtoObj(item.description);
+          });
+        }
+
         setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
-        if (elements && elements.length > 0) {
+        if (elemExist) {
           setStepsTotal(elements.length)
         }
 
@@ -154,6 +168,10 @@ export const CreateCourse = () => {
     }
   }, [])
 
+  const onDescriptionChange = newState => {
+    setCourseMainInfo(prevState => ({...prevState, description: newState}));
+  };
+
   return (
       <C.Wrapper>
         <C.Header>
@@ -178,15 +196,12 @@ export const CreateCourse = () => {
               </C.FieldBox>
               <C.FieldBox>
                 <H5>Описание курса</H5>
-                <TextField
-                  required
-                  placeholder="Введите описание"
-                  type="text"
-                  multiline={true}
-                  fullWidth={true}
-                  minRows={5}
-                  value={courseMainInfo.description}
-                  onChange={(e) => handleInputChange(e.target.value, 'description')}
+                <Editor
+                  editorState={courseMainInfo.description}
+                  editorClassName='wysiwyg-editor'
+                  toolbarClassName='wysiwyg-toolbar'
+                  toolbar={wysiwygConfig}
+                  onEditorStateChange={(e) => handleInputChange(e, 'description')}
                 />
               </C.FieldBox>
               {/*<C.FieldBox>*/}
@@ -300,6 +315,21 @@ export const CreateCourse = () => {
         <Loader show={loader}/>
       </C.Wrapper>
   )
+}
+
+export const convertHTMLtoObj = (description) => {
+  const fromHTML = convertFromHTML(description);
+
+  const newState = ContentState.createFromBlockArray(
+    fromHTML.contentBlocks,
+    fromHTML.entityMap,
+  );
+
+  return EditorState.createWithContent(newState);
+}
+
+const convertObjToHTML = (obj) => {
+  return draftToHtml(convertToRaw(obj.getCurrentContent()));
 }
 
 const names = [

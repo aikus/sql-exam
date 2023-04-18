@@ -20,6 +20,8 @@ import {useNavigate} from "react-router-dom";
 import {searchParam} from "../../Service/SearchParamActions";
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import {Editor} from "react-draft-wysiwyg";
+import {wysiwygConfig} from "../../config";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -229,16 +231,13 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       </C.HeaderBlock>
       <C.QuestionBlock>
         <H5>Введите текст</H5>
-        <TextField
-            required
-            id={`course-${step}`}
-            type="text"
-            variant="outlined"
-            multiline={true}
-            fullWidth={true}
-            minRows={5}
-            value={courseContent[step - 1].description}
-            onChange={(e) => handleInputChange(e.target.value, 'description')}
+        <Editor
+          id={`course-${step}`}
+          editorState={courseContent[step - 1].description}
+          editorClassName='wysiwyg-editor'
+          toolbarClassName='wysiwyg-toolbar'
+          toolbar={wysiwygConfig}
+          onEditorStateChange={(e) => handleInputChange(e, 'description')}
         />
       </C.QuestionBlock>
       {isPractice(courseContent[step - 1].type) &&
