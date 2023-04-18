@@ -33,3 +33,11 @@ body {
 .wysiwyg-toolbar {
     border: 1px solid #BFBFBF;
 }
+
+.sql-hl-keyword {
+    color: #2B30FF;
+}
+
+.sql-hl-special {
+    color: #9A6E3A;
+}
