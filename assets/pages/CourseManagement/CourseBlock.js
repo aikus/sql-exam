@@ -10,7 +10,7 @@ import {Loader} from "../../components/Loader";
 import { hostName } from '../../config'
 import {DialogWinDelete} from "../../components/DialogWinDelete";
 import Skeleton from '@mui/material/Skeleton';
-import * as DOMPurify from "dompurify";
+import { sanitizer } from '../../Service/Sanitizer'
 
 export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const navigate = useNavigate();
@@ -45,8 +45,6 @@ export const CourseBlock = ({items, getNewCourseList, updateCourseList}) => {
   const handleClose = () => {
     setDelCourseInf({id: '', isOpen: false})
   }
-
-  const sanitizer = DOMPurify.sanitize;
 
   return (
     <>

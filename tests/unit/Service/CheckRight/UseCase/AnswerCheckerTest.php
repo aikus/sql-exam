@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service\CheckRight\UseCase;
+namespace App\Tests\unit\Service\CheckRight\UseCase;
 
 use App\Service\CheckRight\Domain\Comparator;
 use App\Service\CheckRight\Domain\Executor;
