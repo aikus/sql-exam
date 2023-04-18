@@ -45,14 +45,17 @@
         "symfony/webpack-encore-bundle": "^1.15",
         "symfony/yaml": "6.0.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "*"
     },
     "require-dev": {
+        "hautelook/alice-bundle": "*",
         "mockery/mockery": "^1.5",
         "phpmd/phpmd": "^2.12",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.0.*",
         "symfony/css-selector": "6.0.*",
+        "symfony/http-client": "6.0.*",
         "symfony/maker-bundle": "^1.46",
         "symfony/phpunit-bridge": "^6.0",
         "symfony/stopwatch": "6.0.*",

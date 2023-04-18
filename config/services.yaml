@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    upload_directory: '%kernel.project_dir%/public/upload'
 
 services:
     # default configuration for services in *this* file
@@ -51,6 +52,7 @@ services:
     RandomLib\Factory: ~
     App\Service\RandomGeneratorFactory: ~
     App\Service\ReCheck\ReCheck: ~
+    Vich\UploaderBundle\Storage\StorageInterface: '@App\Storage\FileSystemStorage'
 
     RandomLib\Generator:
         factory: ['@App\Service\RandomGeneratorFactory', getGenerator]
@@ -70,7 +72,9 @@ services:
     App\Connectors\CourseAnswerListener:
         tags:
             - {name: doctrine.orm.entity_listener}
-
     App\Connectors\CourseElementListener:
+        tags:
+            - {name: doctrine.orm.entity_listener}
+    App\Connectors\VisitorFeedback\MessageListener:
         tags:
             - {name: doctrine.orm.entity_listener}
