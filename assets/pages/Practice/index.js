@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import * as C from './styles'
 import { Button, ButtonGroup, Link, TextField } from "@mui/material";
 import { H2, H5, TextL, TextM, TextS } from '../../components/Typography'
@@ -14,6 +14,8 @@ import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import {sanitizer} from "../../Service/Sanitizer";
+import {SyntaxHighlightingField} from "../../components/SyntaxHighlightingField";
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -43,6 +45,7 @@ export const Practice = () => {
     const [timer, setTimer] = useState(null);
     const [showTimer, setShowTimer] = useState(false);
     const [redBorder, setRedBorder] = useState(false);
+    const inputEl = useRef(null);
 
     const urlContainer = (key, id) => {
         if (null === id) {
@@ -331,24 +334,14 @@ export const Practice = () => {
                     <C.LeftBlock>
                         <H5>Вопрос:</H5>
                         <C.Question>
-                            <TextM>{element.description}</TextM>
+                            <TextM dangerouslySetInnerHTML={{__html: sanitizer(element.description)}} />
                         </C.Question>
                         {
                             isAnswerable()
-                            && <TextField
-                                margin="normal"
-                                id="practice-1"
-                                label="Введите текст запроса"
-                                type="text"
-                                variant="outlined"
-                                multiline={true}
-                                fullWidth={true}
-                                minRows={5}
-                                color={'info'}
+                            && <SyntaxHighlightingField
+                                elementRef={inputEl}
                                 value={answer ?? ''}
-                                onChange={(e) => {
-                                    setAnswer(e.target.value)
-                                }}
+                                getValue={(value) => setAnswer(value)}
                             />
                         }
                         {

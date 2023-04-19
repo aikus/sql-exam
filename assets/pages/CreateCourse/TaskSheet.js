@@ -23,6 +23,8 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import {Editor} from "react-draft-wysiwyg";
 import {wysiwygConfig} from "../../config";
 import {SyntaxHighlightingField} from "../../components/SyntaxHighlightingField";
+import {convertObjToHTML, convertHTMLtoObj} from "./index";
+import { EditorState } from 'draft-js';
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -62,16 +64,23 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const handleSaveStep = (stepToSave, exitAfterSave) => {
     const _step = stepToSave || step;
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[_step - 1].ord) {
       newState[_step - 1].ord = _step;
     }
 
+    newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
+
     console.log('newState[_step - 1]: ', newState[_step - 1])
 
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[_step - 1] = data;
         setCourseContent(newState);
         setLoader(false);
@@ -84,19 +93,26 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   const handleCreateStep = () => {
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[courseContent.length - 1].ord) {
       newState[courseContent.length - 1].ord = courseContent.length;
     }
 
+    newState[courseContent.length - 1].description = convertObjToHTML(newState[courseContent.length - 1].description);
+
     CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[courseContent.length - 1] = data;
         newState.push({
           'type': 'article',
           'name': '',
-          'description': '',
+          'description': EditorState.createEmpty(),
         })
         setCourseContent(newState);
         setLoader(false);
@@ -180,6 +196,21 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     ];
   }
 
+  const deepCopy = (targetObj, sourceObj) => {
+    if (targetObj && sourceObj) {
+      for (let x in sourceObj) {
+        if (sourceObj.hasOwnProperty(x)) {
+          if (targetObj[x] && typeof sourceObj[x] === 'object') {
+            targetObj[x] = deepCopy(targetObj[x], sourceObj[x]);
+          } else {
+            targetObj[x] = sourceObj[x];
+          }
+        }
+      }
+    }
+    return targetObj;
+  };
+
   return (
     <>
       <C.MovementButtons>
@@ -250,10 +281,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
           <SyntaxHighlightingField
             elementRef={inputEl}
             value={courseContent[step - 1].answer}
-            getValue={(value) => {
-              console.log('value: ', value)
-              handleInputChange(value, 'answer')
-            }}
+            getValue={(value) => handleInputChange(value, 'answer')}
           />
           {/*<TextField*/}
           {/*  required*/}
