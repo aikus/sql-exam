@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import * as C from './styles'
 import {
   Button, ButtonGroup,
@@ -22,11 +22,15 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import {Editor} from "react-draft-wysiwyg";
 import {wysiwygConfig} from "../../config";
+import {SyntaxHighlightingField} from "../../components/SyntaxHighlightingField";
+import {convertObjToHTML, convertHTMLtoObj} from "./index";
+import { EditorState } from 'draft-js';
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const inputEl = useRef(null);
   const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
   const handleSelectChange = (e) => {
@@ -60,14 +64,23 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const handleSaveStep = (stepToSave, exitAfterSave) => {
     const _step = stepToSave || step;
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[_step - 1].ord) {
       newState[_step - 1].ord = _step;
     }
 
+    newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
+
+    console.log('newState[_step - 1]: ', newState[_step - 1])
+
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[_step - 1] = data;
         setCourseContent(newState);
         setLoader(false);
@@ -80,19 +93,26 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   const handleCreateStep = () => {
     setLoader(true);
-    let newState = [...courseContent];
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
 
     if(!newState[courseContent.length - 1].ord) {
       newState[courseContent.length - 1].ord = courseContent.length;
     }
 
+    newState[courseContent.length - 1].description = convertObjToHTML(newState[courseContent.length - 1].description);
+
     CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
       data => {
+        data.description = convertHTMLtoObj(data.description);
         newState[courseContent.length - 1] = data;
         newState.push({
           'type': 'article',
           'name': '',
-          'description': '',
+          'description': EditorState.createEmpty(),
         })
         setCourseContent(newState);
         setLoader(false);
@@ -176,6 +196,21 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     ];
   }
 
+  const deepCopy = (targetObj, sourceObj) => {
+    if (targetObj && sourceObj) {
+      for (let x in sourceObj) {
+        if (sourceObj.hasOwnProperty(x)) {
+          if (targetObj[x] && typeof sourceObj[x] === 'object') {
+            targetObj[x] = deepCopy(targetObj[x], sourceObj[x]);
+          } else {
+            targetObj[x] = sourceObj[x];
+          }
+        }
+      }
+    }
+    return targetObj;
+  };
+
   return (
     <>
       <C.MovementButtons>
@@ -243,17 +278,22 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       {isPractice(courseContent[step - 1].type) &&
         <C.AnswerBlock>
           <H5>Введите SQL-запрос, по которому система будет определять правильность ответа инженера</H5>
-          <TextField
-            required
-            id={`course-${step}-2`}
-            type="text"
-            variant="outlined"
-            multiline={true}
-            fullWidth={true}
-            minRows={5}
+          <SyntaxHighlightingField
+            elementRef={inputEl}
             value={courseContent[step - 1].answer}
-            onChange={(e) => handleInputChange(e.target.value, 'answer')}
+            getValue={(value) => handleInputChange(value, 'answer')}
           />
+          {/*<TextField*/}
+          {/*  required*/}
+          {/*  id={`course-${step}-2`}*/}
+          {/*  type="text"*/}
+          {/*  variant="outlined"*/}
+          {/*  multiline={true}*/}
+          {/*  fullWidth={true}*/}
+          {/*  minRows={5}*/}
+          {/*  value={courseContent[step - 1].answer}*/}
+          {/*  onChange={(e) => handleInputChange(e.target.value, 'answer')}*/}
+          {/*/>*/}
         </C.AnswerBlock>
       }
       {courseContent[step - 1].type === 'poll' &&

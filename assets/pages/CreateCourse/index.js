@@ -328,7 +328,7 @@ export const convertHTMLtoObj = (description) => {
   return EditorState.createWithContent(newState);
 }
 
-const convertObjToHTML = (obj) => {
+export const convertObjToHTML = (obj) => {
   return draftToHtml(convertToRaw(obj.getCurrentContent()));
 }
 
