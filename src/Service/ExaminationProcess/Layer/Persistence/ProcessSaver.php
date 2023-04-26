@@ -73,6 +73,14 @@ class ProcessSaver
             CourseSheet::STATUS_RESTARTABLE,
         ]);
 
+        if ($sheet->getStatus() === CourseSheet::STATUS_RESTARTABLE) {
+            $newSheet = new CourseSheet();
+            $newSheet->setCourse($sheet->getCourse());
+            $newSheet->setStudent($sheet->getStudent());
+            $newSheet->setCreatedAt($sheet->getCreatedAt());
+            $sheet = $newSheet;
+        }
+
         if (null === $sheet) {
             return null;
         }
