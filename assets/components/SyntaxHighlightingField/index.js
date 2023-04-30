@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled, { css } from 'styled-components'
 import '../../styles/app.css';
 import * as DOMPurify from "dompurify";
 import {highlight} from "sql-highlight";
 
-export const SyntaxHighlightingField = ({ elementRef, value, getValue, getRawValue }) => {
-  const [code, setCode] = useState(value || '');
+export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
+  const [highlightedCode, setHighlightedCode] = useState('');
+  const [rawCode, setRawCode] = useState(value || '');
+
+  useEffect(() => {
+    value && highlightText(value);
+  }, [])
 
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
@@ -20,9 +25,9 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue, getRawVal
       highlighted = text;
     }
 
-    setCode(highlighted);
-    getValue && getValue(highlighted);
-    getRawValue && getRawValue(text);
+    setHighlightedCode(highlighted);
+    setRawCode(text);
+    getValue && getValue(text);
   }
 
   const syncScroll = (element) => {
@@ -63,12 +68,13 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue, getRawVal
         onKeyDown={(e) => {
           checkTab(e.target, e);
         }}
+        value={rawCode}
       ></TextArea>
       <CodeFieldWrapper
         ref={elementRef}
         aria-hidden="true"
       >
-        <code dangerouslySetInnerHTML={{__html: sanitizer(code)}} />
+        <code dangerouslySetInnerHTML={{__html: sanitizer(highlightedCode)}} />
       </CodeFieldWrapper>
     </Wrapper>
   )

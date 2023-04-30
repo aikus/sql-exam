@@ -36,7 +36,6 @@ export const Practice = () => {
     const [isExistNextStep, setIsExistNextStep] = useState(false)
     const [isExistPrevStep, setIsExistPrevStep] = useState(false)
     const [answer, setAnswer] = useState(null)
-    const [rawAnswer, setRawAnswer] = useState(null)
     const [chosenTable, setChosenTable] = useState(null)
     const [sqlResponse, setSqlResponse] = useState(null)
     const [givenTables, setGivenTables] = useState([])
@@ -136,11 +135,10 @@ export const Practice = () => {
 
     const handleExecution = callBack => {
         setLoader(true)
-
         HttpRequest.post(
             urlContainer('processExecution', UrlService.param('course')),
             {
-                answerText: rawAnswer,
+                answerText: answer,
             },
             data => {
                 setProcessState(data)
@@ -344,7 +342,6 @@ export const Practice = () => {
                                 elementRef={inputEl}
                                 value={answer ?? ''}
                                 getValue={(value) => setAnswer(value)}
-                                getRawValue={(value) => setRawAnswer(value)}
                             />
                         }
                         {
