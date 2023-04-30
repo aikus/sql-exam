@@ -1,17 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import * as C from './styles'
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Checkbox, FormControlLabel, FormControl } from "@mui/material";
 import { Logo } from "../../components/Logo";
 import { useNavigate } from "react-router-dom";
 import { H3, H5, TextL, TextS, TextM } from '../../components/Typography'
-import { hostName } from '../../config'
 import {Loader} from "../../components/Loader";
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import {TokenRepository} from '../../Repositories/tokenRepository';
+import { Notice } from "../../components/Notice";
 
 export const Authorization = () => {
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false)
+    const [registration, setRegistration] = useState({
+        fio: '',
+        email: '',
+        password: '',
+        repeatPassword: '',
+        agreeTerms: true,
+    });
+    const [formType, setFormType] = useState('authorization')
     const [state, setState] = useState({
         emailValue: '',
         emailError: false,
@@ -19,21 +27,7 @@ export const Authorization = () => {
         passwordValue: '',
         passwordError: false,
         passwordErrorText: 'Неверный формат пароля',
-        restorePassword: false,
-        registrationBlock: false,
         headerText: 'Авторизация',
-        fio: '',
-        fioError: false,
-        fioErrorText: 'Укажите ФИО полностью',
-        emailRegistrationValue: '',
-        emailRegistrationError: false,
-        emailRegistrationErrorText: 'Вы ввели неверный email',
-        passwordRegistration1Value: '',
-        passwordRegistration1Error: false,
-        passwordRegistration1ErrorText: 'Неверный формат пароля',
-        passwordRegistration2Value: '',
-        passwordRegistration2Error: false,
-        passwordRegistration2ErrorText: 'Пароль не совпадает с введенным ранее',
         emailRestoreValue: '',
         emailRestoreError: false,
         emailRestoreErrorText: 'Неверный формат email',
@@ -74,24 +68,44 @@ export const Authorization = () => {
     }
 
     const handleRegistrationSubmit = (e) => {
-        e.preventDefault()
+      e.preventDefault()
 
-        if (state.fio && state.emailRegistrationValue && state.passwordRegistration1Value && checkPasswordMatch()) {
-            setLoader(true)
+      setLoader(true)
 
-            TokenRepository.create(state.emailRegistrationValue, state.fio, state.passwordRegistration2Value,
-              (data) => {
-                  setLoader(false);
-                  if (data.status === 'success') {
-                      setState((prevState) => {
-                          return { ...prevState, registered: true }
-                      })
-                      setTimeout(() => {
-                          handleBack();
-                      }, 1500)
-                  }
-              })
+      TokenRepository.create({
+          email: registration.email,
+          agreeTerms: registration.agreeTerms,
+          fio: registration.fio,
+          plainPassword: {
+              first: registration.password,
+              second: registration.repeatPassword,
+          },
+        },
+        (data) => {
+          setLoader(false);
+          if (data.status === 'success') {
+            setState((prevState) => {
+              return {
+                ...prevState,
+                registered: true,
+                error: null
+              }
+            })
+            setTimeout(() => {
+              handleBack();
+            }, 1500)
+          }
+        },
+        (error) => {
+          setLoader(false);
+          setState((prevState) => {
+            return {
+              ...prevState,
+              error: error
+            }
+          })
         }
+      )
     }
 
     const handleRestorePasswordSubmit = (e) => {
@@ -132,48 +146,37 @@ export const Authorization = () => {
         })
     }
 
+    const handleRegistrationField = (e, fieldName) => {
+        setRegistration((prevState) => {
+            return { ...prevState, [fieldName]: e.target.value }
+        })
+    }
+
     const handleForgotPassword = () => {
+        setFormType('restorePassword')
         setState((prevState) => {
             return {
                 ...prevState,
-                restorePassword: !prevState.restorePassword,
                 headerText: state.restoreSuccessfully ? '' : 'Введите ваш Email что бы сбросить пароль'
             }
         })
     }
 
     const handleRegistration = () => {
+        setFormType('registration');
         setState((prevState) => {
             return {
                 ...prevState,
-                registrationBlock: !prevState.registrationBlock,
                 headerText: 'Регистрация'
             }
         })
     }
 
-    const checkPasswordMatch = () => {
-        if (state.passwordRegistration1Value !== state.passwordRegistration2Value) {
-            setState((prevState) => {
-                return { ...prevState, passwordRegistration2Error: true }
-            })
-
-            return false
-        } else {
-            setState((prevState) => {
-                return { ...prevState, passwordRegistration2Error: false }
-            })
-
-            return true
-        }
-    }
-
     const handleBack = () => {
+        setFormType('authorization')
         setState((prevState) => {
             return {
                 ...prevState,
-                restorePassword: false,
-                registrationBlock: false,
                 headerText: 'Авторизация',
                 emailRestoreError: false
             }
@@ -235,6 +238,7 @@ export const Authorization = () => {
     const renderRegistrationForm = () => {
         return (
             <>
+                {null !== state.error ? <Notice message={state.error}/> : ''}
                 {state.registered ?
                   <C.RegisteredSuccessfully>
                       <TaskAltOutlinedIcon fontSize={'large'} sx={{color: 'green'}}/>
@@ -252,8 +256,7 @@ export const Authorization = () => {
                         fullWidth
                         error={state.fioError}
                         helperText={state.fioError ? state.fioErrorText : ''}
-                        value={state.fio}
-                        onChange={(e) => handleFieldChange(e, 'fio')}
+                        onChange={(e) => handleRegistrationField(e, 'fio')}
                       />
                       <TextField
                         margin="normal"
@@ -264,8 +267,7 @@ export const Authorization = () => {
                         fullWidth
                         error={state.emailRegistrationError}
                         helperText={state.emailRegistrationError ? state.emailRegistrationErrorText : ''}
-                        value={state.emailRegistrationValue}
-                        onChange={(e) => handleFieldChange(e, 'emailRegistrationValue')}
+                        onChange={(e) => handleRegistrationField(e, 'email')}
                       />
                       <TextField
                         margin="normal"
@@ -276,8 +278,7 @@ export const Authorization = () => {
                         fullWidth
                         error={state.passwordRegistration1Error}
                         helperText={state.passwordRegistration1Error ? state.passwordRegistration1ErrorText : ''}
-                        value={state.passwordRegistration1Value}
-                        onChange={(e) => handleFieldChange(e, 'passwordRegistration1Value')}
+                        onChange={(e) => handleRegistrationField(e, 'password')}
                       />
                       <TextField
                         margin="normal"
@@ -288,17 +289,29 @@ export const Authorization = () => {
                         fullWidth
                         error={state.passwordRegistration2Error}
                         helperText={state.passwordRegistration2Error ? state.passwordRegistration2ErrorText : ''}
-                        value={state.passwordRegistration2Value}
-                        onChange={(e) => handleFieldChange(e, 'passwordRegistration2Value')}
-                        onBlur={checkPasswordMatch}
+                        onChange={(e) => handleRegistrationField(e, 'repeatPassword')}
                       />
-                      <C.ButtonReg>
-                          <Button
-                            variant='contained'
-                            size='large'
-                            type="submit"
-                          >Зарегистрироваться</Button>
-                      </C.ButtonReg>
+                      <FormControlLabel control={
+                          <Checkbox
+                              id="agreeTerms"
+                              defaultChecked
+                              onChange={(e) => {
+                                  setRegistration((prevState) => {
+                                      return { ...prevState, agreeTerms: e.target.checked }
+                                  })
+                              }}
+                          />
+                      } label="Согласен с политикой конфиденциальности" />
+
+                      <FormControl sx={{width: '100%'}}>
+                        <Button
+                          variant='contained'
+                          size='large'
+                          type="submit"
+                        >
+                          Зарегистрироваться
+                        </Button>
+                      </FormControl>
                   </form>
                 }
                 <C.Backspace onClick={handleBack}>Назад</C.Backspace>
@@ -350,9 +363,11 @@ export const Authorization = () => {
                 <Logo/>
                 <C.Header><H3>{state.headerText}</H3></C.Header>
             </C.TopBlock>
-            {state.restorePassword && renderRestorePasswordForm()}
-            {!state.restorePassword && !state.registrationBlock && renderAuthorizationForm()}
-            {state.registrationBlock && renderRegistrationForm()}
+            {{
+                registration: renderRegistrationForm,
+                authorization: renderAuthorizationForm,
+                restorePassword: renderRestorePasswordForm,
+            }[formType]()}
             <Loader show={loader}/>
         </C.Wrapper>
     )
