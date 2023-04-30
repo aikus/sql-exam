@@ -4,7 +4,7 @@ import '../../styles/app.css';
 import * as DOMPurify from "dompurify";
 import {highlight} from "sql-highlight";
 
-export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
+export const SyntaxHighlightingField = ({ elementRef, value, getValue, getRawValue }) => {
   const [code, setCode] = useState(value || '');
 
   const highlightText = (text) => {
@@ -22,6 +22,7 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
 
     setCode(highlighted);
     getValue && getValue(highlighted);
+    getRawValue && getRawValue(text);
   }
 
   const syncScroll = (element) => {
