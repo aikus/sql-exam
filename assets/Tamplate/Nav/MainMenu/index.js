@@ -73,20 +73,22 @@ export const MainMenu = ({windowDom, loader, setLoader}) => {
     }
 
     const renderMenuItem = (item, key, version) => {
-        return GetPermission(item.roles) && version === mobileVersion
-            ? <ListItem key={key} disablePadding>
-                <ListItemButton sx={{ textAlign: 'center' }}>
-                    <ListItemText primary={item.name} />
-                </ListItemButton>
-            </ListItem>
-            : <MenuItem key={key}>
-                <Link
-                    color={"#262626"}
-                    underline={"none"}
-                    href={item.href}
-                    key={key}
-                >{item.name}</Link>
-            </MenuItem>
+        return GetPermission(item.roles) && (
+            version === mobileVersion
+                ? <ListItem key={key} disablePadding>
+                    <ListItemButton sx={{ textAlign: 'center' }}>
+                        <ListItemText primary={item.name} />
+                    </ListItemButton>
+                </ListItem>
+                : <MenuItem key={key}>
+                    <Link
+                        color={"#262626"}
+                        underline={"none"}
+                        href={item.href}
+                        key={key}
+                    >{item.name}</Link>
+                </MenuItem>
+        )
     }
 
     useEffect(() => {
@@ -122,7 +124,7 @@ export const MainMenu = ({windowDom, loader, setLoader}) => {
                     >
                         <IconButton
                             color="inherit"
-                            aria-label="Open main menu"
+                            aria-label="Открыть меню"
                             edge="start"
                             onClick={handleDrawerToggle}
                             sx={{ mr: 2, display: { md: 'none' } }}
@@ -140,7 +142,7 @@ export const MainMenu = ({windowDom, loader, setLoader}) => {
                         <Box
                             sx={{display: 'block'}}
                         >
-                            <Tooltip title="Open settings">
+                            <Tooltip title="Профиль">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <ScirpusAvatar />
                                 </IconButton>

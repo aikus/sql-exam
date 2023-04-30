@@ -11,12 +11,12 @@ export const TokenRepository = {
     HttpRequest.post(`/api/login`, body, (data) => handleSuccess(data), (error) => handleError(error))
   },
 
-  create: (email, fio, plainPassword, handleSuccess, handleError) => {
+  create: (user, handleSuccess, handleError) => {
     const body = {
-      email: email,
-      agreeTerms: 1,
-      fio: fio,
-      plainPassword: plainPassword
+      email: user?.email,
+      agreeTerms: user?.agreeTerms,
+      fio: user?.fio,
+      plainPassword: user?.plainPassword
     }
 
     HttpRequest.skipToken = true;
