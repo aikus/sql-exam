@@ -67,6 +67,13 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
         }}
         onKeyDown={(e) => {
           checkTab(e.target, e);
+          if (e.key === 'Backspace') {
+            setTimeout(() => {
+              if (rawCode[rawCode.length - 1] === ' ' && rawCode[rawCode.length - 2] === '\n') {
+                setRawCode((prevState) => prevState.slice(0, -2))
+              }
+            }, 0)
+          }
         }}
         value={rawCode}
       ></TextArea>
