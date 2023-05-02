@@ -10,7 +10,7 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
 
   useEffect(() => {
     value && highlightText(value);
-  }, [])
+  }, [value])
 
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
@@ -19,7 +19,7 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
       text += " ";
     }
 
-    let highlighted = highlight(text, {html: true});
+    let highlighted = highlight(text.replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"), { html: true });
 
     if (highlighted === '') {
       highlighted = text;

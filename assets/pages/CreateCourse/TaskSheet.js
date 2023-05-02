@@ -76,8 +76,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
     newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
 
-    console.log('newState[_step - 1]: ', newState[_step - 1])
-
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
         data.description = convertHTMLtoObj(data.description);
@@ -283,17 +281,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             value={courseContent[step - 1].answer}
             getValue={(value) => handleInputChange(value, 'answer')}
           />
-          {/*<TextField*/}
-          {/*  required*/}
-          {/*  id={`course-${step}-2`}*/}
-          {/*  type="text"*/}
-          {/*  variant="outlined"*/}
-          {/*  multiline={true}*/}
-          {/*  fullWidth={true}*/}
-          {/*  minRows={5}*/}
-          {/*  value={courseContent[step - 1].answer}*/}
-          {/*  onChange={(e) => handleInputChange(e.target.value, 'answer')}*/}
-          {/*/>*/}
         </C.AnswerBlock>
       }
       {courseContent[step - 1].type === 'poll' &&
