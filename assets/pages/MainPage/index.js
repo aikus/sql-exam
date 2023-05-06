@@ -63,11 +63,17 @@ export const MainPage = () => {
 
     useEffect(() => {
         const handleSetUserInfo = (data) => {
+            localStorage.setItem('appUserInfo', JSON.stringify(data));
             setUserInfo(data)
             setAuth({roles: data.roles})
         }
 
-        HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        if (localStorage.getItem('appUserInfo')) {
+            handleSetUserInfo(JSON.parse(localStorage.getItem('appUserInfo')));
+        }
+        else {
+            HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        }
     }, [])
 
     useEffect(() => {

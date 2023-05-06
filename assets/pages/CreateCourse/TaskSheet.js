@@ -33,34 +33,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const inputEl = useRef(null);
   const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
 
-  const handleSelectChange = (e) => {
-    const actual = courseContent[step - 1];
-
-    const typeObject = {
-      'type': e.target.value,
-      'name': actual && actual.name ? actual.name : '',
-      'description': actual && actual.description ? actual.description : '',
-    }
-
-    if(actual && actual.id) {
-      typeObject['id'] = actual.id;
-    }
-
-    if (isPractice(e.target.value)) {
-      typeObject['answer'] = '';
-    } else if (e.target.value === 'poll') {
-      typeObject["description"] = '';
-      typeObject["variants"] = ['', ''];
-      typeObject["right-variant"] = '';
-    }
-
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 1] = typeObject
-      return newState
-    })
-  }
-
   const handleSaveStep = (stepToSave, exitAfterSave) => {
     const _step = stepToSave || step;
     setLoader(true);
@@ -129,15 +101,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     prevStep()
   }
 
-  const handleVariantInput = (value, i) => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 1].variants[i] = value
-
-      return newState
-    })
-  }
-
   const handleInputChange = (value, field) => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
@@ -149,24 +112,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   const handleExitCourse = () => {
     navigate("/react/my-profile/course-management");
-  }
-
-  const handleVariantDelete = (i) => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 1].variants.splice(i, 1)
-
-      return newState
-    })
-  }
-
-  const addVariant = () => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 1].variants.push('')
-
-      return newState
-    })
   }
 
   const handleDeleteStep = () => {
@@ -193,7 +138,36 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       {name: 'Текст', type: 'article'},
       {name: 'Практика Mysql', type: 'mysql'},
       {name: 'Практика Postgres', type: 'postgres'},
+      {name: 'Опрос с вариантами', type: 'poll'},
     ];
+  }
+
+  const handleSelectChange = (e) => {
+    const actual = courseContent[step - 1];
+
+    const typeObject = {
+      'type': e.target.value,
+      'name': actual && (actual?.name ?? ''),
+      'description': actual && (actual?.description ?? ''),
+    }
+
+    if(actual && actual.id) {
+      typeObject['id'] = actual.id;
+    }
+
+    if (isPractice(e.target.value)) {
+      typeObject['answer'] = '';
+    } else if (e.target.value === 'poll') {
+      typeObject["description"] = '';
+      typeObject["variants"] = ['', ''];
+      typeObject["right-variant"] = '';
+    }
+
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+      newState[step - 1] = typeObject
+      return newState
+    })
   }
 
   const deepCopy = (targetObj, sourceObj) => {
@@ -283,73 +257,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             value={courseContent[step - 1].answer}
             getValue={(value) => handleInputChange(value, 'answer')}
           />
-          {/*<TextField*/}
-          {/*  required*/}
-          {/*  id={`course-${step}-2`}*/}
-          {/*  type="text"*/}
-          {/*  variant="outlined"*/}
-          {/*  multiline={true}*/}
-          {/*  fullWidth={true}*/}
-          {/*  minRows={5}*/}
-          {/*  value={courseContent[step - 1].answer}*/}
-          {/*  onChange={(e) => handleInputChange(e.target.value, 'answer')}*/}
-          {/*/>*/}
         </C.AnswerBlock>
-      }
-      {courseContent[step - 1].type === 'poll' &&
-        <C.VariantsBlock>
-          <Button variant='contained' size='medium' onClick={addVariant}>Добавить вариант</Button>
-          <C.VariantsRow>
-            <RadioGroup
-              name={`course-answer-group-${step}`}
-              value={courseContent[step - 1]['right-variant']}
-              onChange={(e) => handleInputChange(e.target.value, 'right-variant')}
-              onClick={(e) => {
-                if (e.target.value === courseContent[step - 1]['right-variant']) {
-                  handleInputChange('', 'right-variant')
-                }
-              }}
-            >
-              {courseContent[step - 1].variants.map((item, i, arr) => {
-                return (
-                  <C.Row key={i}>
-                    <TextM>Вариант {i + 1}</TextM>
-                    <TextField
-                      required
-                      id={`course-answer-${step}-${i + 1}`}
-                      type="text"
-                      variant="outlined"
-                      multiline={true}
-                      fullWidth={true}
-                      value={item}
-                      onChange={(e) => handleVariantInput(e.target.value, i)}
-                      size={'small'}
-                      InputProps={{
-                        endAdornment: arr.length > 2 ?
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => handleVariantDelete(i)}
-                              edge="end"
-                            >
-                              <DeleteForeverRoundedIcon/>
-                            </IconButton>
-                          </InputAdornment>
-                          :
-                          '',
-                      }}
-                    />
-                    <FormControlLabel
-                      value={i + 1}
-                      control={<Radio />}
-                      label="Правильный ответ"
-                      sx={{marginRight: 0}}
-                    />
-                  </C.Row>
-                )
-              })}
-            </RadioGroup>
-          </C.VariantsRow>
-        </C.VariantsBlock>
       }
       <C.ButtonsBlock>
         <C.StepActions>

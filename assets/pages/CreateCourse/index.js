@@ -204,32 +204,6 @@ export const CreateCourse = () => {
                   onEditorStateChange={(e) => handleInputChange(e, 'description')}
                 />
               </C.FieldBox>
-              {/*<C.FieldBox>*/}
-              {/*  <H5>Принадлежность</H5>*/}
-              {/*  <Select*/}
-              {/*    multiple*/}
-              {/*    displayEmpty*/}
-              {/*    value={courseMainInfo.intendedFor}*/}
-              {/*    onChange={handleIntendedForChange}*/}
-              {/*    input={<OutlinedInput />}*/}
-              {/*    renderValue={(selected) => {*/}
-              {/*      if (selected.length === 0) {*/}
-              {/*        return <TextL>Для всех (общий)</TextL>;*/}
-              {/*      }*/}
-
-              {/*      return selected.join(', ');*/}
-              {/*    }}*/}
-              {/*    MenuProps={MenuProps}*/}
-              {/*    sx={{minWidth: '300px', maxWidth: '100%'}}*/}
-              {/*  >*/}
-              {/*    {names.map((name) => (*/}
-              {/*      <MenuItem key={name} value={name}>*/}
-              {/*        <Checkbox checked={courseMainInfo.intendedFor.indexOf(name) > -1} />*/}
-              {/*        <ListItemText primary={name} />*/}
-              {/*      </MenuItem>*/}
-              {/*    ))}*/}
-              {/*  </Select>*/}
-              {/*</C.FieldBox>*/}
               <C.FieldBox>
                 <H5>Время на одну попытку в минутах</H5>
                 <TextField
@@ -246,45 +220,6 @@ export const CreateCourse = () => {
                   <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
               </C.Hint>
               </C.FieldBox>
-              {/*<C.CheckBoxWrapper>*/}
-              {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
-              {/*  <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>*/}
-              {/*</C.CheckBoxWrapper>*/}
-              {/*{courseMainInfo.exam &&*/}
-              {/*  <C.CheckBoxControled>*/}
-              {/*    <C.FieldBox>*/}
-              {/*      <H5>Количество попыток</H5>*/}
-              {/*      <TextField*/}
-              {/*        type="number"*/}
-              {/*        value={courseMainInfo.numOfTries}*/}
-              {/*        onChange={(e) => {*/}
-              {/*          if (e.target.value >= 0 && e.target.value <= 100) {*/}
-              {/*            handleInputChange(e.target.value, 'numOfTries')*/}
-              {/*          }*/}
-              {/*        }}*/}
-              {/*      />*/}
-              {/*      <C.Hint>*/}
-              {/*        <TextM>Количество попыток может быть от 0 до 100, где 0 - неограниченное количество</TextM>*/}
-              {/*      </C.Hint>*/}
-              {/*    </C.FieldBox>*/}
-              {/*    <C.FieldBox>*/}
-              {/*      <H5>Время на одну попытку в минутах</H5>*/}
-              {/*      <TextField*/}
-              {/*        required*/}
-              {/*        type="number"*/}
-              {/*        value={courseMainInfo.minForTrie}*/}
-              {/*        onChange={(e) => {*/}
-              {/*          if (e.target.value >= 0 && e.target.value <= 480) {*/}
-              {/*            handleInputChange(e.target.value, 'minForTrie')*/}
-              {/*          }*/}
-              {/*        }}*/}
-              {/*      />*/}
-              {/*      <C.Hint>*/}
-              {/*        <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>*/}
-              {/*      </C.Hint>*/}
-              {/*    </C.FieldBox>*/}
-              {/*  </C.CheckBoxControled>*/}
-              {/*}*/}
               <Button
                 variant='contained'
                 size='large'
