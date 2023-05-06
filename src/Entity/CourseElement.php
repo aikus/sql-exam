@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Connectors\CourseElementListener;
 use App\Repository\CourseElementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,6 +50,14 @@ class CourseElement
     #[ORM\Column(nullable: true)]
     #[ApiProperty(security: "is_granted('ROLE_TEACHER')")]
     private array $answerExecutionResult = [];
+
+    #[ORM\OneToMany(mappedBy: 'course_element', targetEntity: CourseElementSetting::class)]
+    private Collection $settings;
+
+    public function __construct()
+    {
+        $this->settings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +150,36 @@ class CourseElement
     public function setAnswerExecutionResult(?array $answerExecutionResult): self
     {
         $this->answerExecutionResult = $answerExecutionResult ?? [];
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseElementSetting>
+     */
+    public function getSettings(): Collection
+    {
+        return $this->settings;
+    }
+
+    public function addSetting(CourseElementSetting $settings): self
+    {
+        if (!$this->settings->contains($settings)) {
+            $this->settings->add($settings);
+            $settings->setCourseElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSetting(CourseElementSetting $settings): self
+    {
+        if ($this->settings->removeElement($settings)) {
+            // set the owning side to null (unless already changed)
+            if ($settings->getCourseElement() === $this) {
+                $settings->setCourseElement(null);
+            }
+        }
 
         return $this;
     }
