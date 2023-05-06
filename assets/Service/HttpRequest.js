@@ -7,7 +7,7 @@ export const HttpRequest = {
         'Accept': 'application/json',
         'Content-Type': 'application/json;charset=utf-8',
     },
-    post: async (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'POST', HttpRequest),
+    post: async (url, body, handleSuccess = null, handleError = null, config = null) => request(url, body, handleSuccess, handleError, 'POST', config),
     put: async (url, body, handleSuccess = null, handleError = null) => request(url, body, handleSuccess, handleError, 'PUT', HttpRequest),
     get: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'GET', HttpRequest),
     delete: async (url, handleSuccess = null, handleError = null) => request(url, null, handleSuccess, handleError, 'DELETE', HttpRequest),
@@ -19,19 +19,27 @@ export const HttpRequest = {
     },
 }
 
-const request = async (url, body, handleSuccess = null, handleError, method, config) => {
+const getConfig = (config, defaultConfig, name) => {
+    if (null !== config && config.hasOwnProperty(name)) {
+        return config[name];
+    }
+
+    return defaultConfig[name]
+}
+
+const request = async (url, body, handleSuccess = null, handleError = null, method, config) => {
 
     let init = {
         method: method,
-        headers: config.headers,
+        headers: getConfig(config, HttpRequest, 'headers'),
     }
 
-    if (!config.skipToken) {
+    if (!getConfig(config, HttpRequest, 'skipToken')) {
         init.headers.Authorization = 'Bearer ' + localStorage.getItem('jwtToken')
     }
 
     if (null !== body) {
-        init['body'] = config.isStringifyBody ? JSON.stringify(body) : body
+        init['body'] = getConfig(config, HttpRequest, 'isStringifyBody') ? JSON.stringify(body) : body
     }
 
     return await fetch(url, init)
