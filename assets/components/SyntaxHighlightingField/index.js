@@ -5,8 +5,8 @@ import * as DOMPurify from "dompurify";
 import {highlight} from "sql-highlight";
 
 export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
-  const [highlightedCode, setHighlightedCode] = useState('');
-  const [rawCode, setRawCode] = useState(value || '');
+  const [highlightedCode, setHighlightedCode] = useState(' ');
+  const [rawCode, setRawCode] = useState(value || ' ');
 
   useEffect(() => {
     value && highlightText(value);
@@ -14,6 +14,8 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
 
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
+
+    if (text === '') return;
 
     if (text[text.length - 1] === "\n") {
       text += " ";
@@ -94,7 +96,7 @@ const Wrapper = styled.div`
 
 const sharedStyles = css`
   margin: 0;
-  padding: 10px;
+  padding: 10px 10px 10px 0;
   border: 1px solid black;
   width: 100%;
   height: 100%;
