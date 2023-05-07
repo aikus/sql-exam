@@ -1,27 +1,35 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled, { css } from 'styled-components'
 import '../../styles/app.css';
 import * as DOMPurify from "dompurify";
 import {highlight} from "sql-highlight";
 
 export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
-  const [code, setCode] = useState(value || '');
+  const [highlightedCode, setHighlightedCode] = useState(' ');
+  const [rawCode, setRawCode] = useState(value || ' ');
+
+  useEffect(() => {
+    value && highlightText(value);
+  }, [value])
 
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
+
+    if (text === '') return;
 
     if (text[text.length - 1] === "\n") {
       text += " ";
     }
 
-    let highlighted = highlight(text, {html: true});
+    let highlighted = highlight(text.replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"), { html: true });
 
     if (highlighted === '') {
       highlighted = text;
     }
 
-    setCode(highlighted);
-    getValue && getValue(highlighted);
+    setHighlightedCode(highlighted);
+    setRawCode(text);
+    getValue && getValue(text);
   }
 
   const syncScroll = (element) => {
@@ -61,13 +69,21 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
         }}
         onKeyDown={(e) => {
           checkTab(e.target, e);
+          if (e.key === 'Backspace') {
+            setTimeout(() => {
+              if (rawCode[rawCode.length - 1] === ' ' && rawCode[rawCode.length - 2] === '\n') {
+                setRawCode((prevState) => prevState.slice(0, -2))
+              }
+            }, 0)
+          }
         }}
+        value={rawCode}
       ></TextArea>
       <CodeFieldWrapper
         ref={elementRef}
         aria-hidden="true"
       >
-        <code dangerouslySetInnerHTML={{__html: sanitizer(code)}} />
+        <code dangerouslySetInnerHTML={{__html: sanitizer(highlightedCode)}} />
       </CodeFieldWrapper>
     </Wrapper>
   )
@@ -80,7 +96,7 @@ const Wrapper = styled.div`
 
 const sharedStyles = css`
   margin: 0;
-  padding: 10px;
+  padding: 10px 10px 10px 0;
   border: 1px solid black;
   width: 100%;
   height: 100%;

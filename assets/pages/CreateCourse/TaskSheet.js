@@ -48,8 +48,6 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
     newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
 
-    console.log('newState[_step - 1]: ', newState[_step - 1])
-
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
         data.description = convertHTMLtoObj(data.description);

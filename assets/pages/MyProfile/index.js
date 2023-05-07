@@ -15,8 +15,6 @@ export const MyProfile = () => {
         return `/react/my-profile/student-statistic?student=${studentId}`
     }
 
-    // const inputEl = useRef(null);
-
     return (
       <>
         <section>
@@ -55,10 +53,6 @@ export const MyProfile = () => {
               title="Ваши курсы"
           />
         </section>
-
-        {/*<SyntaxHighlightingField*/}
-        {/*  elementRef={inputEl}*/}
-        {/*/>*/}
       </>
     )
 }
