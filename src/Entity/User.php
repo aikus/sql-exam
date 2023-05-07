@@ -17,7 +17,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
 #[ApiResource(
-    paginationMaximumItemsPerPage: 200,
     security: "is_granted('ROLE_ADMIN')"
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
