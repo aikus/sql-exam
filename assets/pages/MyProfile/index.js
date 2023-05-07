@@ -5,7 +5,6 @@ import { CourseBlock } from "./CourseBlock/CourseBlock";
 import { useOutletContext } from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import { Button } from "@mui/material"
-import { SyntaxHighlightingField } from "../../components/SyntaxHighlightingField";
 
 export const MyProfile = () => {
     const outletContent = useOutletContext();
