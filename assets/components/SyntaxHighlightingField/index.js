@@ -15,10 +15,12 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
 
-    if (text === '') return;
+    if (text === '') {
+      text = ' ';
+    }
 
     if (text[text.length - 1] === "\n") {
-      text += " ";
+      text += ' ';
     }
 
     let highlighted = highlight(text.replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"), { html: true });
@@ -116,7 +118,7 @@ const TextArea = styled.textarea`
   ${sharedStyles};
 
   z-index: 1;
-  white-space: nowrap;
+  white-space: pre;
   color: transparent;
   background: transparent;
   caret-color: black; 
