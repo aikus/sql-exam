@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\CourseElementPollOptionListener;
 use App\Entity\EntityTrait\Timestampable;
 use App\Repository\CourseElementPollOptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource]
+#[ORM\EntityListeners([CourseElementPollOptionListener::class])]
 #[ORM\Entity(repositoryClass: CourseElementPollOptionRepository::class)]
 class CourseElementPollOption
 {
@@ -23,6 +25,9 @@ class CourseElementPollOption
 
     #[ORM\Column]
     private ?bool $is_right = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pollOptions')]
+    private ?CourseElement $course_element = null;
 
     public function getId(): ?int
     {
@@ -49,6 +54,18 @@ class CourseElementPollOption
     public function setIsRight(bool $is_right): self
     {
         $this->is_right = $is_right;
+
+        return $this;
+    }
+
+    public function getCourseElement(): ?CourseElement
+    {
+        return $this->course_element;
+    }
+
+    public function setCourseElement(?CourseElement $course_element): self
+    {
+        $this->course_element = $course_element;
 
         return $this;
     }

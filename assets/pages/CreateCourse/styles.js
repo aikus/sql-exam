@@ -60,40 +60,6 @@ export const CheckBoxControled = styled.div`
   margin-top: 24px;
 `
 
-export const Type = styled.div`
-  margin-bottom: 24px;
-  
-  & > *:first-child {
-    margin-bottom: 8px;
-  }
-`
-
-export const HeaderBlock = styled(Type)`
-`
-
-export const QuestionBlock = styled.div`
-  & > *:first-child {
-    margin-bottom: 8px;
-  }
-`
-
-export const AnswerBlock = styled(QuestionBlock)`
-  margin-top: 24px;
-`
-
-export const VariantsBlock = styled.div`
-  max-width: 800px;
-  
-  & > button {
-    width: unset;
-    margin-top: 24px;
-  }
-`
-
-export const VariantsRow = styled.div`
-  margin-top: 24px;
-`
-
 export const Row = styled.div`
   display: flex;
   align-items: center;

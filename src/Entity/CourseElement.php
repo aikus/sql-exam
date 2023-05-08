@@ -54,9 +54,13 @@ class CourseElement
     #[ORM\OneToMany(mappedBy: 'course_element', targetEntity: CourseElementSetting::class)]
     private Collection $settings;
 
+    #[ORM\OneToMany(mappedBy: 'course_element', targetEntity: CourseElementPollOption::class)]
+    private Collection $pollOptions;
+
     public function __construct()
     {
         $this->settings = new ArrayCollection();
+        $this->pollOptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,22 +166,52 @@ class CourseElement
         return $this->settings;
     }
 
-    public function addSetting(CourseElementSetting $settings): self
+    public function addSetting(CourseElementSetting $setting): self
     {
-        if (!$this->settings->contains($settings)) {
-            $this->settings->add($settings);
-            $settings->setCourseElement($this);
+        if (!$this->settings->contains($setting)) {
+            $this->settings->add($setting);
+            $setting->setCourseElement($this);
         }
 
         return $this;
     }
 
-    public function removeSetting(CourseElementSetting $settings): self
+    public function removeSetting(CourseElementSetting $setting): self
     {
-        if ($this->settings->removeElement($settings)) {
+        if ($this->settings->removeElement($setting)) {
             // set the owning side to null (unless already changed)
-            if ($settings->getCourseElement() === $this) {
-                $settings->setCourseElement(null);
+            if ($setting->getCourseElement() === $this) {
+                $setting->setCourseElement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseElementPollOption>
+     */
+    public function getPollOptions(): Collection
+    {
+        return $this->pollOptions;
+    }
+
+    public function addPollOptions(CourseElementPollOption $pollOption): self
+    {
+        if (!$this->pollOptions->contains($pollOption)) {
+            $this->pollOptions->add($pollOption);
+            $pollOption->setCourseElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removePollOptions(CourseElementPollOption $pollOption): self
+    {
+        if ($this->pollOptions->removeElement($pollOption)) {
+            // set the owning side to null (unless already changed)
+            if ($pollOption->getCourseElement() === $this) {
+                $pollOption->setCourseElement(null);
             }
         }
 
