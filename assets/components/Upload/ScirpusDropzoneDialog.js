@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import { DropzoneDialog } from "mui-file-dropzone";
 import { Button } from "@mui/material";
-import { HttpRequest } from "/assets/Service/HttpRequest";
 
 export const ScirpusDropzoneDialog = ({repository}) => {
 
@@ -18,7 +17,7 @@ export const ScirpusDropzoneDialog = ({repository}) => {
     return <>
         <Button
             onClick={() => setOpen(true)}
-            variant={"outlined-alter"}
+            variant={"outlined"}
             sx={{m: 1}}
         >
             Добавить изображение

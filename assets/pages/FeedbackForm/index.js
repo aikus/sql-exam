@@ -111,7 +111,7 @@ export const FeedbackForm = ({setLoader}) => {
                         />
                         <Button
                             sx={{m: 1}}
-                            variant="contained-alter"
+                            variant="contained"
                             type={'submit'}
                         >
                             Отправить

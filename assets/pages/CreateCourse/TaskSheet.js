@@ -7,7 +7,6 @@ import {
   Select, Typography,
 } from "@mui/material";
 import { Loader } from "/assets/components/Loader";
-import { H5 } from '/assets/components/Typography'
 import {CourseElementRepository} from "./CourseElementRepository";
 import { DialogWinDelete } from "/assets/components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
@@ -20,7 +19,7 @@ import { SqlPracticeType } from "/assets/pages/CreateCourse/CourseElementType/Sq
 import { ArticleType } from "./CourseElementType/ArticleType";
 import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
 import { PollType } from "./CourseElementType/PollType";
-import {CourseElementPollOptionRepository} from "../../Repositories/CourseElementPollOptionRepository";
+import { CourseElementPollOptionRepository } from "/assets/Repositories/CourseElementPollOptionRepository";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
   const navigate = useNavigate();
@@ -72,7 +71,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const handlePoll = (courseElement) => {
     const statePollOptions = courseElement?.pollOptionsData;
 
-    if (null === statePollOptions) return;
+    if (null === statePollOptions || undefined === statePollOptions) return;
 
     statePollOptions.map(option => {
       CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {
