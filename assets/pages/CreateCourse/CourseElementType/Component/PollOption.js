@@ -1,6 +1,6 @@
 import React from 'react';
 import { Divider, IconButton, InputBase, Paper } from "@mui/material";
-import {Add, Check, CheckBox, CheckBoxOutlineBlank, Close, CropSquare, Delete} from "@mui/icons-material";
+import { Add, CheckBox, CheckBoxOutlineBlank, Delete } from "@mui/icons-material";
 
 export const PollOption = ({index, option, handleOptionText, addPollOption, handleOptionIsRight, removePollOption}) => {
 

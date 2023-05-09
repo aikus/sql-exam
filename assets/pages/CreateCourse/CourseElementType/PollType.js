@@ -6,7 +6,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { PollOption } from "./Component/PollOption";
 import { ScirpusSnackbar } from "../../../Tamplate/Feedback/ScirpusSnackbar";
 import { CourseElementPollOptionRepository } from "../../../Repositories/CourseElementPollOptionRepository";
-import {PollSettings} from "./Component/PollSettings";
+import { PollSettings } from "./Component/PollSettings";
 
 const addEmptyOptionBtn = (pollOptions, addEmptyOption) => {
     return 0 === pollOptions.length
