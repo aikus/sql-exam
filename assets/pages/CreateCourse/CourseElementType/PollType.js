@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Editor } from "react-draft-wysiwyg";
 import { wysiwygConfig } from "/assets/config";
 import { CourseElementTitleInput } from "./Component/CourseElementTitleInput";
