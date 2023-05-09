@@ -2,11 +2,22 @@ import React, {useEffect, useState} from 'react';
 import { Editor } from "react-draft-wysiwyg";
 import { wysiwygConfig } from "/assets/config";
 import { CourseElementTitleInput } from "./Component/CourseElementTitleInput";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { PollOption } from "./Component/PollOption";
 import { ScirpusSnackbar } from "../../../Tamplate/Feedback/ScirpusSnackbar";
 import { CourseElementPollOptionRepository } from "../../../Repositories/CourseElementPollOptionRepository";
 import {PollSettings} from "./Component/PollSettings";
+
+const addEmptyOptionBtn = (pollOptions, addEmptyOption) => {
+    return 0 === pollOptions.length
+        ? <Button
+            variant={'outlined'}
+            onClick={addEmptyOption}
+        >
+            Добавить вариант
+        </Button>
+        : '';
+}
 
 export const PollType = ({step, courseElement, handleInputChange, handlePollChange}) => {
     const [notify, setNotify] = useState(null)
@@ -49,6 +60,12 @@ export const PollType = ({step, courseElement, handleInputChange, handlePollChan
             let newState = [...prevState]
             newState.splice(index+1, 0, {text: '', isRight: false});
             return newState
+        })
+    }
+
+    const addEmptyOption = () => {
+        setPollOptions(prevState => {
+            return [...prevState,  {text: '', isRight: false}]
         })
     }
 
@@ -96,6 +113,7 @@ export const PollType = ({step, courseElement, handleInputChange, handlePollChan
                             removePollOption={removePollOption}
                         />
                     )}
+                    { addEmptyOptionBtn(pollOptions, addEmptyOption) }
                 </Box>
             </Grid>
             <Grid item xs={12} md={6}>

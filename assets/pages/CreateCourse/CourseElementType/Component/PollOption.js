@@ -7,7 +7,7 @@ export const PollOption = ({index, option, handleOptionText, addPollOption, hand
     return <Paper
         sx={{ p: '2px 4px', my: 4, display: 'flex', alignItems: 'center' }}
     >
-        <IconButton color={'primary'} sx={{ p: '10px' }} aria-label="directions" onClick={() => {
+        <IconButton color={'secondary'} sx={{ p: '10px' }} aria-label="directions" onClick={() => {
             removePollOption(index)
         }}>
             <Delete />
@@ -21,7 +21,7 @@ export const PollOption = ({index, option, handleOptionText, addPollOption, hand
             value={option.text}
             onChange={(e) => {handleOptionText(index, e.target.value)}}
         />
-        <IconButton color="primary" type="button" sx={{ p: '10px' }} aria-label="add" onClick={() => {
+        <IconButton color={'secondary'} type="button" sx={{ p: '10px' }} aria-label="add" onClick={() => {
             addPollOption(index)
         }}>
             <Add />

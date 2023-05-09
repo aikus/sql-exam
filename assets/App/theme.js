@@ -11,6 +11,7 @@ const buttonContainedTheme = {
 }
 
 const buttonOutlinedTheme = {
+    color: '#262626',
     border: '1px solid #FFCC00',
     '&:hover': {
         backgroundColor: '#FAC00070',
@@ -25,7 +26,7 @@ export const theme = createTheme({
             main: blue["700"],
         },
         secondary: {
-            main: grey["900"],
+            main: grey["800"],
         },
         appBar: {
             main: grey["50"],
