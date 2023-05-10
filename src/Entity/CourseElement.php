@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Connectors\CourseElementListener;
 use App\Repository\CourseElementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,6 +50,18 @@ class CourseElement
     #[ORM\Column(nullable: true)]
     #[ApiProperty(security: "is_granted('ROLE_TEACHER')")]
     private array $answerExecutionResult = [];
+
+    #[ORM\OneToMany(mappedBy: 'course_element', targetEntity: CourseElementSetting::class)]
+    private Collection $settings;
+
+    #[ORM\OneToMany(mappedBy: 'course_element', targetEntity: CourseElementPollOption::class)]
+    private Collection $pollOptions;
+
+    public function __construct()
+    {
+        $this->settings = new ArrayCollection();
+        $this->pollOptions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +154,66 @@ class CourseElement
     public function setAnswerExecutionResult(?array $answerExecutionResult): self
     {
         $this->answerExecutionResult = $answerExecutionResult ?? [];
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseElementSetting>
+     */
+    public function getSettings(): Collection
+    {
+        return $this->settings;
+    }
+
+    public function addSetting(CourseElementSetting $setting): self
+    {
+        if (!$this->settings->contains($setting)) {
+            $this->settings->add($setting);
+            $setting->setCourseElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSetting(CourseElementSetting $setting): self
+    {
+        if ($this->settings->removeElement($setting)) {
+            // set the owning side to null (unless already changed)
+            if ($setting->getCourseElement() === $this) {
+                $setting->setCourseElement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CourseElementPollOption>
+     */
+    public function getPollOptions(): Collection
+    {
+        return $this->pollOptions;
+    }
+
+    public function addPollOptions(CourseElementPollOption $pollOption): self
+    {
+        if (!$this->pollOptions->contains($pollOption)) {
+            $this->pollOptions->add($pollOption);
+            $pollOption->setCourseElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removePollOptions(CourseElementPollOption $pollOption): self
+    {
+        if ($this->pollOptions->removeElement($pollOption)) {
+            // set the owning side to null (unless already changed)
+            if ($pollOption->getCourseElement() === $this) {
+                $pollOption->setCourseElement(null);
+            }
+        }
 
         return $this;
     }

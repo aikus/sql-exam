@@ -19,8 +19,7 @@ export const TokenRepository = {
       plainPassword: user?.plainPassword
     }
 
-    HttpRequest.skipToken = true;
-    HttpRequest.post(`/api/register`, body, (data) => handleSuccess(data), (error) => handleError(error))
+    HttpRequest.post(`/api/register`, body, (data) => handleSuccess(data), (error) => handleError(error), {skipToken: true})
   },
 
   change: (email, handleSuccess, handleError) => {

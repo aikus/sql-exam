@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { Popper, MenuItem, Divider, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
-import { TextM, TextL, H5 } from '../../components/Typography'
+import { TextL, H5 } from '../../components/Typography'
 import { Logo } from "../../components/Logo";
 import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
@@ -40,17 +40,11 @@ export const MainPage = () => {
         handleProfileMenuClose()
         setLoader(true)
 
-        const handleResponse = (data) => {
-            window.location.href = location.origin + '/react';
-            localStorage.removeItem('jwtToken')
-        }
-
         TokenRepository.delete((data) => {
             window.location.href = location.origin + '/react';
             localStorage.removeItem('jwtToken')
+            localStorage.removeItem('appUserInfo')
         })
-
-        // HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
     }
 
     const handleProfileMenuClose = () => {
@@ -63,11 +57,17 @@ export const MainPage = () => {
 
     useEffect(() => {
         const handleSetUserInfo = (data) => {
+            localStorage.setItem('appUserInfo', JSON.stringify(data));
             setUserInfo(data)
             setAuth({roles: data.roles})
         }
 
-        HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        if (localStorage.getItem('appUserInfo')) {
+            handleSetUserInfo(JSON.parse(localStorage.getItem('appUserInfo')));
+        }
+        else {
+            HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        }
     }, [])
 
     useEffect(() => {

@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import * as C from './styles'
-import { Button, ButtonGroup, Link, TextField } from "@mui/material";
-import { H2, H5, TextL, TextM, TextS } from '../../components/Typography'
+import { Box, Button, ButtonGroup, Grid, Paper, Typography } from "@mui/material";
+import { H2, H5, TextL, TextS } from '../../components/Typography'
 import { TableToChoose } from "./TableToChoose";
 import { ExampleTable } from "./ExampleTable";
 import { ResultBlock } from "./ResultBlock";
@@ -14,8 +14,9 @@ import { Notice } from "../../components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
-import {sanitizer} from "../../Service/Sanitizer";
-import {SyntaxHighlightingField} from "../../components/SyntaxHighlightingField";
+import { sanitizer } from "/assets/Service/Sanitizer";
+import { SqlAnswer } from "./Component/SqlAnswer";
+import { PollAnswer } from "./Component/PollAnswer";
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -45,7 +46,6 @@ export const Practice = () => {
     const [timer, setTimer] = useState(null);
     const [showTimer, setShowTimer] = useState(false);
     const [redBorder, setRedBorder] = useState(false);
-    const inputEl = useRef(null);
 
     const urlContainer = (key, id) => {
         if (null === id) {
@@ -119,7 +119,8 @@ export const Practice = () => {
                     name: data.name,
                     description: data.description,
                     ord: data.ord,
-                    type: data.type
+                    type: data.type,
+                    pollOptions: data.pollOptions
                 })
                 checkNavState(process)
                 setError(false)
@@ -154,6 +155,25 @@ export const Practice = () => {
             }
         )
     };
+
+    const handlePollAnswer = (selectedOption) => {
+        setLoader(true)
+        HttpRequest.post(
+            urlContainer('processExecution', UrlService.param('course')),
+            {
+                answerText: JSON.stringify(selectedOption),
+            },
+            data => {
+                setProcessState(data)
+                setError(false)
+                getElement(data)
+            },
+            error => {
+                setError(error)
+                setLoader(false)
+            }
+        )
+    }
 
     const handleFinish = callBack => {
         setLoader(true)
@@ -203,7 +223,7 @@ export const Practice = () => {
                 setProcessState(data)
                 setError(false)
                 setAnswer(data.sqlRequest ?? '')
-                setSqlResponse(data.sqlResponse.length > 0 ? data.sqlResponse : null)
+                setSqlResponse((data.sqlResponse?.length > 0) ? data?.sqlResponse : null)
             },
             error => {
                 setError(error)
@@ -266,136 +286,139 @@ export const Practice = () => {
         return process?.elements.indexOf(process.currentElement);
     }
 
-    const isAnswerable = () => {
-        return element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
+    const isAnswerable = () => element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
+
+    const finishButton = () => {
+        return !isExistNextStep
+        && <Button
+            variant='contained'
+            size='medium'
+            onClick={() => {
+                handleFinish(() =>
+                    navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
+            }}
+        >
+            Завершить
+        </Button>
     }
 
     useEffect(() => {
-        start()
-        StudentTableData(data => {
-            let dataTableArr = []
-            for (let key in data) {
-                dataTableArr.push({
-                    tableName: [key],
-                    linesNum: data[key].count
-                })
-            }
-            setGivenTables(dataTableArr)
-            setGivenTablesData(data)
-        })
+      start()
+      StudentTableData(data => {
+        let dataTableArr = []
+        for (let key in data) {
+          dataTableArr.push({
+            tableName: [key],
+            linesNum: data[key].count
+          })
+        }
+        setGivenTables(dataTableArr)
+        setGivenTablesData(data)
+      })
     }, [])
 
-    return (
-        <C.Wrapper>
-            <Notice message={error}/>
-            <Loader show={loader}/>
-
-            <Button onClick={() => navigate("/react/my-profile")} variant={'text'} color='info' size='S'
-                    startIcon={<KeyboardArrowLeftIcon />}>
-                Вернуться к опроснику
-            </Button>
-            <C.Header>
-                <H2>{element.name}</H2>
-                <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
-            </C.Header>
-            <C.Main>
-                <C.TopBlock>
-                    <ButtonGroup>
-                        <div>
-                            <Button size='S' variant={'outlined'} onClick={handlePrevStep} color="secondary"
-                                    disabled={!isExistPrevStep} startIcon={<KeyboardArrowLeftIcon />}
-                            >
-                                Назад
-                            </Button>
-                            <Button size='S' variant={'outlined'} onClick={handleNextStep} color="secondary"
-                                    disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
-                            >
-                                Далее
-                            </Button>
-                        </div>
-                    </ButtonGroup>
-                    {timer &&
-                      <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
-                          {showTimer ?
-                            <>
-                                <H5>Осталось {Math.trunc(timer / 60)} мин {timer % 60} сек</H5>
-                                <TextS>По истечении времени прохождение будет завершено</TextS>
-                            </>
-                            :
-                            <C.ClosedTimer>
-                                <TimerOutlinedIcon fontSize={'large'} sx={{color: redBorder ? '#ED1C24' : 'none'}}/>
-                                <TextM>Осталось {redBorder && 'мало'} времени...</TextM>
-                            </C.ClosedTimer>
-                          }
-                      </C.Timer>
-                    }
-                </C.TopBlock>
-                <C.Task>
-                    <C.LeftBlock>
-                        <H5>Вопрос:</H5>
-                        <C.Question>
-                            <TextM dangerouslySetInnerHTML={{__html: sanitizer(element.description)}} />
-                        </C.Question>
-                        {
-                            isAnswerable()
-                            && <SyntaxHighlightingField
-                                elementRef={inputEl}
-                                value={answer ?? ''}
-                                getValue={(value) => setAnswer(value)}
-                            />
-                        }
-                        {
-                            isAnswerable()
-                            && <C.Description>
-                                <TextM>
-                                    Введите SQL запрос и нажмите "Выполнить запрос", чтобы увидеть результат.
-                                    Чтобы перейти к следующему заданию нажмите "Далее"
-                                </TextM>
-                            </C.Description>
-                        }
-                        <C.ButtonBox>
-                            {isAnswerable() &&
-                              <div>
-                                <Button
-                                  variant='contained'
-                                  size='medium'
-                                  onClick={handleExecution}
-                                >
-                                    Выполнить запрос
-                                </Button>
-                              </div>
-                            }
-                            {!isExistNextStep &&
-                              <Button
-                                variant='contained'
-                                size='medium'
-                                onClick={() => {
-                                    handleFinish(() => navigate(`/react/my-profile/course-result?course=${UrlService.param('course')}`));
-                                }}
-                              >
-                                    Завершить
-                              </Button>
-                            }
-                        </C.ButtonBox>
-                    </C.LeftBlock>
-                    <C.RightBlock>
-                        <TableToChoose tableData={givenTables} setTable={setChosenTable}/>
-                    </C.RightBlock>
-                </C.Task>
-                {
-                    null !== sqlResponse &&
-                    <C.Block>
-                        <ResultBlock data={sqlResponse}/>
-                    </C.Block>
-                }
-                {
-                  chosenTable &&
-                  <C.TableWrapper>
-                      <TextM>{chosenTable}</TextM>
-                      <ExampleTable tableData={givenTablesData[chosenTable]}/>
-                  </C.TableWrapper>
-                }
-            </C.Main>
-        </C.Wrapper>
-    )
+    return <Box>
+      <Notice message={error}/>
+      <Loader show={loader}/>
+      <Box sx={{mt: '3rem', mb: 3}}>
+        <Button
+            onClick={() => navigate("/react/my-profile")}
+            variant={'text'}
+            color='info'
+            size='S'
+            startIcon={<KeyboardArrowLeftIcon />}
+        >
+          Вернуться к опроснику
+        </Button>
+      </Box>
+      <Grid container justifyContent="space-between" sx={{mt: 3, mb: 4}}>
+        <Grid item>
+          <H2>{element.name}</H2>
+        </Grid>
+        <Grid item>
+          <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
+        </Grid>
+      </Grid>
+      <Paper sx={{p: 3}}>
+        <Box>
+          <ButtonGroup>
+            <div>
+              <Button
+                  size='S'
+                  variant={'outlined'}
+                  onClick={handlePrevStep}
+                  color="secondary"
+                  disabled={!isExistPrevStep}
+                  startIcon={<KeyboardArrowLeftIcon />}
+              >
+                Назад
+              </Button>
+              <Button
+                  size='S'
+                  variant={'outlined'}
+                  onClick={handleNextStep}
+                  color="secondary"
+                  disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
+              >
+                Далее
+              </Button>
+            </div>
+          </ButtonGroup>
+          {timer &&
+            <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
+              {showTimer
+                ? <>
+                  <H5>Осталось {Math.trunc(timer / 60)} мин {timer % 60} сек</H5>
+                  <TextS>По истечении времени прохождение будет завершено</TextS>
+                </>
+                : <C.ClosedTimer>
+                  <TimerOutlinedIcon fontSize={'large'} sx={{color: redBorder ? '#ED1C24' : 'none'}}/>
+                  <Typography>Осталось {redBorder && 'мало'} времени...</Typography>
+                </C.ClosedTimer>
+              }
+            </C.Timer>
+          }
+        </Box>
+        <Grid container justifyContent="space-between" spacing={0} sx={{mt: 4}}>
+          <Grid item xs={12} md={isAnswerable() ? 8 : 12}>
+            <H5>Вопрос:</H5>
+            <Box>
+              <Typography dangerouslySetInnerHTML={{__html: sanitizer(element.description)}} />
+            </Box>
+            {
+              isAnswerable()
+              && <SqlAnswer answer={answer} setAnswer={setAnswer} handleExecution={handleExecution} finishButton={finishButton()} />
+            }
+            {
+              element.type === 'poll' && <PollAnswer element={element} handlePollAnswer={handlePollAnswer} />
+            }
+          </Grid>
+          {
+            isAnswerable()
+            && <Grid item xs={12} md={4}>
+              <TableToChoose tableData={givenTables} setChosenTable={setChosenTable}/>
+            </Grid>
+          }
+        </Grid>
+        {
+          !isAnswerable()
+          && <Box sx={{mt: 4}}>
+            {finishButton()}
+          </Box>
+        }
+        {
+          null !== sqlResponse &&
+          <Box sx={{mt: 4}}>
+            <ResultBlock data={sqlResponse}/>
+          </Box>
+        }
+        {
+          null !== chosenTable &&
+          <Box sx={{mt: 4}}>
+            <Typography>{chosenTable}</Typography>
+            <ExampleTable tableData={givenTablesData[chosenTable]}/>
+          </Box>
+        }
+      </Paper>
+    </Box>
 }

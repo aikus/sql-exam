@@ -10,8 +10,6 @@ class RichTextEditor extends React.Component {
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => {
       this.setState({editorState})
-      // console.log('{editorState}', editorState.getCurrentContent().getPlainText('\u0001'))
-      // console.log('this.state: ', this.state)
       if (this.props.onChange) {
         this.props.onChange(editorState)
       }
