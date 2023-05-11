@@ -1,13 +1,41 @@
-import React, { useState } from 'react';
-import { Box, Divider, FormHelperText, MenuItem, Select, Typography } from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {
+    Box,
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    FormHelperText,
+    MenuItem,
+    Select,
+    Typography
+} from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 
 export const PollSettings = () => {
-    const [pollSettings, setPollSettings] = useState('');
+    const [pollSettings, setPollSettings] = useState({
+        countView: '',
+        isVictorine: true
+    });
 
-    const handleChange = e => {
-        setPollSettings(e.target.value)
+    const handleChange = (e) => {
+        if ('checkbox' === e.target.type) {
+            addSettings(e.target.name, e.target.checked)
+        }
+        else {
+            addSettings(e.target.name, e.target.value)
+        }
     }
+
+    const addSettings = (name, value) => {
+        setPollSettings({
+            ...pollSettings,
+            [name]: value,
+        });
+    }
+
+    useEffect(() => {
+        console.log(pollSettings)
+    }, [pollSettings])
 
     return <Box>
         <Typography>Настройки</Typography>
@@ -15,7 +43,8 @@ export const PollSettings = () => {
         <FormControl sx={{ my: 1 }}>
             <Typography>Количество вариатов</Typography>
             <Select
-                value={pollSettings}
+                name={'countView'}
+                value={pollSettings?.countView}
                 onChange={handleChange}
             >
                 <MenuItem value="">
@@ -27,5 +56,13 @@ export const PollSettings = () => {
             </Select>
             <FormHelperText>Количество вариатов которые случайно отобразятся при прохождении курса</FormHelperText>
         </FormControl>
+        <FormControlLabel
+            control={<Checkbox
+                name={'isVictorine'}
+                checked={pollSettings?.isVictorine}
+                onChange={handleChange}
+            />}
+            label="Доступень только один вариант"
+        />
     </Box>
 }
