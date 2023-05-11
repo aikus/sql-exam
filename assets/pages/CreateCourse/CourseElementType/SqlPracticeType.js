@@ -3,7 +3,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { wysiwygConfig } from "/assets/config";
 import { SyntaxHighlightingField } from "/assets/components/SyntaxHighlightingField";
 import { CourseElementTitleInput } from "./Component/CourseElementTitleInput";
-import {Box} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export const SqlPracticeType = ({step, courseElement, handleInputChange}) => {
     const inputEl = useRef(null);
@@ -15,7 +15,7 @@ export const SqlPracticeType = ({step, courseElement, handleInputChange}) => {
             onChange={(e) => handleInputChange(e.target.value, 'name')}
         />
         <Box>
-            <p>Введите текст</p>
+            <Typography sx={{my: 1}}>Введите текст</Typography>
             <Editor
                 id={`course-${step}`}
                 editorState={courseElement.description}

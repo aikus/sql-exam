@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as C from '/assets/pages/CreateCourse/styles'
 import {
   Box,
-  Button, ButtonGroup,
+  Button, ButtonGroup, Divider, Grid, IconButton,
   MenuItem,
   Select, Typography,
 } from "@mui/material";
@@ -20,8 +20,9 @@ import { ArticleType } from "./CourseElementType/ArticleType";
 import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
 import { PollType } from "./CourseElementType/PollType";
 import { CourseElementPollOptionRepository } from "/assets/Repositories/CourseElementPollOptionRepository";
+import { Close } from "@mui/icons-material";
 
-export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
+export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -212,29 +213,44 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   return (
     <>
-      <C.MovementButtons>
-        <ButtonGroup>
-          <Button
-            size='medium'
-            variant='outlined'
-            onClick={() => handlePrevStep()}
-            color="secondary"
-            startIcon={<ChevronLeftRoundedIcon/>}
+      <Grid container justifyContent="space-between" spacing={2}>
+        <Grid item xs={'auto'}>
+          <ButtonGroup>
+            <Button
+              size='medium'
+              variant='outlined'
+              color="secondary"
+              onClick={() => handlePrevStep()}
+              startIcon={<ChevronLeftRoundedIcon/>}
+            >
+              Назад
+            </Button>
+            <Button
+              size='medium'
+              variant='outlined'
+              color="secondary"
+              onClick={() => handleNextStep()}
+              disabled={courseContent.length === step}
+              endIcon={<ChevronRightRoundedIcon />}
+            >
+              Далее
+            </Button>
+          </ButtonGroup>
+        </Grid>
+        <Grid item xs alignSelf={'center'}>
+          <Typography>{course.name}</Typography>
+        </Grid>
+        <Grid item xs='auto'>
+          <IconButton
+              variant='outlined'
+              color='secondary'
+              onClick={handleExitCourse}
           >
-            Назад
-          </Button>
-          <Button
-            size='medium'
-            variant='outlined'
-            onClick={() => handleNextStep()}
-            color="secondary"
-            disabled={courseContent.length === step}
-            endIcon={<ChevronRightRoundedIcon />}
-          >
-            Далее
-          </Button>
-        </ButtonGroup>
-      </C.MovementButtons>
+            <Close />
+          </IconButton>
+        </Grid>
+      </Grid>
+      <Divider sx={{my: 2}} />
       <Box>
         <Typography sx={{my: 1}}>Выберите тип шага</Typography>
         <Select
@@ -255,15 +271,15 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
       <C.ButtonsBlock>
         <C.StepActions>
-          <Button variant='outlined' size='medium' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
-          <Button variant='outlined' size='medium' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
-          <Button variant='contained' size='medium' onClick={handleCreateStep}>Добавить шаг</Button>
+          <Button variant='contained' color='secondary' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
+          <Button variant='contained' color='secondary' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
+          <Button variant='contained' color='primary' onClick={handleCreateStep}>Добавить шаг</Button>
         </C.StepActions>
         {searchParam.get('course')
           ?
-          <Button variant='contained' size='medium' onClick={handleExitCourse}>Завершить редактирование курса</Button>
+          <Button variant='contained' onClick={handleExitCourse}>Завершить редактирование курса</Button>
           :
-          <Button variant='contained' size='medium' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
+          <Button variant='contained' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
         }
       </C.ButtonsBlock>
 

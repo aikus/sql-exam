@@ -15,9 +15,7 @@ import {
 } from "@mui/material";
 import { H2, TextL, H5 } from '../../../components/Typography'
 import {useNavigate} from "react-router-dom";
-import CourseRepository from "../CourseRepository";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import CourseRepository from "/assets/Repositories/CourseRepository";
 import {sanitizer} from "../../../Service/Sanitizer";
 
 export const CourseBlock = ({title}) => {

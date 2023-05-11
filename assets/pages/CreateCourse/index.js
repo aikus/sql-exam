@@ -242,6 +242,7 @@ export const CreateCourse = () => {
               deleteStep={deleteStep}
               courseContent={courseContent}
               setCourseContent={setCourseContent}
+              course={courseMainInfo}
               courseId={courseMainInfo.courseId}
             />
           }

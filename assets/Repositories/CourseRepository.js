@@ -1,4 +1,4 @@
-import {HttpRequest} from '../../Service/HttpRequest';
+import { HttpRequest } from '/assets/Service/HttpRequest';
 
 class CourseRepositoryClass {
     constructor(request) {
@@ -8,6 +8,10 @@ class CourseRepositoryClass {
             "completed": null,
             "started": null
         }
+    }
+
+    async getAll() {
+        return new Promise((resolve, reject) => this.request.get('/api-platform/courses', resolve, reject));
     }
 
     async getRestartable() {
