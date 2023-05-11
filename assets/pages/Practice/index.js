@@ -340,30 +340,33 @@ export const Practice = () => {
         </Grid>
       </Grid>
       <Paper sx={{p: 3}}>
-        <Box>
-          <ButtonGroup>
-            <div>
-              <Button
-                  size='S'
-                  variant={'outlined'}
-                  onClick={handlePrevStep}
-                  color="secondary"
-                  disabled={!isExistPrevStep}
-                  startIcon={<KeyboardArrowLeftIcon />}
-              >
-                Назад
-              </Button>
-              <Button
-                  size='S'
-                  variant={'outlined'}
-                  onClick={handleNextStep}
-                  color="secondary"
-                  disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
-              >
-                Далее
-              </Button>
-            </div>
-          </ButtonGroup>
+        <Grid container justifyContent={'space-between'}>
+          <Grid item>
+            <ButtonGroup>
+              <div>
+                <Button
+                    size='S'
+                    variant={'outlined'}
+                    onClick={handlePrevStep}
+                    color="secondary"
+                    disabled={!isExistPrevStep}
+                    startIcon={<KeyboardArrowLeftIcon />}
+                >
+                  Назад
+                </Button>
+                <Button
+                    size='S'
+                    variant={'outlined'}
+                    onClick={handleNextStep}
+                    color="secondary"
+                    disabled={!isExistNextStep} endIcon={<KeyboardArrowRightIcon />}
+                >
+                  Далее
+                </Button>
+              </div>
+            </ButtonGroup>
+          </Grid>
+          <Grid item>
           {timer &&
             <C.Timer onClick={() => setShowTimer(prevState => !prevState)} changeBC={redBorder}>
               {showTimer
@@ -378,7 +381,8 @@ export const Practice = () => {
               }
             </C.Timer>
           }
-        </Box>
+          </Grid>
+        </Grid>
         <Grid container justifyContent="space-between" spacing={0} sx={{mt: 4}}>
           <Grid item xs={12} md={isAnswerable() ? 8 : 12}>
             <H5>Вопрос:</H5>

@@ -1,20 +1,27 @@
 import { createTheme } from "@mui/material";
 import { blue, grey } from '@mui/material/colors';
 
-const buttonContainedTheme = {
+const buttonContainedPrimaryTheme = {
     color: '#262626',
     backgroundColor: '#FFCC00',
     '&:hover': {
         backgroundColor: '#FAC000',
-        borderColor: '#FAC000',
+    }
+}
+
+const buttonContainedSecondaryTheme = {
+    color: '#262626',
+    backgroundColor: '#FFF',
+    border: '1px solid #FAC000',
+    '&:hover': {
+        backgroundColor: grey["200"],
     }
 }
 
 const buttonOutlinedTheme = {
     color: '#262626',
-    border: '1px solid #FFCC00',
+    border: '1px solid #FAC000',
     '&:hover': {
-        backgroundColor: '#FAC00070',
         borderColor: '#FAC000'
     }
 }
@@ -42,13 +49,19 @@ export const theme = createTheme({
         MuiButton: {
             variants: [
                 {
-                    props: { variant: "contained" },
+                    props: { variant: "contained", color: 'primary' },
                     style: {
-                        ...buttonContainedTheme,
+                        ...buttonContainedPrimaryTheme,
                     }
                 },
                 {
-                    props: { variant: "outlined" },
+                    props: { variant: "contained", color: 'secondary' },
+                    style: {
+                        ...buttonContainedSecondaryTheme,
+                    }
+                },
+                {
+                    props: { variant: "outlined", color: 'primary' },
                     style: {
                         ...buttonOutlinedTheme,
                     }
