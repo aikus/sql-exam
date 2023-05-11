@@ -62,7 +62,7 @@ export const PollSettings = () => {
                 checked={pollSettings?.isVictorine}
                 onChange={handleChange}
             />}
-            label="Доступень только один вариант"
+            label="Доступен только один вариант"
         />
     </Box>
 }
