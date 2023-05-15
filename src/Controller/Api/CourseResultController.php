@@ -226,6 +226,11 @@ class CourseResultController extends AbstractController
     private function buildStudentCourseResultReport(CourseSheet $sheet): array
     {
         foreach ($sheet->getCourse()?->getType() ?? [] as $element) {
+            if (in_array($element->getType(), [
+                CourseElement::TYPE_ARTICLE
+            ], true)) {
+                continue;
+            }
             $answer = $this->lastRightAnswer($element, $sheet);
             $table[] = [
                 '№' => $element->getOrd(),
