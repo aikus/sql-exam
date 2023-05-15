@@ -10,6 +10,5 @@ class CourseElementPollOptionListener
     public function prePersist(CourseElementPollOption $pollOption, LifecycleEventArgs $event): void
     {
         $pollOption->setCreateTime(new \DateTime());
-        $pollOption->setCreateTime(new \DateTime());
     }
 }

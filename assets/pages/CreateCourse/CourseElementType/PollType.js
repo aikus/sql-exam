@@ -19,7 +19,7 @@ const addEmptyOptionBtn = (pollOptions, addEmptyOption) => {
         : '';
 }
 
-export const PollType = ({step, courseElement, handleInputChange, handlePollChange}) => {
+export const PollType = ({step, courseElement, handleInputChange, handlePollChange, handleSettingsChange}) => {
     const [notify, setNotify] = useState(null)
     const [pollOptions, setPollOptions] = useState([]);
 
@@ -118,7 +118,10 @@ export const PollType = ({step, courseElement, handleInputChange, handlePollChan
             </Grid>
             <Grid item xs={12} md={6}>
                 <Box sx={{my: 4}}>
-                    <PollSettings />
+                    <PollSettings
+                        courseElement={courseElement}
+                        handleSettingsChange={handleSettingsChange}
+                    />
                 </Box>
             </Grid>
         </Grid>

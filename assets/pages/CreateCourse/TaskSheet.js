@@ -7,7 +7,9 @@ import {
   Select, Typography,
 } from "@mui/material";
 import { Loader } from "/assets/components/Loader";
-import {CourseElementRepository} from "./CourseElementRepository";
+import { CourseElementRepository } from "/assets/Repositories/CourseElementRepository";
+import { CourseElementPollOptionRepository } from "/assets/Repositories/CourseElementPollOptionRepository";
+import { CourseElementSettingRepository } from "/assets/Repositories/CourseElementSettingRepository";
 import { DialogWinDelete } from "/assets/components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
 import { searchParam } from "/assets/Service/SearchParamActions";
@@ -19,7 +21,6 @@ import { SqlPracticeType } from "/assets/pages/CreateCourse/CourseElementType/Sq
 import { ArticleType } from "./CourseElementType/ArticleType";
 import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
 import { PollType } from "./CourseElementType/PollType";
-import { CourseElementPollOptionRepository } from "/assets/Repositories/CourseElementPollOptionRepository";
 import { Close } from "@mui/icons-material";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId}) => {
@@ -56,6 +57,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       return newState
     })
   }
+
   const handlePollChange = options => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
@@ -75,9 +77,29 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     if (null === statePollOptions || undefined === statePollOptions) return;
 
     statePollOptions.map(option => {
-      CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {
-        console.log('handlePoll', data)
-      })
+      CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {})
+    })
+  }
+
+  const handleSettingsChange = settings => {
+    setCourseContent((prevState) => {
+      let newState = [...prevState]
+      newState[step - 1].settingsData = settings
+      newState[step - 1].settings = settings.map(setting => {
+        if (!setting.hasOwnProperty('id')) return;
+        return '/api-platform/course_element_settings/'+setting.id
+      }).filter(setting => null === setting)
+
+      return newState
+    })
+  }
+
+  const handleSettings = (courseElement) => {
+    const settingList = courseElement?.settingsData;
+
+    settingList.map(setting => {
+      if (undefined === setting || null === setting) return;
+      CourseElementSettingRepository.save(setting, courseElement.id).then(data => {})
     })
   }
 
@@ -97,7 +119,10 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
 
     handlePoll(newState[_step - 1])
-    newState[_step - 1].pollOptions = [];
+    delete newState[_step - 1].pollOptions;
+
+    handleSettings(newState[_step - 1])
+    delete newState[_step - 1].settings;
 
     CourseElementRepository.save(newState[_step - 1], courseId).then(
       data => {
@@ -208,7 +233,13 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   }
 
   const getPollType = courseElement => {
-    return <PollType step={step} courseElement={courseElement} handleInputChange={handleInputChange} handlePollChange={handlePollChange} />
+    return <PollType
+        step={step}
+        courseElement={courseElement}
+        handleInputChange={handleInputChange}
+        handlePollChange={handlePollChange}
+        handleSettingsChange={handleSettingsChange}
+    />
   }
 
   return (

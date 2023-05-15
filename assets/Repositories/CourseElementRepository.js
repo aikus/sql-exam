@@ -1,4 +1,4 @@
-import {HttpRequest} from '../../Service/HttpRequest';
+import {HttpRequest} from '/assets/Service/HttpRequest';
 
 class CourseElementRepositoryClass {
     constructor(request) {

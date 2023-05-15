@@ -5,8 +5,8 @@ import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
 import { TaskSheet } from './TaskSheet'
 import { Loader } from "../../components/Loader";
 import { HttpRequest } from '../../Service/HttpRequest'
-import { CourseElementRepository } from "./CourseElementRepository";
-import { hostName, wysiwygConfig } from '../../config'
+import { CourseElementRepository } from "../../Repositories/CourseElementRepository";
+import { wysiwygConfig } from '../../config'
 import { searchParam } from "../../Service/SearchParamActions";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -51,7 +51,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.post(`${hostName}/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.post(`/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const changeCourseReq = () => {
@@ -71,7 +71,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.put(`${hostName}/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.put(`/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const getCourseInfo = (id) => {
@@ -109,7 +109,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.get(`${hostName}/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.get(`/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
   }
 
   const handleIntendedForChange = (event) => {
