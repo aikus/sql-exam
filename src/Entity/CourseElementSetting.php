@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Connectors\CourseElementSettingListener;
 use App\Entity\EntityTrait\Timestampable;
 use App\Repository\CourseElementSettingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource]
+#[ORM\EntityListeners([CourseElementSettingListener::class])]
 #[ORM\Entity(repositoryClass: CourseElementSettingRepository::class)]
 class CourseElementSetting
 {

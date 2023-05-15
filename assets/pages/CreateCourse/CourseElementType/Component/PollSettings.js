@@ -10,31 +10,60 @@ import {
     Typography
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
+import { CourseElementSettingRepository } from "/assets/Repositories/CourseElementSettingRepository";
 
-export const PollSettings = () => {
-    const [pollSettings, setPollSettings] = useState({
+export const PollSettings = ({courseElement, handleSettingsChange}) => {
+    const [pollSettings, setPollSettings] = useState([]);
+    const [state, setState] = useState({
         countView: '',
-        isVictorine: true
+        isVictorine: true,
     });
 
     const handleChange = (e) => {
         if ('checkbox' === e.target.type) {
-            addSettings(e.target.name, e.target.checked)
+            addSettings({property: e.target.name, value: e.target.checked ? '1' : '0'})
         }
         else {
-            addSettings(e.target.name, e.target.value)
+            addSettings({property: e.target.name, value: e.target.value})
         }
     }
 
-    const addSettings = (name, value) => {
-        setPollSettings({
-            ...pollSettings,
-            [name]: value,
+    const addSettings = (setting) => {
+        setState(state => ({...state, [setting.property]: setting.value}))
+        setPollSettings(pollSettings => {
+            const settingIndex = pollSettings.findIndex(item => item.property === setting.property)
+
+            if (-1 === settingIndex) {
+                pollSettings.push(setting);
+            }
+            else {
+                pollSettings[settingIndex].value = setting.value;
+            }
+            return pollSettings;
         });
     }
 
     useEffect(() => {
-        console.log(pollSettings)
+        CourseElementSettingRepository.getByCourseElement(courseElement)
+            .then(settings => {
+
+                settings.map(setting => {
+                    addSettings(setting)
+                })
+
+                setState({
+                    countView: settings.filter(item => 'countView' === item.property)[0]?.value ?? '',
+                    isVictorine: settings.filter(item => 'isVictorine' === item.property)[0]?.value ?? '',
+                })
+            })
+            .catch(error => {
+                console.error(error)
+            })
+        handleSettingsChange(pollSettings)
+    }, [])
+
+    useEffect(() => {
+        handleSettingsChange(pollSettings)
     }, [pollSettings])
 
     return <Box>
@@ -44,12 +73,10 @@ export const PollSettings = () => {
             <Typography>Количество вариатов</Typography>
             <Select
                 name={'countView'}
-                value={pollSettings?.countView}
+                value={state?.countView}
                 onChange={handleChange}
             >
-                <MenuItem value="">
-                    <em>Не выбрано</em>
-                </MenuItem>
+                <MenuItem value=""><em>Не выбрано</em></MenuItem>
                 <MenuItem value={'4'}>Отобразать 4 варианта</MenuItem>
                 <MenuItem value={'6'}>Отобразать 6 вариантов</MenuItem>
                 <MenuItem value={'8'}>Отобразать 8 вариантов</MenuItem>
@@ -59,10 +86,10 @@ export const PollSettings = () => {
         <FormControlLabel
             control={<Checkbox
                 name={'isVictorine'}
-                checked={pollSettings?.isVictorine}
+                checked={'1' === state?.isVictorine}
                 onChange={handleChange}
             />}
-            label="Доступень только один вариант"
+            label="Доступен только один вариант"
         />
     </Box>
 }
