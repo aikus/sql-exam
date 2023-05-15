@@ -385,7 +385,7 @@ export const Practice = () => {
         </Grid>
         <Grid container justifyContent="space-between" spacing={0} sx={{mt: 4}}>
           <Grid item xs={12} md={isAnswerable() ? 8 : 12}>
-            <H5>Вопрос:</H5>
+            { null !== element.type && element.type !== 'article' && <H5>Вопрос:</H5> }
             <Box>
               <Typography dangerouslySetInnerHTML={{__html: sanitizer(element.description)}} />
             </Box>
