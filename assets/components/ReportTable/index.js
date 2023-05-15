@@ -139,6 +139,7 @@ export const ReportTable = ({title = '', courseId = null, rows = [], fetchReport
             variant={"text"}
             href={linkToStatisticByStudent(params)}
             target="_blank"
+            sx={{textTransform: 'none'}}
         >
             {row[column.id]}
         </Button>
