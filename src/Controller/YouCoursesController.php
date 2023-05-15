@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CourseSheet;
 use App\Repository\CourseSheetRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,10 +28,15 @@ class YouCoursesController extends AbstractController
         foreach ($this->repository->findBy([
             'status' => $status,
             'student' => $this->security->getUser(),
-        ]) as $sheet) {
-            $result[] = '/api-platform/courses/' . $sheet->getCourse()->getId();
+        ], ['updatedAt' => 'ASC']) as $sheet) {
+            if (CourseSheet::STATUS_RESTARTABLE === $status) {
+                $result[$sheet->getCourse()->getId()] = '/api-platform/courses/' . $sheet->getCourse()->getId();
+            }
+            else {
+                $result[] = '/api-platform/courses/' . $sheet->getCourse()->getId();
+            }
         }
 
-        return new JsonResponse($result);
+        return new JsonResponse(array_values($result));
     }
 }
