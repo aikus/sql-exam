@@ -62,7 +62,7 @@ const request = async (url, body, handleSuccess = null, handleError = null, meth
             }
         })
         .catch(error => {
-            if (!config.customAction && error.status === 401) {
+            if (!getConfig(config, HttpRequest, 'customAction') && error.status === 401) {
                 window.location.href = location.origin + '/react';
                 localStorage.removeItem('jwtToken')
             }

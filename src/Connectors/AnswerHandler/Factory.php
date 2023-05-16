@@ -3,7 +3,6 @@
 namespace App\Connectors\AnswerHandler;
 
 use App\Connectors\PdoConnectorFactory;
-use App\Controller\Api\SqlMetadataController;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Service\CheckRight\Domain\CheckRight;
@@ -32,6 +31,9 @@ class Factory
         }
         if(CourseElement::TYPE_SQL == $question->getType()) {
             return (new DBConfigure())->getHandler($question->getMetaType(), $this->checkRight);
+        }
+        if (CourseElement::TYPE_POLL === $question->getType()) {
+            return new Poll();
         }
         return new Noop();
     }

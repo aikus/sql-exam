@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Course;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
+use App\Entity\CourseElementPollOption;
 use App\Entity\CourseSheet;
 use App\Entity\User;
 use App\Repository\CourseSheetRepository;
@@ -37,7 +38,7 @@ class CourseResultController extends AbstractController
         $sheet = $sheetRepository->findOneBy([
             'course' => $course,
             'student' => $user,
-        ]);
+        ], ['updatedAt' => 'DESC']);
 
         return new JsonResponse($this->buildStudentCourseResultReport($sheet));
     }
@@ -57,7 +58,7 @@ class CourseResultController extends AbstractController
         $sheet = $sheetRepository->findOneBy([
             'course' => $course,
             'student' => $student,
-        ]);
+        ], ['updatedAt' => 'DESC']);
 
         return new JsonResponse($this->buildStudentCourseResultReport($sheet));
     }
@@ -218,8 +219,6 @@ class CourseResultController extends AbstractController
             })->last();
         }
 
-//        $iterator->uasort(fn(CourseAnswer $a, CourseAnswer $b) => $a->getId() <=> $b->getId());
-
         return $lastRightAnswer ?: null;
     }
 
@@ -232,11 +231,21 @@ class CourseResultController extends AbstractController
                 continue;
             }
             $answer = $this->lastRightAnswer($element, $sheet);
+
+            $answerText = CourseElement::TYPE_POLL === $element->getType()
+                ? implode('<br>', $answer?->getQuestion()->getPollOptions()->filter(function (CourseElementPollOption $option) use ($answer) {
+                    $studentAnswerIds = json_decode($answer->getAnswer(), true);
+                    return is_array($studentAnswerIds) && in_array($option->getId(), $studentAnswerIds);
+                })->map(function (CourseElementPollOption $option) {
+                    return $option->getText();
+                })->toArray())
+                : $answer?->getAnswer();
+
             $table[] = [
                 '№' => $element->getOrd(),
                 'Вопрос' => $element->getName(),
                 'Текст вопроса' => $element->getDescription(),
-                'Ответ' => $answer?->getAnswer(),
+                'Ответ' => $answerText,
                 'Статус' => $answer?->isIsRight(),
                 "metaData" => [
                     "sheetId" => $sheet->getId(),

@@ -25,7 +25,7 @@ export const ScirpusSnackbar = ({message, clearMessage}) => {
 
     return <Snackbar
         open={open}
-        autoHideDuration={1000}
+        autoHideDuration={2000}
         onClose={handleClose}
         message={message}
         action={action}
