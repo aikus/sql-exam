@@ -119,7 +119,8 @@ export const Practice = () => {
                     description: data.description,
                     ord: data.ord,
                     type: data.type,
-                    pollOptions: data.pollOptions
+                    pollOptions: data.pollOptions,
+                    settings: data.settings
                 })
                 checkNavState(process)
                 setError(false)

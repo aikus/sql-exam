@@ -68,7 +68,7 @@ export const Learner = ({setLoader}) => {
     return (
         <Paper>
             <Notice message={error}/>
-            <Container maxWidth={'md'} sx={{pt: '2rem'}}>
+            <Container maxWidth={'lg'} sx={{pt: '2rem'}}>
                 <Box justifyContent={'space-between'} display={'flex'} marginBottom={4}>
                     <Typography variant="h3">Назначить курс</Typography>
                     <Button variant={"contained"} onClick={() => {

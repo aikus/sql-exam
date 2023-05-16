@@ -19,8 +19,7 @@ const addEmptyOptionBtn = (pollOptions, addEmptyOption) => {
         : '';
 }
 
-export const PollType = ({step, courseElement, handleInputChange, handlePollChange, handleSettingsChange}) => {
-    const [notify, setNotify] = useState(null)
+export const PollType = ({step, courseElement, handleInputChange, handlePollChange, handleSettingsChange, setNotify}) => {
     const [pollOptions, setPollOptions] = useState([]);
 
     const handleOptionText = (index, optionText) => {
@@ -71,17 +70,17 @@ export const PollType = ({step, courseElement, handleInputChange, handlePollChan
 
     useEffect(() => {
         CourseElementPollOptionRepository.getByCourseElement(courseElement).then(data => {
+            data.sort((a, b) => a.id > b.id ? 1 : -1);
             setPollOptions(data)
         })
         handlePollChange(pollOptions)
-    }, [])
+    }, [courseElement])
 
     useEffect(() => {
         handlePollChange(pollOptions)
     }, [pollOptions])
 
     return <>
-        {notify ? <ScirpusSnackbar message={notify} clearMessage={() => {setNotify(null)}}/> : ''}
         <CourseElementTitleInput
             label={'Введите заголовок'}
             step={step}
