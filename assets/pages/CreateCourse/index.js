@@ -12,6 +12,7 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import {SqlMetaTypeRepository} from "./SqlMetaTypeRepository";
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
@@ -32,6 +33,7 @@ export const CreateCourse = () => {
     'name': '',
   };
   const [courseContent, setCourseContent] = useState([defaultElement]);
+  const [sqlMetaTypes, setSqlMetaTypes] = useState(null);
 
   const createCourseReq = () => {
     const body = {
@@ -161,10 +163,13 @@ export const CreateCourse = () => {
   };
 
   useEffect(() => {
-    const courseId = searchParam.get('course')
+    const courseId = searchParam.get('course');
     if (courseId) {
       setLoader(true)
       getCourseInfo(courseId)
+    }
+    if(!sqlMetaTypes) {
+      SqlMetaTypeRepository.get().then(setSqlMetaTypes);
     }
   }, [])
 
@@ -244,6 +249,7 @@ export const CreateCourse = () => {
               setCourseContent={setCourseContent}
               course={courseMainInfo}
               courseId={courseMainInfo.courseId}
+              metaTypes={sqlMetaTypes}
             />
           }
         </C.Main>
