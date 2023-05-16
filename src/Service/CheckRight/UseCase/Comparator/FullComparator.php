@@ -66,6 +66,15 @@ class FullComparator implements Comparator
             return false;
         }
 
+        if (is_numeric($a) && $this->isInteger($a) && $this->isInteger($b)) {
+            return (int) $a === (int) $b;
+        }
+
         return (string) $a === (string) $b;
+    }
+
+    private function isInteger($value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 }

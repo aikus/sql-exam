@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { Popper, MenuItem, Divider, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
-import { TextM, TextL, H5 } from '../../components/Typography'
+import { TextL, H5 } from '../../components/Typography'
 import { Logo } from "../../components/Logo";
 import {Outlet, Link, useNavigate} from "react-router-dom";
 import {HttpRequest} from "../../Service/HttpRequest";
@@ -13,6 +13,7 @@ import {Loader} from "../../components/Loader";
 import avatarImg from "../../img/catAvatar.png"
 import {GetPermission} from '../../Service/AskPermission'
 import useAuth from '../../hooks/useAuth'
+import {TokenRepository} from "../../Repositories/tokenRepository";
 
 export const MainPage = () => {
     const navigate = useNavigate();
@@ -39,12 +40,11 @@ export const MainPage = () => {
         handleProfileMenuClose()
         setLoader(true)
 
-        const handleResponse = (data) => {
+        TokenRepository.delete((data) => {
             window.location.href = location.origin + '/react';
             localStorage.removeItem('jwtToken')
-        }
-
-        HttpRequest.get(`${hostName}/api/logout`,(data) => handleResponse(data), (error) => handleResponse())
+            localStorage.removeItem('appUserInfo')
+        })
     }
 
     const handleProfileMenuClose = () => {
@@ -57,53 +57,72 @@ export const MainPage = () => {
 
     useEffect(() => {
         const handleSetUserInfo = (data) => {
+            localStorage.setItem('appUserInfo', JSON.stringify(data));
             setUserInfo(data)
             setAuth({roles: data.roles})
         }
 
-        HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        if (localStorage.getItem('appUserInfo')) {
+            handleSetUserInfo(JSON.parse(localStorage.getItem('appUserInfo')));
+        }
+        else {
+            HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))
+        }
     }, [])
 
     useEffect(() => {
         setOutletContent({userInfo})
     }, [userInfo])
 
+    const menuItems = [
+        {href: '/react/my-profile', name: 'Личный кабинет', roles: ['ROLE_USER']},
+        {href: '/react/feedback-form', name: 'Обратная связь', roles: ['ROLE_USER']},
+        {href: '/react/my-profile/course-management', name: 'Администрирование курсов', roles: ['ROLE_TEACHER', 'ROLE_ADMIN']},
+        {href: '/react/my-profile/report', name: 'Результаты', roles: ['ROLE_TEACHER', 'ROLE_ADMIN']},
+    ];
+
+    const menuListItem = (item, key) => {
+        return GetPermission(item.roles)
+            && <MenuItem onClick={handleMenuClose} key={key}>
+                <Link to={item.href}>{item.name}</Link>
+            </MenuItem>
+    }
+
+    const navBarMenuItem = (item, key) => {
+        return GetPermission(item.roles)
+            && <Link to={item.href} key={key}>
+                <TextL>{item.name}</TextL>
+            </Link>
+    }
+
     return (
         <C.Wrapper>
             <C.NavBar>
                 <C.MobileMenu>
-                    <MenuOutlinedIcon sx={{marginLeft: '8px'}} fontSize={'large'} onClick={handleMenuClick}/>
-                    <Popper
-                      open={menuOpen}
-                      anchorEl={anchorElMenu}
-                      placement="bottom-start"
-                      transition
-                      disablePortal
-                    >
-                        {({ TransitionProps, placement }) => (
-                          <Grow
-                            {...TransitionProps}
-                          >
-                              <Paper>
-                                  <ClickAwayListener onClickAway={handleMenuClose}>
-                                      <MenuList>
-                                          <MenuItem onClick={handleMenuClose}><Link to="">Личный кабинет</Link></MenuItem>
-                                          {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
-                                            <MenuItem onClick={handleMenuClose}>
-                                                <Link to="course-management">Администрирование курсов</Link>
-                                            </MenuItem>
-                                          }
-                                          {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
-                                            <MenuItem onClick={handleMenuClose}>
-                                                <Link to="report">Результаты</Link>
-                                            </MenuItem>
-                                          }
-                                      </MenuList>
-                                  </ClickAwayListener>
-                              </Paper>
-                          </Grow>
-                        )}
-                    </Popper>
+                  <MenuOutlinedIcon sx={{marginLeft: '8px'}} fontSize={'large'} onClick={handleMenuClick}/>
+                  <Popper
+                    open={menuOpen}
+                    anchorEl={anchorElMenu}
+                    placement="bottom-start"
+                    transition
+                    disablePortal
+                  >
+                    {({ TransitionProps, placement }) => (
+                      <Grow {...TransitionProps}>
+                        <Paper>
+                          <ClickAwayListener onClickAway={handleMenuClose}>
+                            <MenuList>
+                              {
+                                menuItems.map((item, key) => {
+                                  return menuListItem(item, key)
+                                })
+                              }
+                            </MenuList>
+                          </ClickAwayListener>
+                        </Paper>
+                      </Grow>
+                    )}
+                  </Popper>
                 </C.MobileMenu>
                 <C.LogoBlock
                     onClick={() => {
@@ -114,13 +133,11 @@ export const MainPage = () => {
                     <H5>Scirpus</H5>
                 </C.LogoBlock>
                 <C.NavBarItemsBox>
-                    <Link to=""><TextL>Личный кабинет</TextL></Link>
-                    {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
-                      <Link to="course-management"><TextL>Администрирование курсов</TextL></Link>
-                    }
-                    {GetPermission(['ROLE_TEACHER', 'ROLE_ADMIN']) &&
-                      <Link to="report"><TextL>Результаты</TextL></Link>
-                    }
+                  {
+                    menuItems.map((item, key) => {
+                      return navBarMenuItem(item, key);
+                    })
+                  }
                 </C.NavBarItemsBox>
                 <C.ProfileBlock
                   onClick={handleProfileMenuClick}

@@ -1,11 +1,12 @@
 import React from 'react';
-import {TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button} from '@mui/material';
-import {H1} from "../Typography";
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Typography,  Button} from '@mui/material';
+import { H1 } from "../Typography";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import RemoveIcon from '@mui/icons-material/Remove';
 import * as C from '/assets/styles/styles'
 import {useNavigate} from "react-router-dom";
+import { sanitizer } from "../../Service/Sanitizer";
 
 export const CourseResult = (data) => {
     const isTeacher = data.isTeacher;
@@ -25,38 +26,37 @@ export const CourseResult = (data) => {
             && data.personalResult.table.length > 0;
     }
 
-    return (
-        <>
-            <C.Header>
-                <H1>{data.personalResult?.courseName}</H1>
-                <p>{data.personalResult?.fio}</p>
-            </C.Header>
-            <TableContainer component={Paper}>
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {
-                                header().map((column) => {
-                                    return "metaData" !== column ? <TableCell key={column}>
+    return <>
+      <C.Header>
+        <H1>{data.personalResult?.courseName}</H1>
+        <p>{data.personalResult?.fio}</p>
+      </C.Header>
+      <TableContainer component={Paper}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {
+                header().map((column) => {
+                  return "metaData" !== column ? <TableCell key={column}>
                                         <div>{column}</div>
                                     </TableCell> : null
                                 })
                             }
                             {
                                 isTeacher &&
-                                <TableCell>Проверить</TableCell>
-                            }
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            isSetResult()
-                                ? data.personalResult?.table.map((row, i) => (
-                                    <TableRow
-                                        key={i}
-                                    >
-                                        {
-                                            Object.keys(row).map((cell, ii) => "metaData" !== cell ? (
+                <TableCell>Проверить</TableCell>
+              }
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              isSetResult()
+                ? data.personalResult?.table.map((row, i) => (
+                  <TableRow
+                      key={i}
+                  >
+                    {
+                      Object.keys(row).map((cell, ii) => "metaData" !== cell ? (
                                                 'Статус' === cell
                                                     ? <TableCell key={ii}>
                                                         {
@@ -67,7 +67,7 @@ export const CourseResult = (data) => {
                                                                     : <CloseIcon color={"error"}/>
                                                         }
                                                     </TableCell>
-                                                    : <TableCell key={ii}>{row[cell] ?? 'Пока нет ответа'}</TableCell>
+                                                    : <TableCell key={ii}><Typography dangerouslySetInnerHTML={{__html: sanitizer(row[cell] ?? 'Пока нет ответа')}} /></TableCell>
                                             ) : "")
                                         }
                                         {
@@ -81,14 +81,13 @@ export const CourseResult = (data) => {
                                                         row.metaData.sheetId + "&answer=" + row.metaData.answerId)}
                                                 >Проверить</Button> : <></>}
                                             </TableCell>
-                                        }
-                                    </TableRow>
-                                ))
-                                : <TableRow><TableCell>Здесь пока нет данных</TableCell></TableRow>
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
-    )
+                    }
+                  </TableRow>
+                ))
+                : <TableRow><TableCell>Здесь пока нет данных</TableCell></TableRow>
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
 }

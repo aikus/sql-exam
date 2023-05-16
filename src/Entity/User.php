@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,10 +12,16 @@ use RusakovNikita\MysqlExam\Exam\Teacher;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
+#[ApiResource(
+    security: "is_granted('ROLE_ADMIN')"
+)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Учетная запись с такой электронной почтой уже существует')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher, Student
 {
     public const ROLE_USER = 'ROLE_USER';
@@ -28,9 +35,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Teacher
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Email(message: 'Пожалуйста, введите корректный Email')]
+    #[NotBlank(message: 'Пожалуйста, введите Email')]
     private $email;
 
     #[ORM\Column(type: 'string', length: 180, nullable: true)]
+    #[NotBlank(message: 'Пожалуйста, введите ФИО')]
     private ?string $fio;
 
     #[ORM\Column(type: 'json')]

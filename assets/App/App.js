@@ -17,6 +17,9 @@ import {AuthProvider} from "../context/AuthProvider";
 import { StatisticPage } from "/assets/pages/StatisticPage";
 import { StudentStatisticPage } from "../pages/StudentStatisticPage";
 import {CheckAnswer} from "../pages/CheckAnswer";
+import { FeedbackForm } from "../pages/FeedbackForm";
+import { TextPageTemplate } from "../Tamplate/TextPageTemplate";
+import { Learner } from "../pages/Learner";
 
 export const App = () => {
   return (
@@ -26,6 +29,12 @@ export const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/react/" element={<Authorization/>}/>
+              <Route path="/react">
+                <Route path="feedback-form" element={<TextPageTemplate><FeedbackForm /></TextPageTemplate>}/>
+              </Route>
+              <Route path="/react">
+                <Route path="learner" element={<TextPageTemplate><Learner /></TextPageTemplate>}/>
+              </Route>
               <Route path="/react/my-profile" element={<MainPage/>}>
                 <Route index element={<MyProfile/>}/>
                 <Route path="practice" element={<Practice/>}/>

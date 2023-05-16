@@ -1,117 +1,52 @@
-import React, {useState} from 'react';
-import * as C from './styles'
+import React, { useState } from 'react';
+import * as C from '/assets/pages/CreateCourse/styles'
 import {
-  Button, ButtonGroup,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
+  Box,
+  Button, ButtonGroup, Divider, Grid, IconButton,
   MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField
+  Select, Typography,
 } from "@mui/material";
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import {Loader} from "../../components/Loader";
-import {H5, TextM} from '../../components/Typography'
-import {CourseElementRepository} from "./CourseElementRepository";
-import {DialogWinDelete} from "../../components/DialogWinDelete";
+import { Loader } from "/assets/components/Loader";
+import { CourseElementRepository } from "/assets/Repositories/CourseElementRepository";
+import { CourseElementPollOptionRepository } from "/assets/Repositories/CourseElementPollOptionRepository";
+import { CourseElementSettingRepository } from "/assets/Repositories/CourseElementSettingRepository";
+import { DialogWinDelete } from "/assets/components/DialogWinDelete";
 import {useNavigate} from "react-router-dom";
-import {searchParam} from "../../Service/SearchParamActions";
+import { searchParam } from "/assets/Service/SearchParamActions";
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import {convertObjToHTML, convertHTMLtoObj} from "./index";
+import { EditorState } from 'draft-js';
+import { SqlPracticeType } from "/assets/pages/CreateCourse/CourseElementType/SqlPracticeType";
+import { ArticleType } from "./CourseElementType/ArticleType";
+import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
+import { PollType } from "./CourseElementType/PollType";
+import { Close } from "@mui/icons-material";
 
-export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId, metaTypes}) => {
+export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId, metaTypes}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const isPractice = type => ['mysql', 'postgres', 'oracle', 'sql'].includes(type);
+  const currentCourseElement = () => courseContent[step - 1];
+
+  const typeList = () => {
+    return [
+      {name: 'Текст', type: 'article'},
+      {name: 'Практика Mysql', type: 'mysql'},
+      {name: 'Практика Postgres', type: 'postgres'},
+      {name: 'Практика SQL', type: 'sql'},
+      {name: 'Опрос с вариантами', type: 'poll'},
+    ];
+  }
 
   const handleSelectChange = (e) => {
-    const actual = courseContent[step - 1];
-
-    const typeObject = {
-      'type': e.target.value,
-      'name': actual && actual.name ? actual.name : '',
-      'description': actual && actual.description ? actual.description : '',
-    }
-
-    if(actual && actual.id) {
-      typeObject['id'] = actual.id;
-    }
-
-    if (isPractice(e.target.value)) {
-      typeObject['answer'] = '';
-    } else if (e.target.value === 'poll') {
-      typeObject["description"] = '';
-      typeObject["variants"] = ['', ''];
-      typeObject["right-variant"] = '';
-    }
+    const actual = currentCourseElement();
+    actual['type'] = e.target.value;
 
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 1] = typeObject
-      return newState
-    })
-  }
-
-  const handleSaveStep = (stepToSave, exitAfterSave) => {
-    const _step = stepToSave || step;
-    setLoader(true);
-    let newState = [...courseContent];
-
-    if(!newState[_step - 1].ord) {
-      newState[_step - 1].ord = _step;
-    }
-
-    CourseElementRepository.save(newState[_step - 1], courseId).then(
-      data => {
-        newState[_step - 1] = data;
-        setCourseContent(newState);
-        setLoader(false);
-        if (exitAfterSave) {
-          handleExitCourse();
-        }
-      }
-    );
-  }
-
-  const handleCreateStep = () => {
-    setLoader(true);
-    let newState = [...courseContent];
-
-    if(!newState[courseContent.length - 1].ord) {
-      newState[courseContent.length - 1].ord = courseContent.length;
-    }
-
-    CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
-      data => {
-        newState[courseContent.length - 1] = data;
-        newState.push({
-          'type': 'article',
-          'name': '',
-          'description': '',
-        })
-        setCourseContent(newState);
-        setLoader(false);
-        handleNextStep(courseContent.length);
-      }
-    );
-  }
-
-  const handleNextStep = (lastStep) => {
-    nextStep(lastStep)
-  }
-
-  const handlePrevStep = () => {
-    prevStep()
-  }
-
-  const handleVariantInput = (value, i) => {
-    setCourseContent((prevState) => {
-      let newState = [...prevState]
-      newState[step - 1].variants[i] = value
-
+      newState[step - 1] = TypeBuilder.mapActualType(actual)
       return newState
     })
   }
@@ -125,26 +60,113 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     })
   }
 
-  const handleExitCourse = () => {
-    navigate("/react/my-profile/course-management");
-  }
-
-  const handleVariantDelete = (i) => {
+  const handlePollChange = options => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 1].variants.splice(i, 1)
+      newState[step - 1].pollOptionsData = options
+      newState[step - 1].pollOptions = options.map(option => {
+        if (!option.hasOwnProperty('id')) return;
+        return '/api-platform/course_element_poll_options/'+option.id
+      })
 
       return newState
     })
   }
 
-  const addVariant = () => {
+  const handlePoll = (courseElement) => {
+    const statePollOptions = courseElement?.pollOptionsData;
+
+    if (null === statePollOptions || undefined === statePollOptions) return;
+
+    statePollOptions.map(option => {
+      CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {})
+    })
+  }
+
+  const handleSettingsChange = settings => {
     setCourseContent((prevState) => {
       let newState = [...prevState]
-      newState[step - 1].variants.push('')
+      newState[step - 1].settingsData = settings
+      newState[step - 1].settings = settings.map(setting => {
+        if (!setting.hasOwnProperty('id')) return;
+        return '/api-platform/course_element_settings/'+setting.id
+      }).filter(setting => null === setting)
 
       return newState
     })
+  }
+
+  const handleSettings = (courseElement) => {
+    const settingList = courseElement?.settingsData;
+
+    settingList.map(setting => {
+      if (undefined === setting || null === setting) return;
+      CourseElementSettingRepository.save(setting, courseElement.id).then(data => {})
+    })
+  }
+
+  const handleSaveStep = (stepToSave, exitAfterSave) => {
+    const _step = stepToSave || step;
+    setLoader(true);
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
+
+    if(!newState[_step - 1].ord) {
+      newState[_step - 1].ord = _step;
+    }
+
+    newState[_step - 1].description = convertObjToHTML(newState[_step - 1].description);
+
+    handlePoll(newState[_step - 1])
+    delete newState[_step - 1].pollOptions;
+
+    handleSettings(newState[_step - 1])
+    delete newState[_step - 1].settings;
+
+    CourseElementRepository.save(newState[_step - 1], courseId).then(
+      data => {
+        data.description = convertHTMLtoObj(data.description);
+        newState[_step - 1] = data;
+        setCourseContent(newState);
+        setLoader(false);
+        if (exitAfterSave) {
+          handleExitCourse();
+        }
+      }
+    );
+  }
+
+  const handleCreateStep = () => {
+    setLoader(true);
+    let newState = [];
+
+    courseContent.forEach((item) => {
+      newState.push(deepCopy({}, item))
+    });
+
+    if(!newState[courseContent.length - 1].ord) {
+      newState[courseContent.length - 1].ord = courseContent.length;
+    }
+
+    newState[courseContent.length - 1].description = convertObjToHTML(newState[courseContent.length - 1].description);
+
+    CourseElementRepository.save(newState[courseContent.length - 1], courseId).then(
+      data => {
+        data.description = convertHTMLtoObj(data.description);
+        newState[courseContent.length - 1] = data;
+        newState.push({
+          'type': 'article',
+          'name': '',
+          'description': EditorState.createEmpty(),
+        })
+        setCourseContent(newState);
+        setLoader(false);
+        handleNextStep(courseContent.length);
+      }
+    );
   }
 
   const handleDeleteStep = () => {
@@ -162,6 +184,18 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     handleClose()
   }
 
+  const handleNextStep = (lastStep) => {
+    nextStep(lastStep)
+  }
+
+  const handlePrevStep = () => {
+    prevStep()
+  }
+
+  const handleExitCourse = () => {
+    navigate("/react/my-profile/course-management");
+  }
+
   const handleClose = () => {
     setDialogOpen(false)
   }
@@ -175,49 +209,95 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       });
     }
     return result;
+  const deepCopy = (targetObj, sourceObj) => {
+    if (targetObj && sourceObj) {
+      for (let x in sourceObj) {
+        if (sourceObj.hasOwnProperty(x)) {
+          if (targetObj[x] && typeof sourceObj[x] === 'object') {
+            targetObj[x] = deepCopy(targetObj[x], sourceObj[x]);
+          } else {
+            targetObj[x] = sourceObj[x];
+          }
+        }
+      }
+    }
+    return targetObj;
+  };
+
+  const renderCourseElementType = (courseElement) => {
+    const container = {
+      article: getArticleType,
+      mysql: getSqlPracticeType,
+      postgres: getSqlPracticeType,
+      oracle: getSqlPracticeType,
+      poll: getPollType,
+    }
+    return container[courseElement.type](courseElement);
   }
 
-  const typeList = () => {
-    return [
-      {name: 'Текст', type: 'article'},
-      {name: 'Практика Mysql', type: 'mysql'},
-      {name: 'Практика Postgres', type: 'postgres'},
-      {name: 'Практика SQL', type: 'sql'},
-      {name: 'Открытый вопрос', type: 'open-question'},
-    ];
+  const getArticleType = courseElement => {
+    return <ArticleType step={step} courseElement={courseElement} handleInputChange={handleInputChange} />
   }
 
-  console.log(courseContent[step - 1].metaType);
+  const getSqlPracticeType = courseElement => {
+    return <SqlPracticeType step={step} courseElement={courseElement} handleInputChange={handleInputChange} />
+  }
+
+  const getPollType = courseElement => {
+    return <PollType
+        step={step}
+        courseElement={courseElement}
+        handleInputChange={handleInputChange}
+        handlePollChange={handlePollChange}
+        handleSettingsChange={handleSettingsChange}
+    />
+  }
 
   return (
     <>
-      <C.MovementButtons>
-        <ButtonGroup>
-          <Button
-            size='medium'
-            variant='outlined'
-            onClick={() => handlePrevStep()}
-            color="secondary"
-            startIcon={<ChevronLeftRoundedIcon/>}
+      <Grid container justifyContent="space-between" spacing={2}>
+        <Grid item xs={'auto'}>
+          <ButtonGroup>
+            <Button
+              size='medium'
+              variant='outlined'
+              color="secondary"
+              onClick={() => handlePrevStep()}
+              startIcon={<ChevronLeftRoundedIcon/>}
+            >
+              Назад
+            </Button>
+            <Button
+              size='medium'
+              variant='outlined'
+              color="secondary"
+              onClick={() => handleNextStep()}
+              disabled={courseContent.length === step}
+              endIcon={<ChevronRightRoundedIcon />}
+            >
+              Далее
+            </Button>
+          </ButtonGroup>
+        </Grid>
+        <Grid item xs alignSelf={'center'}>
+          <Typography>{course.name}</Typography>
+        </Grid>
+        <Grid item xs='auto'>
+          <IconButton
+              variant='outlined'
+              color='secondary'
+              onClick={handleExitCourse}
           >
-            Назад
-          </Button>
-          <Button
-            size='medium'
-            variant='outlined'
-            onClick={() => handleNextStep()}
-            color="secondary"
-            disabled={courseContent.length === step}
-            endIcon={<ChevronRightRoundedIcon />}
-          >
-            Далее
-          </Button>
-        </ButtonGroup>
-      </C.MovementButtons>
-      <C.Type>
-        <H5>Выберите тип шага</H5>
+            <Close />
+          </IconButton>
+        </Grid>
+      </Grid>
+      <Divider sx={{my: 2}} />
+      <Box>
+        <Typography sx={{my: 1}}>Выберите тип шага</Typography>
         <Select
-          value={courseContent[step - 1].type}
+          name={'type'}
+          value={currentCourseElement().type}
           onChange={(e) => handleSelectChange(e)}
           sx={{minWidth: '150px'}}
         >
@@ -227,143 +307,21 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             )
           }
         </Select>
-        {
-          "sql" === courseContent[step - 1].type &&
-            <Select
-              value={courseContent[step - 1].metaType}
-              onChange={(e) => handleInputChange(e.target.value, 'metaType')}
-              sx={{minWidth: '150px'}}>
-              {
-                getSqlMetaTypes().map((item, i) => <MenuItem key={i} value={item.type}>{item.name}</MenuItem>)
-              }
-            </Select>
-        }
-      </C.Type>
-      <C.HeaderBlock>
-        <H5>Введите заголовок</H5>
-        <TextField
-          required
-          id={`course-element-name-${step}`}
-          type="text"
-          variant="outlined"
-          multiline={false}
-          fullWidth={true}
-          minRows={5}
-          value={courseContent[step - 1].name}
-          onChange={(e) => handleInputChange(e.target.value, 'name')}
-        />
-      </C.HeaderBlock>
-      <C.QuestionBlock>
-        <H5>Введите текст</H5>
-        <TextField
-            required
-            id={`course-${step}`}
-            type="text"
-            variant="outlined"
-            multiline={true}
-            fullWidth={true}
-            minRows={5}
-            value={courseContent[step - 1].description}
-            onChange={(e) => handleInputChange(e.target.value, 'description')}
-        />
-      </C.QuestionBlock>
-      {isPractice(courseContent[step - 1].type) &&
-        <C.AnswerBlock>
-          <H5>Введите SQL-запрос, по которому система будет определять правильность ответа инженера</H5>
-          <TextField
-            required
-            id={`course-${step}-2`}
-            type="text"
-            variant="outlined"
-            multiline={true}
-            fullWidth={true}
-            minRows={5}
-            value={courseContent[step - 1].answer}
-            onChange={(e) => handleInputChange(e.target.value, 'answer')}
-          />
-        </C.AnswerBlock>
-      }
-      {'open-question' === courseContent[step - 1].type &&
-          <C.AnswerBlock>
-            <H5>Введите правильный ответ</H5>
-            <TextField
-                required
-                id={`course-${step}-2`}
-                type="text"
-                variant="outlined"
-                multiline={true}
-                fullWidth={true}
-                minRows={5}
-                value={courseContent[step - 1].answer}
-                onChange={(e) => handleInputChange(e.target.value, 'answer')}
-            />
-          </C.AnswerBlock>
-      }
-      {courseContent[step - 1].type === 'poll' &&
-        <C.VariantsBlock>
-          <Button variant='contained' size='medium' onClick={addVariant}>Добавить вариант</Button>
-          <C.VariantsRow>
-            <RadioGroup
-              name={`course-answer-group-${step}`}
-              value={courseContent[step - 1]['right-variant']}
-              onChange={(e) => handleInputChange(e.target.value, 'right-variant')}
-              onClick={(e) => {
-                if (e.target.value === courseContent[step - 1]['right-variant']) {
-                  handleInputChange('', 'right-variant')
-                }
-              }}
-            >
-              {courseContent[step - 1].variants.map((item, i, arr) => {
-                return (
-                  <C.Row key={i}>
-                    <TextM>Вариант {i + 1}</TextM>
-                    <TextField
-                      required
-                      id={`course-answer-${step}-${i + 1}`}
-                      type="text"
-                      variant="outlined"
-                      multiline={true}
-                      fullWidth={true}
-                      value={item}
-                      onChange={(e) => handleVariantInput(e.target.value, i)}
-                      size={'small'}
-                      InputProps={{
-                        endAdornment: arr.length > 2 ?
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => handleVariantDelete(i)}
-                              edge="end"
-                            >
-                              <DeleteForeverRoundedIcon/>
-                            </IconButton>
-                          </InputAdornment>
-                          :
-                          '',
-                      }}
-                    />
-                    <FormControlLabel
-                      value={i + 1}
-                      control={<Radio />}
-                      label="Правильный ответ"
-                      sx={{marginRight: 0}}
-                    />
-                  </C.Row>
-                )
-              })}
-            </RadioGroup>
-          </C.VariantsRow>
-        </C.VariantsBlock>
-      }
+      </Box>
+
+      {renderCourseElementType(currentCourseElement())}
+
       <C.ButtonsBlock>
         <C.StepActions>
-          <Button variant='outlined' size='medium' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
-          <Button variant='outlined' size='medium' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
-          <Button variant='contained' size='medium' onClick={handleCreateStep}>Добавить шаг</Button>
+          <Button variant='contained' color='secondary' onClick={() => setDialogOpen(true)}>Удалить шаг</Button>
+          <Button variant='contained' color='secondary' onClick={() => handleSaveStep()}>Сохранить шаг</Button>
+          <Button variant='contained' color='primary' onClick={handleCreateStep}>Добавить шаг</Button>
         </C.StepActions>
-        {searchParam.get('course') ?
-          <Button variant='contained' size='medium' onClick={handleExitCourse}>Завершить редактирование курса</Button>
+        {searchParam.get('course')
+          ?
+          <Button variant='contained' onClick={handleExitCourse}>Завершить редактирование курса</Button>
           :
-          <Button variant='contained' size='medium' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
+          <Button variant='contained' onClick={() => handleSaveStep(courseContent.length, true)}>Завершить создание курса</Button>
         }
       </C.ButtonsBlock>
 

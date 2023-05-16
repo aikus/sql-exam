@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import * as C from './styles'
 import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel, Button } from "@mui/material";
 import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
-import {TaskSheet} from './TaskSheet'
-import {Loader} from "../../components/Loader";
-import {HttpRequest} from '../../Service/HttpRequest'
-import {CourseElementRepository} from "./CourseElementRepository";
-import { hostName } from '../../config'
-import {searchParam} from "../../Service/SearchParamActions";
+import { TaskSheet } from './TaskSheet'
+import { Loader } from "../../components/Loader";
+import { HttpRequest } from '../../Service/HttpRequest'
+import { CourseElementRepository } from "../../Repositories/CourseElementRepository";
+import { wysiwygConfig } from '../../config'
+import { searchParam } from "../../Service/SearchParamActions";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 import {SqlMetaTypeRepository} from "./SqlMetaTypeRepository";
 
 export const CreateCourse = () => {
@@ -17,7 +21,7 @@ export const CreateCourse = () => {
   const [courseMainInfo, setCourseMainInfo] = useState({
     courseId: '',
     name: '',
-    description: '',
+    description: EditorState.createEmpty(),
     intendedFor: [],
     exam: false,
     numOfTries: '',
@@ -25,7 +29,7 @@ export const CreateCourse = () => {
   });
   const defaultElement = {
     'type': 'article',
-    'description': '',
+    'description': EditorState.createEmpty(),
     'name': '',
   };
   const [courseContent, setCourseContent] = useState([defaultElement]);
@@ -34,7 +38,7 @@ export const CreateCourse = () => {
   const createCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: convertObjToHTML(courseMainInfo.description),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -49,13 +53,13 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.post(`${hostName}/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.post(`/api-platform/courses`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const changeCourseReq = () => {
     const body = {
       name: courseMainInfo.name,
-      description: courseMainInfo.description,
+      description: convertObjToHTML(courseMainInfo.description),
       timeLimit: +courseMainInfo.minForTrie,
       status: "enable"
     }
@@ -69,7 +73,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.put(`${hostName}/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.put(`/api-platform/courses/${courseMainInfo.courseId}`, body, (data) => handleSuccess(data), (error) => handleError())
   }
 
   const getCourseInfo = (id) => {
@@ -78,14 +82,24 @@ export const CreateCourse = () => {
         ...prevState,
         courseId: id,
         name: data.name,
-        description: data.description,
+        description: convertHTMLtoObj(data.description),
         minForTrie: data.timeLimit,
         exam: data.timeLimit || data.timeLimit === 0 ? true : false
       }));
 
       CourseElementRepository.getByCourse(data).then(elements => {
+        const elemExist = elements && elements.length > 0;
+        let modifiedElem = [];
+
+        if (elemExist) {
+          modifiedElem = [...elements];
+          modifiedElem.forEach((item, i) => {
+            item.description = convertHTMLtoObj(item.description);
+          });
+        }
+
         setCourseContent(elements && elements.length > 0 ? elements : [defaultElement])
-        if (elements && elements.length > 0) {
+        if (elemExist) {
           setStepsTotal(elements.length)
         }
 
@@ -97,7 +111,7 @@ export const CreateCourse = () => {
       setLoader(false)
     }
 
-    HttpRequest.get(`${hostName}/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
+    HttpRequest.get(`/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
   }
 
   const handleIntendedForChange = (event) => {
@@ -159,6 +173,10 @@ export const CreateCourse = () => {
     }
   }, [])
 
+  const onDescriptionChange = newState => {
+    setCourseMainInfo(prevState => ({...prevState, description: newState}));
+  };
+
   return (
       <C.Wrapper>
         <C.Header>
@@ -183,43 +201,14 @@ export const CreateCourse = () => {
               </C.FieldBox>
               <C.FieldBox>
                 <H5>Описание курса</H5>
-                <TextField
-                  required
-                  placeholder="Введите описание"
-                  type="text"
-                  multiline={true}
-                  fullWidth={true}
-                  minRows={5}
-                  value={courseMainInfo.description}
-                  onChange={(e) => handleInputChange(e.target.value, 'description')}
+                <Editor
+                  editorState={courseMainInfo.description}
+                  editorClassName='wysiwyg-editor'
+                  toolbarClassName='wysiwyg-toolbar'
+                  toolbar={wysiwygConfig}
+                  onEditorStateChange={(e) => handleInputChange(e, 'description')}
                 />
               </C.FieldBox>
-              {/*<C.FieldBox>*/}
-              {/*  <H5>Принадлежность</H5>*/}
-              {/*  <Select*/}
-              {/*    multiple*/}
-              {/*    displayEmpty*/}
-              {/*    value={courseMainInfo.intendedFor}*/}
-              {/*    onChange={handleIntendedForChange}*/}
-              {/*    input={<OutlinedInput />}*/}
-              {/*    renderValue={(selected) => {*/}
-              {/*      if (selected.length === 0) {*/}
-              {/*        return <TextL>Для всех (общий)</TextL>;*/}
-              {/*      }*/}
-
-              {/*      return selected.join(', ');*/}
-              {/*    }}*/}
-              {/*    MenuProps={MenuProps}*/}
-              {/*    sx={{minWidth: '300px', maxWidth: '100%'}}*/}
-              {/*  >*/}
-              {/*    {names.map((name) => (*/}
-              {/*      <MenuItem key={name} value={name}>*/}
-              {/*        <Checkbox checked={courseMainInfo.intendedFor.indexOf(name) > -1} />*/}
-              {/*        <ListItemText primary={name} />*/}
-              {/*      </MenuItem>*/}
-              {/*    ))}*/}
-              {/*  </Select>*/}
-              {/*</C.FieldBox>*/}
               <C.FieldBox>
                 <H5>Время на одну попытку в минутах</H5>
                 <TextField
@@ -236,45 +225,6 @@ export const CreateCourse = () => {
                   <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>
               </C.Hint>
               </C.FieldBox>
-              {/*<C.CheckBoxWrapper>*/}
-              {/*  <FormControlLabel control={<Checkbox checked={courseMainInfo.exam} onChange={handleExamChange}/>} label="Экзамен" />*/}
-              {/*  <TextM>При нажатии на чекбокс, выставляется ограничение по времени и количеству попыток прохождения</TextM>*/}
-              {/*</C.CheckBoxWrapper>*/}
-              {/*{courseMainInfo.exam &&*/}
-              {/*  <C.CheckBoxControled>*/}
-              {/*    <C.FieldBox>*/}
-              {/*      <H5>Количество попыток</H5>*/}
-              {/*      <TextField*/}
-              {/*        type="number"*/}
-              {/*        value={courseMainInfo.numOfTries}*/}
-              {/*        onChange={(e) => {*/}
-              {/*          if (e.target.value >= 0 && e.target.value <= 100) {*/}
-              {/*            handleInputChange(e.target.value, 'numOfTries')*/}
-              {/*          }*/}
-              {/*        }}*/}
-              {/*      />*/}
-              {/*      <C.Hint>*/}
-              {/*        <TextM>Количество попыток может быть от 0 до 100, где 0 - неограниченное количество</TextM>*/}
-              {/*      </C.Hint>*/}
-              {/*    </C.FieldBox>*/}
-              {/*    <C.FieldBox>*/}
-              {/*      <H5>Время на одну попытку в минутах</H5>*/}
-              {/*      <TextField*/}
-              {/*        required*/}
-              {/*        type="number"*/}
-              {/*        value={courseMainInfo.minForTrie}*/}
-              {/*        onChange={(e) => {*/}
-              {/*          if (e.target.value >= 0 && e.target.value <= 480) {*/}
-              {/*            handleInputChange(e.target.value, 'minForTrie')*/}
-              {/*          }*/}
-              {/*        }}*/}
-              {/*      />*/}
-              {/*      <C.Hint>*/}
-              {/*        <TextM>Время может быть от 0 до 480 минут, где 0 - неограниченное время</TextM>*/}
-              {/*      </C.Hint>*/}
-              {/*    </C.FieldBox>*/}
-              {/*  </C.CheckBoxControled>*/}
-              {/*}*/}
               <Button
                 variant='contained'
                 size='large'
@@ -297,6 +247,7 @@ export const CreateCourse = () => {
               deleteStep={deleteStep}
               courseContent={courseContent}
               setCourseContent={setCourseContent}
+              course={courseMainInfo}
               courseId={courseMainInfo.courseId}
               metaTypes={sqlMetaTypes}
             />
@@ -306,6 +257,21 @@ export const CreateCourse = () => {
         <Loader show={loader}/>
       </C.Wrapper>
   )
+}
+
+export const convertHTMLtoObj = (description) => {
+  const fromHTML = convertFromHTML(description);
+
+  const newState = ContentState.createFromBlockArray(
+    fromHTML.contentBlocks,
+    fromHTML.entityMap,
+  );
+
+  return EditorState.createWithContent(newState);
+}
+
+export const convertObjToHTML = (obj) => {
+  return draftToHtml(convertToRaw(obj.getCurrentContent()));
 }
 
 const names = [

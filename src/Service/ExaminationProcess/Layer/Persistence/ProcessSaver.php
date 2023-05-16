@@ -10,6 +10,7 @@ use App\Entity\CourseSheetStatusNotFound;
 use App\Entity\User;
 use App\Repository\CourseAnswerRepository;
 use App\Repository\CourseSheetRepository;
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Criteria;
@@ -75,6 +76,14 @@ class ProcessSaver
 
         if (null === $sheet) {
             return null;
+        }
+
+        if ($sheet->getStatus() === CourseSheet::STATUS_RESTARTABLE) {
+            $newSheet = new CourseSheet();
+            $newSheet->setCourse($sheet->getCourse());
+            $newSheet->setStudent($sheet->getStudent());
+            $newSheet->setCreatedAt(new DateTime());
+            $sheet = $newSheet;
         }
 
         if(!$sheet->getStartedAt()) {

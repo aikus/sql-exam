@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 class RegistrationController extends AbstractController
 {
@@ -70,7 +71,7 @@ class RegistrationController extends AbstractController
         if ($form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -87,14 +88,19 @@ class RegistrationController extends AbstractController
             ]);
         }
 
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
+        foreach ($form->getErrors(true) as $error) {
+            /** @var ConstraintViolation $constraint */
+            $constraint = $error?->getCause();
+            $errors[] = [
+                'propertyPath' => $constraint?->getPropertyPath(),
+                'message' => $constraint?->getMessage()
+            ];
         }
 
         return new JsonResponse([
             'status' => 'error',
-            'errors' => $errors ?? [],
-        ]);
+            'errors' => $errors ?? new \stdClass(),
+        ], Response::HTTP_BAD_REQUEST);
     }
 
     /**

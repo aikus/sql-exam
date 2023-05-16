@@ -1,14 +1,23 @@
 import styled from "styled-components";
 import '../../../styles/app.css';
 
-export const LoadingBlock = styled.div`
+export const Base = styled.div`
   display: flex;
-  justify-content: center;
   background-color: var(--authorization-background-color);
   box-shadow: 0 2px 4px rgb(135 145 151 / 24%);
-  padding: 32px;
+  padding: 32px 0;
   border-radius: 8px;
   margin-top: 24px;
+  
+  & > div:first-child {
+    width: 40%;
+  }
+
+  @media (min-width: 425px) {
+    & > div:first-child {
+      width: unset;
+    }
+  }
 `
 
 export const HeaderBlock = styled.div`
@@ -21,63 +30,22 @@ export const HeaderBlock = styled.div`
     }
 `
 
-export const SeeAll = styled.div`
-  display: none;
-  
-  @media (min-width: 768px) {
-    display: block;
-    
-    & > a {
-      display: flex;
-      gap: 8px;
-      text-decoration: none;
-      color: var(--link-color-primary);
-
-      &:hover {
-        color: var(--link-color-hover-primary);
-        cursor: pointer;
-      }
-    }
-  }
+export const NoContent = styled.div`
+  width: 100%;
+  text-align: center;
 `
 
-export const AccordionBlock = styled.div`
-    margin-top: 24px;
-    
-    @media (min-width: 1024px) {
-        margin-top: 32px;
-    }
-`
-
-export const Description = styled.div`
-  @media (min-width: 1024px) {
-      padding: 0 8px 8px;
-  }
-  
-  @media (min-width: 1440px) {
-      padding: 0 16px 16px;
-  }
-`
-
-export const Title = styled.div`
-    padding: 4px 0;
-    
-    @media (min-width: 1024px) {
-        padding: 12px 8px;
-    }
-    
-    @media (min-width: 1440px) {
-        padding: 20px 16px;
-    }
-`
-
-export const Buttons = styled.div`
+export const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 16px;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
+  @media screen and (min-width: 1024px) {
+    margin: 0 24px 0 16px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    margin: 0 32px 0 16px;
   }
 `
