@@ -18,6 +18,7 @@ class CourseElement
     const TYPE_MYSQL = 'mysql';
     const TYPE_POSTGRES = 'postgres';
     const TYPE_ORACLE = 'oracle';
+    const TYPE_SQL = 'sql';
     const TYPE_POLL = 'poll';
     const TYPE_OPEN_QUESTION = 'open-question';
     const ALL_TYPES = [
@@ -25,6 +26,7 @@ class CourseElement
         self::TYPE_MYSQL,
         self::TYPE_POSTGRES,
         self::TYPE_ORACLE,
+        self::TYPE_SQL,
         self::TYPE_POLL,
         self::TYPE_OPEN_QUESTION
     ];
@@ -57,6 +59,25 @@ class CourseElement
     #[ORM\Column(nullable: true)]
     #[ApiProperty(security: "is_granted('ROLE_TEACHER')")]
     private array $answerExecutionResult = [];
+
+    #[ORM\Column(length: 255)]
+    private ?string $metaType = null;
+
+    /**
+     * @return string|null
+     */
+    public function getMetaType(): ?string
+    {
+        return $this->metaType;
+    }
+
+    /**
+     * @param string|null $metaType
+     */
+    public function setMetaType(?string $metaType): void
+    {
+        $this->metaType = $metaType;
+    }
 
     public function getId(): ?int
     {

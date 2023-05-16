@@ -21,11 +21,11 @@ import {searchParam} from "../../Service/SearchParamActions";
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
-export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId}) => {
+export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, courseId, metaTypes}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const isPractice = type => ['mysql', 'postgres', 'oracle'].includes(type);
+  const isPractice = type => ['mysql', 'postgres', 'oracle', 'sql'].includes(type);
 
   const handleSelectChange = (e) => {
     const actual = courseContent[step - 1];
@@ -166,14 +166,28 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     setDialogOpen(false)
   }
 
+  const getSqlMetaTypes = () => {
+    const result = [];
+    for(let key in metaTypes) {
+      result.push({
+        name: metaTypes[key],
+        type: key
+      });
+    }
+    return result;
+  }
+
   const typeList = () => {
     return [
       {name: 'Текст', type: 'article'},
       {name: 'Практика Mysql', type: 'mysql'},
       {name: 'Практика Postgres', type: 'postgres'},
+      {name: 'Практика SQL', type: 'sql'},
       {name: 'Открытый вопрос', type: 'open-question'},
     ];
   }
+
+  console.log(courseContent[step - 1].metaType);
 
   return (
     <>
@@ -213,6 +227,17 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             )
           }
         </Select>
+        {
+          "sql" === courseContent[step - 1].type &&
+            <Select
+              value={courseContent[step - 1].metaType}
+              onChange={(e) => handleInputChange(e.target.value, 'metaType')}
+              sx={{minWidth: '150px'}}>
+              {
+                getSqlMetaTypes().map((item, i) => <MenuItem key={i} value={item.type}>{item.name}</MenuItem>)
+              }
+            </Select>
+        }
       </C.Type>
       <C.HeaderBlock>
         <H5>Введите заголовок</H5>

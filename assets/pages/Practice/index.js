@@ -264,6 +264,7 @@ export const Practice = () => {
     const answerableTypes = {
             mysql: true,
             postgres: true,
+            sql: true,
             oracle: true,
             'open-question': true
         },
@@ -272,6 +273,7 @@ export const Practice = () => {
         buttonLabels = {
             mysql: executeLabel,
             postgres: executeLabel,
+            sql: executeLabel,
             oracle: executeLabel,
             'open-question': executeLabel
         },
@@ -279,6 +281,7 @@ export const Practice = () => {
             mysql: fieldLabel,
             postgres: fieldLabel,
             oracle: fieldLabel,
+            sql: fieldLabel,
             'open-question': "Ваш ответ"
         },
         isAnswerable = () => {

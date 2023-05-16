@@ -233,6 +233,10 @@ class CourseResultController extends AbstractController
                 'Текст вопроса' => $element->getDescription(),
                 'Ответ' => $answer?->getAnswer(),
                 'Статус' => $answer?->isIsRight(),
+                "metaData" => [
+                    "sheetId" => $sheet->getId(),
+                    "answerId" => $answer?->getId(),
+                ]
             ];
         }
 
