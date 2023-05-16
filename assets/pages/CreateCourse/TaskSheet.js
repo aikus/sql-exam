@@ -99,7 +99,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const handleSettings = (courseElement) => {
     const settingList = courseElement?.settingsData;
 
-    settingList.map(setting => {
+    settingList?.map(setting => {
       if (undefined === setting || null === setting) return;
       CourseElementSettingRepository.save(setting, courseElement.id).then(data => {})
     })
