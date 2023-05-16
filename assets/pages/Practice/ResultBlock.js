@@ -10,6 +10,11 @@ import { Alert, AlertTitle } from "@mui/material";
 
 export const ResultBlock = tableData => {
 
+    if(typeof tableData.data === 'string') {
+        return <>
+            <div>{tableData.data}</div>
+        </>
+    }
     if ('' !== tableData.data.error) {
       return <Alert severity={"warning"}>
         <AlertTitle>Результат запроса</AlertTitle>

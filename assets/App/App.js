@@ -16,6 +16,7 @@ import { Report } from "../pages/Report";
 import {AuthProvider} from "../context/AuthProvider";
 import { StatisticPage } from "/assets/pages/StatisticPage";
 import { StudentStatisticPage } from "../pages/StudentStatisticPage";
+import {CheckAnswer} from "../pages/CheckAnswer";
 import { FeedbackForm } from "../pages/FeedbackForm";
 import { TextPageTemplate } from "../Tamplate/TextPageTemplate";
 import { Learner } from "../pages/Learner";
@@ -50,6 +51,9 @@ export const App = () => {
                 </Route>
                 <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
                   <Route path="statistic" element={<StatisticPage/>}/>
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['ROLE_TEACHER', 'ROLE_ADMIN']}/>}>
+                  <Route path="check-answer" element={<CheckAnswer/>}/>
                 </Route>
                 <Route path="student-result" element={<ReportByStudent/>}/>
                 <Route path="student-statistic" element={<StudentStatisticPage/>}/>

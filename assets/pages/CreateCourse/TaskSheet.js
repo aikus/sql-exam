@@ -23,10 +23,11 @@ import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
 import { PollType } from "./CourseElementType/PollType";
 import { Close } from "@mui/icons-material";
 
-export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId}) => {
+export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId, metaTypes}) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const isPractice = type => ['mysql', 'postgres', 'oracle', 'sql'].includes(type);
   const currentCourseElement = () => courseContent[step - 1];
 
   const typeList = () => {
@@ -34,6 +35,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       {name: 'Текст', type: 'article'},
       {name: 'Практика Mysql', type: 'mysql'},
       {name: 'Практика Postgres', type: 'postgres'},
+      {name: 'Практика SQL', type: 'sql'},
       {name: 'Опрос с вариантами', type: 'poll'},
     ];
   }
@@ -171,7 +173,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     setLoader(true)
 
     CourseElementRepository.delete(courseContent[step - 1]).then(
-      data => {
+        () => {
         deleteStep()
         setLoader(false)
       }
@@ -198,6 +200,17 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
     setDialogOpen(false)
   }
 
+  const getSqlMetaTypes = () => {
+    const result = [];
+    for (let key in metaTypes) {
+      result.push({
+        name: metaTypes[key],
+        type: key
+      });
+    }
+    return result;
+  }
+
   const deepCopy = (targetObj, sourceObj) => {
     if (targetObj && sourceObj) {
       for (let x in sourceObj) {
@@ -218,6 +231,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       article: getArticleType,
       mysql: getSqlPracticeType,
       postgres: getSqlPracticeType,
+      sql: getSqlPracticeType,
       oracle: getSqlPracticeType,
       poll: getPollType,
     }
@@ -296,6 +310,17 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             )
           }
         </Select>
+        {
+            "sql" === courseContent[step - 1].type &&
+            <div><Select
+                value={courseContent[step - 1].metaType}
+                onChange={(e) => handleInputChange(e.target.value, 'metaType')}
+                sx={{minWidth: '150px'}}>
+              {
+                getSqlMetaTypes().map((item, i) => <MenuItem key={i} value={item.type}>{item.name}</MenuItem>)
+              }
+            </Select></div>
+        }
       </Box>
 
       {renderCourseElementType(currentCourseElement())}

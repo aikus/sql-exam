@@ -20,7 +20,18 @@ class CourseElement
     const TYPE_MYSQL = 'mysql';
     const TYPE_POSTGRES = 'postgres';
     const TYPE_ORACLE = 'oracle';
+    const TYPE_SQL = 'sql';
     const TYPE_POLL = 'poll';
+    const TYPE_OPEN_QUESTION = 'open-question';
+    const ALL_TYPES = [
+        self::TYPE_ARTICLE,
+        self::TYPE_MYSQL,
+        self::TYPE_POSTGRES,
+        self::TYPE_ORACLE,
+        self::TYPE_SQL,
+        self::TYPE_POLL,
+        self::TYPE_OPEN_QUESTION
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -61,6 +72,25 @@ class CourseElement
     {
         $this->settings = new ArrayCollection();
         $this->pollOptions = new ArrayCollection();
+    }
+
+    #[ORM\Column(length: 255)]
+    private ?string $metaType = null;
+
+    /**
+     * @return string|null
+     */
+    public function getMetaType(): ?string
+    {
+        return $this->metaType;
+    }
+
+    /**
+     * @param string|null $metaType
+     */
+    public function setMetaType(?string $metaType): void
+    {
+        $this->metaType = $metaType;
     }
 
     public function getId(): ?int
@@ -126,7 +156,7 @@ class CourseElement
      */
     public function setType(string $type): self
     {
-        if(!in_array($type, [self::TYPE_MYSQL, self::TYPE_ORACLE, self::TYPE_POLL, self::TYPE_POSTGRES, self::TYPE_ARTICLE])) {
+        if (!in_array($type, self::ALL_TYPES)) {
             throw new CourseElementTypeNotFound($type);
         }
         $this->type = $type;

@@ -10,10 +10,14 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\EntityListeners([CourseSheetListener::class])]
 #[ORM\Entity(repositoryClass: CourseSheetRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['read']],
+)]
 class CourseSheet
 {
     const STATUS_NEW = 'new';
@@ -24,10 +28,12 @@ class CourseSheet
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['write', 'read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['write', 'read'])]
     private ?Course $course = null;
 
     #[ORM\ManyToOne]
@@ -36,24 +42,31 @@ class CourseSheet
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['write', 'read'])]
     private ?CourseElement $actualElement = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(['write', 'read'])]
     private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(['write', 'read'])]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'courceSheet', targetEntity: CourseAnswer::class, cascade: ["persist"], orphanRemoval: true)]
+    #[Groups(['write', 'read'])]
     private Collection $courseAnswers;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['write', 'read'])]
     private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['write', 'read'])]
     private ?DateTimeImmutable $started_at = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['write', 'read'])]
     private ?DateTimeImmutable $finished_at = null;
 
     public function __construct()

@@ -3,9 +3,11 @@
 namespace App\Connectors\AnswerHandler;
 
 use App\Connectors\PdoConnectorFactory;
+use App\Controller\Api\SqlMetadataController;
 use App\Entity\CourseAnswer;
 use App\Entity\CourseElement;
 use App\Service\CheckRight\Domain\CheckRight;
+use App\Service\DBConfigure;
 
 class Factory
 {
@@ -27,6 +29,9 @@ class Factory
                 $this->connectorFactory->createConnect($this->pgDSN, $this->pgLogin, $this->pgPassword),
                 $this->checkRight
             );
+        }
+        if(CourseElement::TYPE_SQL == $question->getType()) {
+            return (new DBConfigure())->getHandler($question->getMetaType(), $this->checkRight);
         }
         return new Noop();
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { Box, Button, ButtonGroup, Grid, Paper, Typography } from "@mui/material";
 import { H2, H5, TextL, TextS } from '../../components/Typography'
@@ -48,17 +48,17 @@ export const Practice = () => {
     const [redBorder, setRedBorder] = useState(false);
 
     const urlContainer = (key, id) => {
-        if (null === id) {
-            throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
-        }
-
-        let container = {
+        const container = {
             processStart: `/api-process/${id}/start`,
             processAnswer: `/api-process/${id}/answer`,
             processExecution: `/api-process/${id}/execution`,
             processFinish: `/api-process/${id}/finish`,
             processPreviousStep: `/api-process/${id}/previous-step`,
         };
+
+        if (null === id) {
+            throw Error(`Не удалось сделать запрос '${container[key]}'. Отсутствует 'id'`);
+        }
         return container[key];
     }
 
@@ -67,7 +67,6 @@ export const Practice = () => {
         HttpRequest.get(
             urlContainer('processStart', course),
             data => {
-                console.info('start data', data);
                 setProcessState(data)
                 setAnswer(data.sqlRequest)
                 setError(false)
@@ -146,7 +145,9 @@ export const Practice = () => {
                 setAnswer(data.sqlRequest)
                 setSqlResponse(data.sqlResponse)
                 setError(false)
-                if (typeof callBack === 'function') callBack()
+                if (typeof callBack === 'function') {
+                    callBack();
+                }
                 getElement(data)
             },
             error => {
@@ -243,8 +244,7 @@ export const Practice = () => {
                 statusText: 'Bad Request',
                 body: {message: 'Не найден шаг следующий за ' + element.name},
             })
-        }
-        else {
+        } else {
             sendAnswer()
             processState.currentElement = processState.elements[nextIndex]
             getElement(processState)
@@ -260,8 +260,7 @@ export const Practice = () => {
                 statusText: 'Bad Request',
                 body: {message: 'Не найден шаг перед ' + element.name},
             })
-        }
-        else {
+        } else {
             sendPrevStep()
             processState.currentElement = processState.elements[prevIndex]
             getElement(processState)
@@ -282,11 +281,49 @@ export const Practice = () => {
     }
 
     const currentStepIndex = process => {
-        console.info('currentStepIndex process:', JSON.parse(JSON.stringify(process)))
         return process?.elements.indexOf(process.currentElement);
     }
 
-    const isAnswerable = () => element.type === 'mysql' || element.type === 'postgres' || element.type === 'oracle';
+    const answerableTypes = {
+            mysql: true,
+            postgres: true,
+            sql: true,
+            oracle: true,
+            'open-question': true
+        },
+        executeLabel = "Принять ответ",
+        fieldLabel = "Введите текст запроса",
+        buttonLabels = {
+            mysql: executeLabel,
+            postgres: executeLabel,
+            sql: executeLabel,
+            oracle: executeLabel,
+            'open-question': executeLabel
+        },
+        answerFieldLabels = {
+            mysql: fieldLabel,
+            postgres: fieldLabel,
+            oracle: fieldLabel,
+            sql: fieldLabel,
+            'open-question': "Ваш ответ"
+        },
+        isAnswerable = () => {
+            return answerableTypes[element.type] || false;
+        },
+        buttonLabel = () => {
+            return buttonLabels[element.type] || "";
+        },
+        answerFieldLabel = () => {
+            return answerFieldLabels[element.type] || ""
+        },
+        showRequestResult = (sqlResponse) => {
+            return ('open-question' === element.type) ? <C.Block>
+                    <ResultBlock data={"Ответ сохранён"}/>
+                </C.Block> :
+                <C.Block>
+                    <ResultBlock data={sqlResponse}/>
+                </C.Block>
+        };
 
     const finishButton = () => {
         return !isExistNextStep
