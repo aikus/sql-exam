@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Authorization } from "../pages/Authorization/Authorization"
 import { MainPage } from "../pages/MainPage"
@@ -18,8 +18,48 @@ import { StatisticPage } from "/assets/pages/StatisticPage";
 import { StudentStatisticPage } from "../pages/StudentStatisticPage";
 import { FeedbackForm } from "../pages/FeedbackForm";
 import { TextPageTemplate } from "../Tamplate/TextPageTemplate";
+import {UrlService} from "../Service/UrlService";
+import prtScrnImg from './printScreenImg.png';
 
 export const App = () => {
+  const onKeyUp = e => {
+    const course = UrlService.param('course');
+
+    if (course && e.keyCode === 44) {
+      sendUserData();
+      putImgToClipboard();
+    }
+  };
+
+  const sendUserData = () => {
+    console.log('screen')
+    console.log(localStorage.getItem('userId'));
+    console.log(localStorage.getItem('courseId'));
+    console.log(localStorage.getItem('stepId'));
+    console.log(new Date())
+    console.log(navigator.userAgent)
+  }
+
+  const putImgToClipboard = async () => {
+    const data = await fetch(prtScrnImg);
+    const blob = await data.blob();
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keyup', onKeyUp);
+
+    return () => {
+      window.removeEventListener('keyup', onKeyUp);
+    };
+  });
   return (
     <>
       <ThemeProvider theme={theme}>

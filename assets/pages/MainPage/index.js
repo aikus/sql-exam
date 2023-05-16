@@ -65,6 +65,7 @@ export const MainPage = () => {
         const handleSetUserInfo = (data) => {
             setUserInfo(data)
             setAuth({roles: data.roles})
+            localStorage.setItem('userId', data.userId);
         }
 
         HttpRequest.get(`${hostName}/api/user/info`, (data) => handleSetUserInfo(data))

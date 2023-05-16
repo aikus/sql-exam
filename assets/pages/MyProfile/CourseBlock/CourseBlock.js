@@ -36,6 +36,7 @@ export const CourseBlock = ({title}) => {
     }, []);
 
     const goToPractice = id => {
+        localStorage.setItem('courseId', id);
         navigate(`/react/my-profile/practice?course=${id}`)
     }
 

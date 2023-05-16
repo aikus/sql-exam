@@ -124,6 +124,7 @@ export const Practice = () => {
                 checkNavState(process)
                 setError(false)
                 setLoader(false)
+                localStorage.setItem('stepId', data.id);
             },
             error => {
                 checkNavState(process)
