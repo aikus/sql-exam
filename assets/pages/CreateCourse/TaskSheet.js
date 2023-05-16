@@ -202,13 +202,15 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
   const getSqlMetaTypes = () => {
     const result = [];
-    for(let key in metaTypes) {
+    for (let key in metaTypes) {
       result.push({
         name: metaTypes[key],
         type: key
       });
     }
     return result;
+  }
+
   const deepCopy = (targetObj, sourceObj) => {
     if (targetObj && sourceObj) {
       for (let x in sourceObj) {
@@ -229,6 +231,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
       article: getArticleType,
       mysql: getSqlPracticeType,
       postgres: getSqlPracticeType,
+      sql: getSqlPracticeType,
       oracle: getSqlPracticeType,
       poll: getPollType,
     }
@@ -307,6 +310,17 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
             )
           }
         </Select>
+        {
+            "sql" === courseContent[step - 1].type &&
+            <div><Select
+                value={courseContent[step - 1].metaType}
+                onChange={(e) => handleInputChange(e.target.value, 'metaType')}
+                sx={{minWidth: '150px'}}>
+              {
+                getSqlMetaTypes().map((item, i) => <MenuItem key={i} value={item.type}>{item.name}</MenuItem>)
+              }
+            </Select></div>
+        }
       </Box>
 
       {renderCourseElementType(currentCourseElement())}
