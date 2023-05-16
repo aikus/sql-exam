@@ -74,7 +74,7 @@ export const PollType = ({step, courseElement, handleInputChange, handlePollChan
             setPollOptions(data)
         })
         handlePollChange(pollOptions)
-    }, [])
+    }, [courseElement])
 
     useEffect(() => {
         handlePollChange(pollOptions)
