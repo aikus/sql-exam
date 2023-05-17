@@ -4,7 +4,6 @@ import { wysiwygConfig } from "/assets/config";
 import { CourseElementTitleInput } from "./Component/CourseElementTitleInput";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { PollOption } from "./Component/PollOption";
-import { ScirpusSnackbar } from "../../../Tamplate/Feedback/ScirpusSnackbar";
 import { CourseElementPollOptionRepository } from "../../../Repositories/CourseElementPollOptionRepository";
 import { PollSettings } from "./Component/PollSettings";
 
