@@ -75,7 +75,7 @@ export const PollSettings = ({courseElement, handleSettingsChange}) => {
         <Divider sx={{ my: 2 }} />
         <FormGroup>
             <FormControl sx={{ my: 1 }}>
-                <InputLabel>Количество вариатов</InputLabel>
+                <Typography>Количество вариатов</Typography>
                 <Select
                     name={'countView'}
                     value={state?.countView}
