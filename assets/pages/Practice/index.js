@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import * as C from './styles'
 import { Box, Button, ButtonGroup, Grid, Paper, Typography } from "@mui/material";
-import { H2, H5, TextL, TextS } from '../../components/Typography'
-import { TableToChoose } from "./TableToChoose";
-import { ExampleTable } from "./ExampleTable";
-import { ResultBlock } from "./ResultBlock";
+import { H5, TextS } from '/assets/components/Typography'
+import { TableToChoose } from "/assets/pages/Practice/TableToChoose";
+import { ExampleTable } from "/assets/pages/Practice/ExampleTable";
+import { ResultBlock } from "/assets/pages/Practice/ResultBlock";
 import { useNavigate } from "react-router-dom";
-import { HttpRequest } from "../../Service/HttpRequest";
-import { Loader } from "../../components/Loader";
-import { UrlService } from "../../Service/UrlService";
-import { StudentTableData } from "../../Service/StudentTableData";
-import { Notice } from "../../components/Notice";
+import { HttpRequest } from "/assets/Service/HttpRequest";
+import { Loader } from "/assets/components/Loader";
+import { UrlService } from "/assets/Service/UrlService";
+import { StudentTableData } from "/assets/Service/StudentTableData";
+import { Notice } from "/assets/components/Notice";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import { sanitizer } from "/assets/Service/Sanitizer";
-import { SqlAnswer } from "./Component/SqlAnswer";
-import { PollAnswer } from "./Component/PollAnswer";
+import { SqlAnswer } from "/assets/pages/Practice/Component/SqlAnswer";
+import { PollAnswer } from "/assets/pages/Practice/Component/PollAnswer";
+import { BackToMainPageButton } from "/assets/components/Main/Button/BackToMainPageButton";
+import { Title } from "/assets/components/Main/Typography/Title";
 
 export const Practice = () => {
     const navigate = useNavigate();
@@ -358,23 +360,15 @@ export const Practice = () => {
     return <Box>
       <Notice message={error}/>
       <Loader show={loader}/>
-      <Box sx={{mt: '3rem', mb: 3}}>
-        <Button
-            onClick={() => navigate("/react/my-profile")}
-            variant={'text'}
-            color='info'
-            size='S'
-            startIcon={<KeyboardArrowLeftIcon />}
-        >
-          Вернуться к опроснику
-        </Button>
+      <Box sx={{mt: '2rem', mb: 3}}>
+        <BackToMainPageButton />
       </Box>
       <Grid container justifyContent="space-between" sx={{mt: 3, mb: 4}}>
         <Grid item>
-          <H2>{element.name}</H2>
+          <Title>{element.name}</Title>
         </Grid>
-        <Grid item>
-          <TextL>Задание {element.ord} из {processState.elementCount}</TextL>
+        <Grid item alignSelf={'center'}>
+          <Typography variant={"body1"}>Задание {element.ord} из {processState.elementCount}</Typography>
         </Grid>
       </Grid>
       <Paper sx={{p: 3}}>
