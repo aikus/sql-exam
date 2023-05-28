@@ -41,11 +41,19 @@ export const PollAnswer = ({element, handlePollAnswer}) => {
     };
 
     const isVictorine = () => {
-        return 1 === +elementSettings.filter(setting => setting.property === 'isVictorine')[0]?.value
+        return 1 === +getSetting('isVictorine')
     }
 
     const countView = () => {
-        return +elementSettings.filter(setting => setting.property === 'countView')[0]?.value
+        return +getSetting('countView')
+    }
+
+    const isRandomOrder = () => {
+        return 1 === +getSetting('isRandomOrder')
+    }
+
+    const getSetting = name => {
+        return elementSettings.filter(setting => setting.property === name)[0]?.value
     }
 
     useEffect(() => {
@@ -55,7 +63,12 @@ export const PollAnswer = ({element, handlePollAnswer}) => {
             CourseElementPollOptionRepository.getByCourseElement(element).then(data => {
                 const count = countView();
 
-                data.sort((a, b) => a.id > b.id ? 1 : -1);
+                if (isRandomOrder()) {
+                    data.sort((a, b) => Math.round(Math.random() * 2) - 1);
+                }
+                else {
+                    data.sort((a, b) => a.id > b.id ? 1 : -1);
+                }
 
                 if (count > 0) {
                     data.slice(0, count)

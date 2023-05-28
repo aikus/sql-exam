@@ -225,20 +225,15 @@ class CourseResultController extends AbstractController
     private function buildStudentCourseResultReport(CourseSheet $sheet): array
     {
         foreach ($sheet->getCourse()?->getType() ?? [] as $element) {
-            if (in_array($element->getType(), [
-                CourseElement::TYPE_ARTICLE
-            ], true)) {
+
+            if ($this->isDisplayAnswer($element)) {
                 continue;
             }
+
             $answer = $this->lastRightAnswer($element, $sheet);
 
             $answerText = CourseElement::TYPE_POLL === $element->getType()
-                ? implode('<br>', $answer?->getQuestion()->getPollOptions()->filter(function (CourseElementPollOption $option) use ($answer) {
-                    $studentAnswerIds = json_decode($answer->getAnswer(), true);
-                    return is_array($studentAnswerIds) && in_array($option->getId(), $studentAnswerIds);
-                })->map(function (CourseElementPollOption $option) {
-                    return $option->getText();
-                })->toArray())
+                ? $this->listPollOption($answer)
                 : $answer?->getAnswer();
 
             $table[] = [
@@ -260,6 +255,28 @@ class CourseResultController extends AbstractController
             'table' => $table ?? [],
             'fio' => $sheet->getStudent()->getFio()
         ];
+    }
+
+    private function isDisplayAnswer(CourseElement $element): bool
+    {
+        return in_array($element->getType(), [
+            CourseElement::TYPE_ARTICLE,
+            CourseElement::TYPE_OPEN_QUESTION,
+        ], true);
+    }
+
+    private function listPollOption(?CourseAnswer $answer): string
+    {
+        $listPollOption = $answer?->getQuestion()
+            ->getPollOptions()
+            ->filter(function (CourseElementPollOption $option) use ($answer) {
+                $studentAnswerIds = json_decode($answer->getAnswer(), true);
+                return is_array($studentAnswerIds) && in_array($option->getId(), $studentAnswerIds);
+            })->map(function (CourseElementPollOption $option) {
+                return $option->getText();
+            })->toArray();
+
+        return implode('<br>', $listPollOption ?? ['Вариант не выбран']);
     }
 
     private function isOwnerOrAdmin(User $student): bool

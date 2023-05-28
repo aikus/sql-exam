@@ -43,6 +43,15 @@ export const theme = createTheme({
         }
     },
     typography: {
+        h1: {
+            fontSize: '3.25rem',
+        },
+        h2: {
+            fontSize: '2.5rem',
+        },
+        h3: {
+            fontSize: '1.75rem',
+        },
         button: {}
     },
     components: {

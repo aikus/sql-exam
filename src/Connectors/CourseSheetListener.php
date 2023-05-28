@@ -16,6 +16,7 @@ class CourseSheetListener
     {
         $course = $sheet->getCourse();
         $sheet->setActualElement($this->actualElement($course->getType()));
+        $sheet->setCreatedAt(new \DateTime());
     }
 
     /**
