@@ -10,9 +10,10 @@ import { wysiwygConfig } from '../../config'
 import { searchParam } from "../../Service/SearchParamActions";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
+import { ContentState, EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import {SqlMetaTypeRepository} from "./SqlMetaTypeRepository";
+import htmlToDraft from 'html-to-draftjs';
 
 export const CreateCourse = () => {
   const [step, setStep] = useState(0)
@@ -260,18 +261,16 @@ export const CreateCourse = () => {
 }
 
 export const convertHTMLtoObj = (description) => {
-  const fromHTML = convertFromHTML(description);
+  const contentBlock = htmlToDraft(description);
+  const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
 
-  const newState = ContentState.createFromBlockArray(
-    fromHTML.contentBlocks,
-    fromHTML.entityMap,
-  );
-
-  return EditorState.createWithContent(newState);
+  return EditorState.createWithContent(contentState);
 }
 
 export const convertObjToHTML = (obj) => {
-  return draftToHtml(convertToRaw(obj.getCurrentContent()));
+  const html = draftToHtml(convertToRaw(obj.getCurrentContent()));
+
+  return html.replace('<p></p>', '<p>&nbsp;</p>');
 }
 
 const names = [
