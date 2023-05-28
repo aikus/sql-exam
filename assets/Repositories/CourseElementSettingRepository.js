@@ -28,6 +28,7 @@ class CourseElementSettingRepositoryClass {
         try {
             const settingList = courseElement.settings ?? [];
             return new Promise((resolve, reject) => {
+                if (settingList.length === 0) resolve([]);
                 let result = [];
                 settingList.forEach(setting => {
                     this.request.get(setting, data => {

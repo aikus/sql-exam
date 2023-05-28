@@ -22,9 +22,11 @@ import { ArticleType } from "./CourseElementType/ArticleType";
 import { TypeBuilder } from "./CourseElementType/Component/TypeBuilder";
 import { PollType } from "./CourseElementType/PollType";
 import { Close } from "@mui/icons-material";
+import {ScirpusSnackbar} from "../../Tamplate/Feedback/ScirpusSnackbar";
 
 export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, setCourseContent, course, courseId, metaTypes}) => {
   const navigate = useNavigate();
+  const [notify, setNotify] = useState(null)
   const [loader, setLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const isPractice = type => ['mysql', 'postgres', 'oracle', 'sql'].includes(type);
@@ -78,9 +80,25 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
 
     if (null === statePollOptions || undefined === statePollOptions) return;
 
-    statePollOptions.map(option => {
-      CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {})
-    })
+    let existRight = false;
+    let countOption = 0;
+    statePollOptions?.map(option => {
+      countOption++;
+      if (true === option?.isRight) {
+        existRight = true;
+      }
+    });
+    if (!existRight) {
+      setNotify('Необходимо выбрать хотя бы один правильный ответ')
+    }
+    else if (countOption < 2) {
+      setNotify('Необходимо указать хотя бы 2 варианта ответа')
+    }
+    else {
+      statePollOptions.map(option => {
+        CourseElementPollOptionRepository.save(option, courseElement.id).then(data => {})
+      })
+    }
   }
 
   const handleSettingsChange = settings => {
@@ -99,7 +117,7 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
   const handleSettings = (courseElement) => {
     const settingList = courseElement?.settingsData;
 
-    settingList.map(setting => {
+    settingList?.map(setting => {
       if (undefined === setting || null === setting) return;
       CourseElementSettingRepository.save(setting, courseElement.id).then(data => {})
     })
@@ -253,11 +271,13 @@ export const TaskSheet = ({step, nextStep, prevStep, deleteStep, courseContent, 
         handleInputChange={handleInputChange}
         handlePollChange={handlePollChange}
         handleSettingsChange={handleSettingsChange}
+        setNotify={setNotify}
     />
   }
 
   return (
     <>
+      {notify ? <ScirpusSnackbar message={notify} clearMessage={() => {setNotify(null)}}/> : ''}
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={'auto'}>
           <ButtonGroup>
