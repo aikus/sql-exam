@@ -102,3 +102,17 @@ export const StepActions = styled.div`
     flex-direction: row;
   }
 `
+
+export const Asterisk = styled.span`
+  color: #DF5959;
+`
+
+export const HelperWithCounter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  
+  & > span:last-child {
+    color: #ABABAB;
+  }
+`

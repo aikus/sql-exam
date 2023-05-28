@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as C from './styles'
-import { TextField, OutlinedInput, MenuItem, Select, ListItemText, Checkbox, FormControlLabel, Button } from "@mui/material";
-import { TextM, TextL, TextS, H2, H3, H5 } from '../../components/Typography'
+import { TextField, Button } from "@mui/material";
+import { TextM, TextL, H2, H5 } from '../../components/Typography'
 import { TaskSheet } from './TaskSheet'
 import { Loader } from "../../components/Loader";
 import { HttpRequest } from '../../Service/HttpRequest'
@@ -26,7 +26,7 @@ export const CreateCourse = () => {
     intendedFor: [],
     exam: false,
     numOfTries: '',
-    minForTrie: ''
+    minForTrie: 0
   });
   const defaultElement = {
     'type': 'article',
@@ -115,17 +115,6 @@ export const CreateCourse = () => {
     HttpRequest.get(`/api-platform/courses/${id}`,(data) => handleSuccess(data), (error) => handleError())
   }
 
-  const handleIntendedForChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCourseMainInfo(prevState => ({...prevState, intendedFor: typeof value === 'string' ? value.split(',') : value}));
-  };
-
-  const handleExamChange = (event) => {
-    setCourseMainInfo(prevState => ({...prevState, exam: event.target.checked}));
-  };
-
   const handleNextStep = (lastStep) => {
     if (step + 1 > stepsTotal || lastStep) {
       setStepsTotal((prevState) => prevState + 1)
@@ -174,10 +163,6 @@ export const CreateCourse = () => {
     }
   }, [])
 
-  const onDescriptionChange = newState => {
-    setCourseMainInfo(prevState => ({...prevState, description: newState}));
-  };
-
   return (
       <C.Wrapper>
         <C.Header>
@@ -190,18 +175,25 @@ export const CreateCourse = () => {
           {step === 0 &&
             <C.FirstStep>
               <C.FieldBox>
-                <H5>Название курса</H5>
+                <H5>Название курса <C.Asterisk>*</C.Asterisk></H5>
                 <TextField
                   required
                   type="text"
                   multiline={true}
                   fullWidth={true}
                   value={courseMainInfo.name}
-                  onChange={(e) => handleInputChange(e.target.value, 'name')}
+                  onChange={(e) => {
+                    if (e.target.value.length > 64) return;
+                    handleInputChange(e.target.value, 'name');
+                  }}
                 />
+                <C.HelperWithCounter>
+                  <TextM>Максимум 64 символа</TextM>
+                  <TextM>{courseMainInfo.name?.length || 0}/64</TextM>
+                </C.HelperWithCounter>
               </C.FieldBox>
               <C.FieldBox>
-                <H5>Описание курса</H5>
+                <H5>Описание курса <C.Asterisk>*</C.Asterisk></H5>
                 <Editor
                   editorState={courseMainInfo.description}
                   editorClassName='wysiwyg-editor'
@@ -211,7 +203,7 @@ export const CreateCourse = () => {
                 />
               </C.FieldBox>
               <C.FieldBox>
-                <H5>Время на одну попытку в минутах</H5>
+                <H5>Время на одну попытку в минутах <C.Asterisk>*</C.Asterisk></H5>
                 <TextField
                   required
                   type="number"
@@ -272,21 +264,3 @@ export const convertObjToHTML = (obj) => {
 
   return html.replace('<p></p>', '<p>&nbsp;</p>');
 }
-
-const names = [
-  'Потребы',
-  'Кредитная карты',
-  'Ипотека',
-  'Доставка',
-  'Sales',
-];
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-    },
-  },
-};
