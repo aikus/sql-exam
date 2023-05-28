@@ -157,7 +157,7 @@ export const Authorization = () => {
         setState((prevState) => {
             return {
                 ...prevState,
-                headerText: state.restoreSuccessfully ? '' : 'Введите ваш Email что бы сбросить пароль'
+                headerText: state.restoreSuccessfully ? '' : 'Введите ваш Email, чтобы сбросить пароль'
             }
         })
     }

@@ -6,7 +6,7 @@ import '../../styles/app.css';
 export const AccessDenied = () => {
     return (
       <Wrapper>
-          <Alert severity="error">У вас недостаточно прав, что бы просматривать эту страницу!</Alert>
+          <Alert severity="error">У вас недостаточно прав, чтобы просматривать эту страницу!</Alert>
       </Wrapper>
     )
 }
