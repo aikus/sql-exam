@@ -20,11 +20,11 @@ class CourseAnswer
     private ?int $id = null;
 
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'courseAnswers')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?CourseSheet $courceSheet = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?CourseElement $question = null;
 
     #[ORM\Column(type: Types::TEXT)]

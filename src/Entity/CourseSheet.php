@@ -44,7 +44,7 @@ class CourseSheet
     private ?User $student = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['write', 'read'])]
     private ?CourseElement $actualElement = null;
 

@@ -27,7 +27,8 @@ class CourseElementSetting
     private ?string $value = null;
 
     #[ORM\ManyToOne(inversedBy: 'settings')]
-    private ?CourseElement $course_element = null;
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?CourseElement $course_element;
 
     public function getId(): ?int
     {
