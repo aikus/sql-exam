@@ -48,7 +48,7 @@ class CourseElement
     private ?int $ord = null;
 
     #[ORM\ManyToOne(inversedBy: 'type')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Course $course = null;
 
     #[ORM\Column(length: 255)]
@@ -74,7 +74,7 @@ class CourseElement
         $this->pollOptions = new ArrayCollection();
     }
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $metaType = null;
 
     /**

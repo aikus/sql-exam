@@ -27,7 +27,8 @@ class CourseElementPollOption
     private ?bool $is_right = null;
 
     #[ORM\ManyToOne(inversedBy: 'pollOptions')]
-    private ?CourseElement $course_element = null;
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?CourseElement $course_element;
 
     public function getId(): ?int
     {
