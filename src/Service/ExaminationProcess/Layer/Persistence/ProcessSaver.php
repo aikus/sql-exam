@@ -14,6 +14,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Criteria;
+use Exception;
 
 class ProcessSaver
 {
@@ -61,6 +62,26 @@ class ProcessSaver
     /**
      * @throws CourseSheetStatusNotFound
      */
+    public function newSheet(
+        User $user,
+        Course $course,
+        ?CourseElement $actualElement
+    ): void {
+
+        $sheet = new CourseSheet();
+        $sheet->setCourse($course);
+        $sheet->setActualElement($actualElement);
+        $sheet->setStudent($user);
+        $sheet->setCreatedAt(new DateTime());
+        $sheet->setStatus(CourseSheet::STATUS_RESTARTABLE);
+
+        $this->sheetRepository->add($sheet);
+    }
+
+    /**
+     * @throws CourseSheetStatusNotFound
+     * @throws Exception
+     */
     public function findAndStart(
         User $user,
         Course $course,
@@ -76,14 +97,6 @@ class ProcessSaver
 
         if (null === $sheet) {
             return null;
-        }
-
-        if ($sheet->getStatus() === CourseSheet::STATUS_RESTARTABLE) {
-            $newSheet = new CourseSheet();
-            $newSheet->setCourse($sheet->getCourse());
-            $newSheet->setStudent($sheet->getStudent());
-            $newSheet->setCreatedAt(new DateTime());
-            $sheet = $newSheet;
         }
 
         if(!$sheet->getStartedAt()) {

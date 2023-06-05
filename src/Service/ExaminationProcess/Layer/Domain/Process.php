@@ -129,12 +129,12 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
 
-        if ($this->isTimeOut($now, $sheet->getStartedAt(), $course->getTimeLimit())) {
-            $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
+        if (!$this->isTimeOut($now, $sheet->getStartedAt(), $course->getTimeLimit())) {
+            // Create new empty sheet. Status 'restartable'
+            $this->saver->newSheet($user, $sheet->getCourse(), $this->actualElement($sheet->getCourse()->getType()));
         }
-        else {
-            $sheet->setStatus(CourseSheet::STATUS_RESTARTABLE);
-        }
+
+        $sheet->setStatus(CourseSheet::STATUS_COMPLETED);
 
         $sheet->setFinishedAt(new DateTimeImmutable($now->format('Y-m-d H:i:s')));
         $this->saver->updateSheet($sheet, $currentElement, $now);
