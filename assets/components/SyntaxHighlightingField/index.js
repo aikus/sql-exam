@@ -3,23 +3,39 @@ import styled, { css } from 'styled-components'
 import '../../styles/app.css';
 import * as DOMPurify from "dompurify";
 import {highlight} from "sql-highlight";
+import { syntaxFieldHeight } from '../../config'
 
 export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
   const [highlightedCode, setHighlightedCode] = useState(' ');
   const [rawCode, setRawCode] = useState(value || ' ');
+  const [fieldHeight, setFieldHeight] = useState(syntaxFieldHeight);
 
   useEffect(() => {
     value && highlightText(value);
   }, [value])
 
+  const resizeHeight = (text) => {
+    const numOfNewLines = text.split("\n").length;
+
+    if (numOfNewLines > 4) {
+      setFieldHeight(numOfNewLines * 24 + 30);
+    }
+
+    if (numOfNewLines <= 4 && fieldHeight > syntaxFieldHeight) {
+      setFieldHeight(syntaxFieldHeight);
+    }
+  }
+
   const highlightText = (text) => {
     const { highlight } = require('sql-highlight');
+
+    resizeHeight(text);
 
     if (text === '') {
       text = ' ';
     }
 
-    if (text[text.length - 1] === "\n") {
+    if (text[text.length - 1] === "\n" && text.length > rawCode.length) {
       text += ' ';
     }
 
@@ -59,7 +75,7 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
   const sanitizer = DOMPurify.sanitize;
 
   return (
-    <Wrapper>
+    <Wrapper heightVal={fieldHeight}>
       <TextArea
         spellCheck="false"
         onInput={(e) => {
@@ -74,7 +90,12 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
           if (e.key === 'Backspace') {
             setTimeout(() => {
               if (rawCode[rawCode.length - 1] === ' ' && rawCode[rawCode.length - 2] === '\n') {
-                setRawCode((prevState) => prevState.slice(0, -2))
+                setRawCode((prevState) => {
+                  const result = prevState.slice(0, -1);
+                  resizeHeight(result);
+
+                  return result;
+                })
               }
             }, 0)
           }
@@ -93,7 +114,7 @@ export const SyntaxHighlightingField = ({ elementRef, value, getValue }) => {
 
 const Wrapper = styled.div`
   position: relative;
-  height: 150px;
+  height: ${(props) => props.heightVal + 'px'};
 `;
 
 const sharedStyles = css`
@@ -102,9 +123,9 @@ const sharedStyles = css`
   border: 1px solid black;
   width: 100%;
   height: 100%;
-  font-size: 15pt;
+  font-size: 18px;
   font-family: monospace;
-  line-height: 20pt;
+  line-height: 24px;
   position: absolute;
   top: 0;
   left: 0;
@@ -131,9 +152,9 @@ const CodeFieldWrapper = styled.pre`
   z-index: 0;
   
   & * {
-    font-size: 15pt;
+    font-size: 18px;
     font-family: monospace;
-    line-height: 20pt;
+    line-height: 24px;
     tab-size: 2;
   }
 `;
