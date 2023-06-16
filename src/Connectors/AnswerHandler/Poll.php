@@ -11,7 +11,7 @@ class Poll implements Handler
     {
         try {
             $IsRight = false;
-            $studentAnswerIds = json_decode($answer->getAnswer(),true);
+            $studentAnswerIds = json_decode($answer->getAnswer(),true) ?? [];
             $rightAnswerIds = $this->rightAnswerIds($answer);
 
             if (count($studentAnswerIds) === count($rightAnswerIds)) {
