@@ -129,7 +129,7 @@ class Process
             $answer = $this->saver->addNewAnswer($sheet, $currentElement, $sqlText, $now);
         }
 
-        if (!$this->isTimeOut($now, $sheet->getStartedAt(), $course->getTimeLimit())) {
+        if (0 === $course->getTimeLimit() || null === $course->getTimeLimit()) {
             // Create new empty sheet. Status 'restartable'
             $this->saver->newSheet($user, $sheet->getCourse(), $this->actualElement($sheet->getCourse()->getType()));
         }
